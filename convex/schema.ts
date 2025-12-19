@@ -14,18 +14,33 @@ export default defineSchema({
   // Shows metadata (Broadway, Off-Broadway, touring, local)
   shows: defineTable({
     title: v.string(),
-    type: v.union(
-      v.literal("broadway"),
-      v.literal("off-broadway"),
-      v.literal("touring"),
-      v.literal("local")
-    ),
-    location: v.optional(v.string()), // For touring/local shows
+    location: v.optional(v.string()), 
     venue: v.optional(v.string()),
+    theatre: v.optional(v.string()),
+    district: v.optional(
+      v.union(
+        v.literal("broadway"),
+        v.literal("off-broadway"),
+        v.literal("touring"),
+        v.literal("local")
+      )
+    ),
+    showtimes: v.optional(
+      v.object({
+        monday: v.union(v.string(), v.null()),
+        tuesday: v.union(v.string(), v.null()),
+        wednesday: v.union(v.string(), v.null()),
+        thursday: v.union(v.string(), v.null()),
+        friday: v.union(v.string(), v.null()),
+        saturday: v.union(v.string(), v.null()),
+        sunday: v.union(v.string(), v.null()),
+      })
+    ),
     openingDate: v.optional(v.number()), // Unix timestamp
     previewDate: v.optional(v.number()),
     closingDate: v.optional(v.number()), // null for open runs
     isOpenRun: v.boolean(),
+    isInPreviews: v.optional(v.boolean()),
     description: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     playbillImageId: v.optional(v.id("_storage")), // Convex file storage
@@ -40,20 +55,45 @@ export default defineSchema({
     status: v.union(
       v.literal("interested"),
       v.literal("seen"),
-      v.literal("planning")
+      v.literal("planning"),
+      v.literal("want-to-see"),
+      v.literal("interested-in"),
+      v.literal("look-into"),
+      v.literal("not-interested")
     ),
     rank: v.optional(v.number()), // For ranking seen shows (1 = best)
-    timesSeen: v.optional(v.number()),
     notes: v.optional(v.string()),
     review: v.optional(v.string()),
-    seenDates: v.optional(v.array(v.number())), // Array of timestamps
-    seenLocations: v.optional(v.array(v.string())),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_user", ["userId"])
     .index("by_show", ["showId"])
     .index("by_user_status", ["userId", "status"]),
+
+  // Individual show visits (multiple viewings of the same show)
+  userShowVisits: defineTable({
+    userId: v.id("users"),
+    userShowId: v.id("userShows"), // Reference to the userShow relationship
+    showId: v.id("shows"), // Denormalized for easier queries
+    visitDate: v.number(), // Unix timestamp
+    theatre: v.string(),
+    district: v.union(
+      v.literal("Broadway"),
+      v.literal("Playhouse Square"),
+      v.literal("West End"),
+      v.literal("Off-Broadway"),
+      v.literal("Local"),
+      v.literal("Touring"),
+      v.literal("Other")
+    ),
+    notes: v.optional(v.string()), // Optional notes about the visit (cast, special circumstances, etc.)
+    chronologicalOrder: v.optional(v.number()), // Overall chronological order across all shows
+    createdAt: v.number(),
+  })
+    .index("by_user_show", ["userShowId"])
+    .index("by_user", ["userId"])
+    .index("by_show", ["showId"]),
 
   // Notification preferences and history
   notifications: defineTable({
@@ -131,5 +171,60 @@ export default defineSchema({
   })
     .index("by_show", ["showId"])
     .index("by_show_day", ["showId", "dayOfWeek"]),
+
+  // User lists (custom lists like "Want to See", "Interested In", etc.)
+  userLists: defineTable({
+    userId: v.id("users"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    showIds: v.array(v.id("shows")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
+
+  // Trips
+  trips: defineTable({
+    userId: v.id("users"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    startDate: v.number(), // Unix timestamp
+    startTime: v.optional(v.string()), // "HH:MM" format
+    endDate: v.number(), // Unix timestamp
+    endTime: v.optional(v.string()), // "HH:MM" format
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
+
+  // Trip days
+  tripDays: defineTable({
+    tripId: v.id("trips"),
+    date: v.number(), // Unix timestamp (start of day)
+    createdAt: v.number(),
+  })
+    .index("by_trip", ["tripId"]),
+
+  // Trip day slots
+  tripDaySlots: defineTable({
+    tripDayId: v.id("tripDays"),
+    tripId: v.id("trips"), // Denormalized for easier queries
+    type: v.union(
+      v.literal("show"),
+      v.literal("meal"),
+      v.literal("transport"),
+      v.literal("flight"),
+      v.literal("custom")
+    ),
+    title: v.string(),
+    startTime: v.string(), // "HH:MM" format
+    endTime: v.optional(v.string()), // "HH:MM" format
+    showId: v.optional(v.id("shows")), // Primary show for show-type slots
+    backupShowIds: v.optional(v.array(v.id("shows"))), // Backup shows
+    notes: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_trip_day", ["tripDayId"])
+    .index("by_trip", ["tripId"]),
 });
 

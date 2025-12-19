@@ -4,7 +4,7 @@ import { v } from "convex/values";
 // Get all shows for calendar view
 export const getShows = query({
   args: {
-    type: v.optional(
+    district: v.optional(
       v.union(
         v.literal("broadway"),
         v.literal("off-broadway"),
@@ -24,14 +24,17 @@ export const getShows = query({
 export const upsertShow = mutation({
   args: {
     title: v.string(),
-    type: v.union(
-      v.literal("broadway"),
-      v.literal("off-broadway"),
-      v.literal("touring"),
-      v.literal("local")
+    district: v.optional(
+      v.union(
+        v.literal("broadway"),
+        v.literal("off-broadway"),
+        v.literal("touring"),
+        v.literal("local")
+      )
     ),
     location: v.optional(v.string()),
     venue: v.optional(v.string()),
+    theatre: v.optional(v.string()),
     openingDate: v.optional(v.number()),
     previewDate: v.optional(v.number()),
     closingDate: v.optional(v.number()),
