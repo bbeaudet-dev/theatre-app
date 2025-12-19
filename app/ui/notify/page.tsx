@@ -1,4 +1,4 @@
-import NotifySettings from "@/components/notify/NotifySettings";
+import NotifySettings from "./NotifySettings";
 
 export default function NotifyPage() {
   return (

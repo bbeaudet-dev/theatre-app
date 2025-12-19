@@ -1,4 +1,4 @@
-import PreviewChatbot from "@/components/preview/PreviewChatbot";
+import PreviewChatbot from "./PreviewChatbot";
 
 export default function PreviewPage() {
   return (
