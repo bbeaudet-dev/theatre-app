@@ -6,22 +6,23 @@ import TheatreCloud from "./TheatreCloud";
 import RankingsManager from "./RankingsManager";
 import ListsManager from "./ListsManager";
 import UserPreferences from "./UserPreferences";
+import NotifySettings from "../notify/NotifySettings";
 
 function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<
-    "rankings" | "lists" | "preferences"
+    "rankings" | "lists" | "preferences" | "notify"
   >("rankings");
 
   useEffect(() => {
     const tab = searchParams?.get("tab");
-    if (tab === "lists" || tab === "preferences") {
+    if (tab === "lists" || tab === "preferences" || tab === "notify") {
       setActiveTab(tab);
     }
   }, [searchParams]);
 
-  const handleTabChange = (tab: "rankings" | "lists" | "preferences") => {
+  const handleTabChange = (tab: "rankings" | "lists" | "preferences" | "notify") => {
     setActiveTab(tab);
     if (tab === "rankings") {
       router.push("/ui/profile");
@@ -70,6 +71,16 @@ function ProfileContent() {
           >
             Preferences
           </button>
+          <button
+            onClick={() => handleTabChange("notify")}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              activeTab === "notify"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            }`}
+          >
+            Notifications
+          </button>
         </nav>
       </div>
 
@@ -81,6 +92,7 @@ function ProfileContent() {
       )}
       {activeTab === "lists" && <ListsManager />}
       {activeTab === "preferences" && <UserPreferences />}
+      {activeTab === "notify" && <NotifySettings />}
     </div>
   );
 }

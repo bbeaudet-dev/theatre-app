@@ -17,19 +17,9 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           <FeatureCard
-            title="Calendar"
-            description="View all shows currently running. Filter by location and add to Google Calendar."
-            href="/ui/calendar"
-          />
-          <FeatureCard
-            title="Notify"
-            description="Get notified about openings, closings, cast changes, and news for shows you're interested in."
-            href="/ui/notify"
-          />
-          <FeatureCard
-            title="Preview"
-            description="AI-powered recommendations to help you decide which shows you'll enjoy."
-            href="/ui/preview"
+            title="Browse"
+            description="Discover shows, search for specific productions, and manage your lists."
+            href="/ui/browse"
           />
           <FeatureCard
             title="Trip Planner"
@@ -37,8 +27,13 @@ export default function Home() {
             href="/ui/trip-planner"
           />
           <FeatureCard
+            title="Calendar"
+            description="View all shows currently running. Filter by location and add to Google Calendar."
+            href="/ui/calendar"
+          />
+          <FeatureCard
             title="Profile & Rankings"
-            description="Record and rank all the shows you've seen. Create your theatre cloud."
+            description="Record and rank all the shows you've seen. Create your theatre cloud and manage notifications."
             href="/ui/profile"
           />
         </div>

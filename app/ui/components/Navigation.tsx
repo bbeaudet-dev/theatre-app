@@ -8,11 +8,10 @@ const navItems = [
   { name: "Home", href: "/" },
   { name: "Browse", href: "/ui/browse" },
   { name: "Trip Planner", href: "/ui/trip-planner" },
-  { name: "Profile", href: "/ui/profile" },
   { name: "Calendar", href: "/ui/calendar" },
-  { name: "Notify", href: "/ui/notify" },
-  { name: "Preview", href: "/ui/preview" },
 ];
+
+const profileItem = { name: "Profile", href: "/ui/profile" };
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -41,7 +40,7 @@ export default function Navigation() {
           <Link href="/" className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
             Theatre News
           </Link>
-          <div className="flex gap-6 items-center">
+          <div className="flex gap-2 items-center">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -55,6 +54,17 @@ export default function Navigation() {
                 {item.name}
               </Link>
             ))}
+            <div className="flex-1" />
+            <Link
+              href={profileItem.href}
+              className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                pathname === profileItem.href
+                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                  : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              }`}
+            >
+              {profileItem.name}
+            </Link>
             <div className="relative">
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
