@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import PreviewChatbot from "../../ui/preview/PreviewChatbot";
+import PreviewChatbot from "../preview/PreviewChatbot";
 
 export default function FloatingChat() {
   const [isOpen, setIsOpen] = useState(false);

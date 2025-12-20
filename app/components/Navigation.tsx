@@ -6,12 +6,11 @@ import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
   { name: "Home", href: "/" },
-  { name: "Browse", href: "/ui/browse" },
-  { name: "Trip Planner", href: "/ui/trip-planner" },
-  { name: "Calendar", href: "/ui/calendar" },
+  { name: "Browse", href: "/browse" },
+  { name: "Trip Planner", href: "/trip-planner" },
+  { name: "Calendar", href: "/calendar" },
 ];
 
-const profileItem = { name: "Profile", href: "/ui/profile" };
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -19,17 +18,17 @@ export default function Navigation() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleNewTrip = () => {
-    router.push("/ui/trip-planner");
+    router.push("/trip-planner");
     setShowDropdown(false);
   };
 
   const handleNewList = () => {
-    router.push("/ui/profile?tab=lists");
+    router.push("/profile?tab=lists");
     setShowDropdown(false);
   };
 
   const handleAddShow = () => {
-    router.push("/ui/browse");
+    router.push("/browse");
     setShowDropdown(false);
   };
 
@@ -56,14 +55,14 @@ export default function Navigation() {
             ))}
             <div className="flex-1" />
             <Link
-              href={profileItem.href}
+              href="/profile"
               className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
-                pathname === profileItem.href
+                pathname === "/profile"
                   ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                   : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
               }`}
             >
-              {profileItem.name}
+              Profile
             </Link>
             <div className="relative">
               <button

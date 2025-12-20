@@ -55,8 +55,25 @@ export const createTrip = mutation({
       tripDayIds.push(dayId);
     }
 
-    // Create default slots (Matinee and Evening) for each day
-    for (const dayId of tripDayIds) {
+    // Create default slots for each day
+    for (let i = 0; i < tripDayIds.length; i++) {
+      const dayId = tripDayIds[i];
+      const isFirstDay = i === 0;
+      const isLastDay = i === tripDayIds.length - 1;
+
+      // Flight on first day (morning)
+      if (isFirstDay) {
+        await ctx.db.insert("tripDaySlots", {
+          tripDayId: dayId,
+          tripId,
+          type: "flight",
+          title: "Flight In",
+          startTime: "07:00",
+          endTime: "9:00",
+          createdAt: now,
+        });
+      }
+
       // Matinee slot
       await ctx.db.insert("tripDaySlots", {
         tripDayId: dayId,
@@ -78,6 +95,19 @@ export const createTrip = mutation({
         endTime: "21:30",
         createdAt: now,
       });
+
+      // Flight on last day (evening)
+      if (isLastDay) {
+        await ctx.db.insert("tripDaySlots", {
+          tripDayId: dayId,
+          tripId,
+          type: "flight",
+          title: "Flight Out",
+          startTime: "20:00",
+          endTime: "22:00",
+          createdAt: now,
+        });
+      }
     }
 
     return tripId;
