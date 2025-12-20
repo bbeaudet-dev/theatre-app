@@ -25,9 +25,9 @@ function ProfileContent() {
   const handleTabChange = (tab: "rankings" | "lists" | "preferences" | "notify") => {
     setActiveTab(tab);
     if (tab === "rankings") {
-      router.push("/ui/profile");
+      router.push("/profile");
     } else {
-      router.push(`/ui/profile?tab=${tab}`);
+      router.push(`/profile?tab=${tab}`);
     }
   };
 

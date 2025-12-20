@@ -30,8 +30,7 @@ export default function ShowSelector({ onSelect, onClose }: ShowSelectorProps) {
     : allShows || [];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-zinc-900 rounded-lg p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+    <div className="fixed bottom-6 right-6 bg-white dark:bg-zinc-900 rounded-lg shadow-2xl border p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto z-50">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Select a Show</h2>
           <button
@@ -120,7 +119,6 @@ export default function ShowSelector({ onSelect, onClose }: ShowSelectorProps) {
             ))
           )}
         </div>
-      </div>
     </div>
   );
 }

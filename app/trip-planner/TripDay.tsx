@@ -31,6 +31,7 @@ interface TripDayProps {
 export default function TripDay({ day, tripId }: TripDayProps) {
   const [showSlotEditor, setShowSlotEditor] = useState(false);
   const [editingSlotId, setEditingSlotId] = useState<Id<"tripDaySlots"> | null>(null);
+  const [editorPosition, setEditorPosition] = useState<{ x: number; y: number } | null>(null);
   const addSlot = useMutation(api.functions.trips.addTripSlot);
 
   const date = new Date(day.date);
@@ -43,40 +44,47 @@ export default function TripDay({ day, tripId }: TripDayProps) {
 
   const handleAddSlot = () => {
     setEditingSlotId(null);
+    setEditorPosition(null);
     setShowSlotEditor(true);
   };
 
-  const handleEditSlot = (slotId: Id<"tripDaySlots">) => {
+  const handleEditSlot = (event: React.MouseEvent, slotId: Id<"tripDaySlots">) => {
+    event.stopPropagation();
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     setEditingSlotId(slotId);
+    setEditorPosition({ x: rect.right + 10, y: rect.top });
     setShowSlotEditor(true);
   };
 
   const handleSlotEditorClose = () => {
     setShowSlotEditor(false);
     setEditingSlotId(null);
+    setEditorPosition(null);
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border rounded-lg p-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white dark:bg-zinc-900 border rounded-lg p-3 text-xs">
+      <div className="flex justify-between items-center mb-2">
         <div>
-          <h3 className="text-xl font-semibold">{dayOfWeek}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{dateString}</p>
+          <h3 className="text-sm font-semibold">{dayOfWeek}</h3>
+          <p className="text-[10px] text-gray-600 dark:text-gray-400">{dateString}</p>
         </div>
         <button
           onClick={handleAddSlot}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+          className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-[10px]"
         >
-          Add Custom Slot
+          + Slot
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
         {day.slots.map((slot) => (
           <TripSlot
             key={slot._id}
             slot={slot}
-            onEdit={() => handleEditSlot(slot._id)}
+            onEdit={(e) => handleEditSlot(e, slot._id)}
+            tripId={tripId}
+            tripDayId={day._id}
           />
         ))}
       </div>
@@ -87,6 +95,7 @@ export default function TripDay({ day, tripId }: TripDayProps) {
           tripId={tripId}
           slotId={editingSlotId}
           onClose={handleSlotEditorClose}
+          position={editorPosition}
         />
       )}
     </div>

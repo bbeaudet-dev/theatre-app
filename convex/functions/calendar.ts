@@ -15,8 +15,26 @@ export const getShows = query({
     location: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // TODO: Implement show fetching with filters
-    return [];
+    let shows = await ctx.db.query("shows").collect();
+
+    // Apply district filter
+    if (args.district) {
+      shows = shows.filter((show) => show.district === args.district);
+    }
+
+    // Apply location filter (if location field exists)
+    if (args.location) {
+      shows = shows.filter(
+        (show) =>
+          show.location?.toLowerCase().includes(args.location!.toLowerCase()) ||
+          show.theatre?.toLowerCase().includes(args.location!.toLowerCase())
+      );
+    }
+
+    // Sort by title
+    shows.sort((a, b) => a.title.localeCompare(b.title));
+
+    return shows;
   },
 });
 

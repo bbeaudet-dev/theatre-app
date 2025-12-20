@@ -19,22 +19,22 @@ export default function Home() {
           <FeatureCard
             title="Browse"
             description="Discover shows, search for specific productions, and manage your lists."
-            href="/ui/browse"
+            href="/browse"
           />
           <FeatureCard
             title="Trip Planner"
             description="Plan your theatre trip with show schedules and ticket options at a glance."
-            href="/ui/trip-planner"
+            href="/trip-planner"
           />
           <FeatureCard
             title="Calendar"
             description="View all shows currently running. Filter by location and add to Google Calendar."
-            href="/ui/calendar"
+            href="/calendar"
           />
           <FeatureCard
             title="Profile & Rankings"
             description="Record and rank all the shows you've seen. Create your theatre cloud and manage notifications."
-            href="/ui/profile"
+            href="/profile"
           />
         </div>
       </main>

@@ -188,6 +188,11 @@ export default function TripListView() {
 
   return (
     <div>
+      <h1 className="text-3xl font-bold mb-4">Trip Planner</h1>
+      <p className="text-gray-600 dark:text-gray-400 mb-6">
+        Plan your theatre trip! Create trips, add shows to your schedule, and
+        organize your perfect theatre experience.
+      </p>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Your Trips</h2>
         <button

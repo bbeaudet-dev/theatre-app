@@ -205,6 +205,63 @@ export const updateRanking = mutation({
   },
 });
 
+// Delete a userShow (remove from rankings)
+export const deleteUserShow = mutation({
+  args: {
+    userId: v.id("users"),
+    showId: v.id("shows"),
+  },
+  handler: async (ctx, args) => {
+    let userShow = await ctx.db
+      .query("userShows")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("showId"), args.showId))
+      .first();
+
+    // If not found, try searching all userShows
+    if (!userShow) {
+      const allUserShows = await ctx.db
+        .query("userShows")
+        .withIndex("by_user", (q) => q.eq("userId", args.userId))
+        .collect();
+      const found = allUserShows.find((us) => us.showId === args.showId);
+      if (found) {
+        userShow = found;
+      }
+    }
+
+    if (!userShow) {
+      throw new Error("User show not found");
+    }
+
+    const oldRank = userShow.rank;
+
+    // Delete the userShow
+    await ctx.db.delete(userShow._id);
+
+    // Shift other rankings up if it was ranked
+    if (oldRank !== undefined && oldRank !== null) {
+      const allRanked = await ctx.db
+        .query("userShows")
+        .withIndex("by_user_status", (q) =>
+          q.eq("userId", args.userId).eq("status", "seen")
+        )
+        .collect();
+
+      for (const ranked of allRanked) {
+        if (ranked.rank !== undefined && ranked.rank !== null && ranked.rank > oldRank) {
+          await ctx.db.patch(ranked._id, {
+            rank: ranked.rank - 1,
+            updatedAt: Date.now(),
+          });
+        }
+      }
+    }
+
+    return { success: true };
+  },
+});
+
 // Get user preferences
 export const getUserPreferences = query({
   args: {
