@@ -1,36 +1,90 @@
 import { query, mutation } from "../_generated/server";
 import { v } from "convex/values";
+import { Id } from "../_generated/dataModel";
 
-// Get first user (for development - will be replaced with auth)
-export const getFirstUser = query({
-  args: {},
-  handler: async (ctx) => {
-    const users = await ctx.db.query("users").first();
-    return users?._id;
-  },
-});
+// Helper to get user from session token
+async function getUserFromToken(ctx: any, token: string | null) {
+  if (!token) return null;
+  
+  const session = await ctx.db
+    .query("sessions")
+    .withIndex("by_token", (q: any) => q.eq("token", token))
+    .first();
+  
+  if (!session || session.expiresAt < Date.now()) {
+    // Session expired or doesn't exist
+    if (session) {
+      await ctx.db.delete(session._id);
+    }
+    return null;
+  }
+  
+  return await ctx.db.get(session.userId);
+}
 
-// Get user profile
+// Helper that throws if not authenticated
+async function requireCurrentUser(ctx: any, token: string | null) {
+  const user = await getUserFromToken(ctx, token);
+  if (!user) {
+    throw new Error("Not authenticated");
+  }
+  return user;
+}
+
+// Get user profile (by ID)
 export const getUserProfile = query({
   args: {
     userId: v.id("users"),
+    token: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db.get(args.userId);
-    return user;
+    // Verify token if provided (for security, though userId is already specified)
+    if (args.token) {
+      const currentUser = await getUserFromToken(ctx, args.token);
+      // Optionally verify that token user matches requested userId
+      // For now, we'll allow any authenticated user to view any profile
+    }
+    return await ctx.db.get(args.userId);
   },
 });
 
-// Update user profile
+// Update current user's profile
+export const updateCurrentUserProfile = mutation({
+  args: {
+    token: v.string(),
+    name: v.optional(v.string()),
+    phone: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { token, ...updates } = args;
+    const user = await requireCurrentUser(ctx, token);
+
+    await ctx.db.patch(user._id, {
+      ...updates,
+      updatedAt: Date.now(),
+    });
+
+    return user._id;
+  },
+});
+
+// Update user profile (by ID - requires token to verify auth)
 export const updateUserProfile = mutation({
   args: {
+    token: v.string(),
     userId: v.id("users"),
     name: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { userId, ...updates } = args;
+    const currentUser = await requireCurrentUser(ctx, args.token);
+    // Verify that the token user matches the userId being updated (or is admin)
+    if (currentUser._id !== args.userId) {
+      throw new Error("Not authorized to update this user");
+    }
+
+    const { token, userId, ...updates } = args;
     const user = await ctx.db.get(userId);
     if (!user) {
       throw new Error("User not found");
@@ -45,16 +99,21 @@ export const updateUserProfile = mutation({
   },
 });
 
-// Get user's show rankings
-export const getUserRankings = query({
+// Get current user's show rankings
+export const getCurrentUserRankings = query({
   args: {
-    userId: v.id("users"),
+    token: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
+    const user = await getUserFromToken(ctx, args.token);
+    if (!user) {
+      return [];
+    }
+    const userId = user._id;
     const userShows = await ctx.db
       .query("userShows")
       .withIndex("by_user_status", (q) =>
-        q.eq("userId", args.userId).eq("status", "seen")
+        q.eq("userId", userId).eq("status", "seen")
       )
       .collect();
 
@@ -78,18 +137,53 @@ export const getUserRankings = query({
   },
 });
 
-// Add or update a show in user's rankings
-export const upsertUserShow = mutation({
+// Get user's show rankings (by ID)
+export const getUserRankings = query({
   args: {
     userId: v.id("users"),
+    token: v.union(v.string(), v.null()),
+  },
+  handler: async (ctx, args) => {
+    const userId = args.userId;
+    if (!userId) {
+      return [];
+    }
+    const userShows = await ctx.db
+      .query("userShows")
+      .withIndex("by_user_status", (q) =>
+        q.eq("userId", userId).eq("status", "seen")
+      )
+      .collect();
+
+    // Get show details for each userShow
+    const rankings = await Promise.all(
+      userShows
+        .filter((us) => us.rank !== undefined)
+        .map(async (userShow) => {
+          const show = await ctx.db.get(userShow.showId);
+          return {
+            ...userShow,
+            show,
+          };
+        })
+    );
+
+    // Sort by rank (1 = best)
+    rankings.sort((a, b) => (a.rank || 0) - (b.rank || 0));
+
+    return rankings;
+  },
+});
+
+// Add or update a show in current user's rankings
+export const upsertCurrentUserShow = mutation({
+  args: {
+    token: v.string(),
     showId: v.id("shows"),
     status: v.union(
-      v.literal("interested"),
       v.literal("seen"),
-      v.literal("planning"),
-      v.literal("want-to-see"),
-      v.literal("interested-in"),
-      v.literal("look-into"),
+      v.literal("watchlist"),
+      v.literal("considering"),
       v.literal("not-interested")
     ),
     rank: v.optional(v.number()),
@@ -100,7 +194,66 @@ export const upsertUserShow = mutation({
     seenLocations: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    const { userId, showId, ...data } = args;
+    const { token, ...showData } = args;
+    const user = await requireCurrentUser(ctx, token);
+    const userId = user._id;
+    const { showId, ...data } = showData;
+    const now = Date.now();
+
+    // Check if userShow already exists
+    const existing = await ctx.db
+      .query("userShows")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("showId"), showId))
+      .first();
+
+    if (existing) {
+      // If marking as "seen" and was "interested" or similar, we keep the record but update status
+      // The old status is replaced, so no need to delete
+      await ctx.db.patch(existing._id, {
+        ...data,
+        updatedAt: now,
+      });
+      return existing._id;
+    } else {
+      // Create new userShow
+      const userShowId = await ctx.db.insert("userShows", {
+        userId,
+        showId,
+        ...data,
+        createdAt: now,
+        updatedAt: now,
+      });
+      return userShowId;
+    }
+  },
+});
+
+// Add or update a show in user's rankings (by ID)
+export const upsertUserShow = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    showId: v.id("shows"),
+    status: v.union(
+      v.literal("seen"),
+      v.literal("watchlist"),
+      v.literal("considering"),
+      v.literal("not-interested")
+    ),
+    rank: v.optional(v.number()),
+    timesSeen: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    review: v.optional(v.string()),
+    seenDates: v.optional(v.array(v.number())),
+    seenLocations: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    const currentUser = await requireCurrentUser(ctx, args.token);
+    if (currentUser._id !== args.userId) {
+      throw new Error("Not authorized to update this user's shows");
+    }
+    const { token, userId, showId, ...data } = args;
     const now = Date.now();
 
     // Check if userShow already exists
@@ -135,15 +288,21 @@ export const upsertUserShow = mutation({
 // Update show ranking order
 export const updateRanking = mutation({
   args: {
+    token: v.string(),
     userId: v.id("users"),
     showId: v.id("shows"),
     newRank: v.number(),
   },
   handler: async (ctx, args) => {
+    const currentUser = await requireCurrentUser(ctx, args.token);
+    if (currentUser._id !== args.userId) {
+      throw new Error("Not authorized to update this user's rankings");
+    }
+    const userId = args.userId;
     // Get the userShow to update
     const userShow = await ctx.db
       .query("userShows")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .filter((q) => q.eq(q.field("showId"), args.showId))
       .first();
 
@@ -157,7 +316,7 @@ export const updateRanking = mutation({
     const allRanked = await ctx.db
       .query("userShows")
       .withIndex("by_user_status", (q) =>
-        q.eq("userId", args.userId).eq("status", "seen")
+        q.eq("userId", userId).eq("status", "seen")
       )
       .filter((q) => q.neq(q.field("rank"), undefined))
       .collect();
@@ -208,13 +367,19 @@ export const updateRanking = mutation({
 // Delete a userShow (remove from rankings)
 export const deleteUserShow = mutation({
   args: {
+    token: v.string(),
     userId: v.id("users"),
     showId: v.id("shows"),
   },
   handler: async (ctx, args) => {
+    const currentUser = await requireCurrentUser(ctx, args.token);
+    if (currentUser._id !== args.userId) {
+      throw new Error("Not authorized to delete this user's shows");
+    }
+    const userId = args.userId;
     let userShow = await ctx.db
       .query("userShows")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .filter((q) => q.eq(q.field("showId"), args.showId))
       .first();
 
@@ -222,7 +387,7 @@ export const deleteUserShow = mutation({
     if (!userShow) {
       const allUserShows = await ctx.db
         .query("userShows")
-        .withIndex("by_user", (q) => q.eq("userId", args.userId))
+        .withIndex("by_user", (q) => q.eq("userId", userId))
         .collect();
       const found = allUserShows.find((us) => us.showId === args.showId);
       if (found) {
@@ -244,7 +409,7 @@ export const deleteUserShow = mutation({
       const allRanked = await ctx.db
         .query("userShows")
         .withIndex("by_user_status", (q) =>
-          q.eq("userId", args.userId).eq("status", "seen")
+          q.eq("userId", userId).eq("status", "seen")
         )
         .collect();
 
@@ -262,24 +427,44 @@ export const deleteUserShow = mutation({
   },
 });
 
-// Get user preferences
-export const getUserPreferences = query({
+// Get current user preferences
+export const getCurrentUserPreferences = query({
   args: {
-    userId: v.id("users"),
+    token: v.union(v.string(), v.null()),
   },
   handler: async (ctx, args) => {
+    const user = await getUserFromToken(ctx, args.token);
+    if (!user) {
+      return null;
+    }
     const preferences = await ctx.db
       .query("userPreferences")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .first();
     return preferences;
   },
 });
 
-// Update user preferences
-export const updateUserPreferences = mutation({
+// Get user preferences (by ID)
+export const getUserPreferences = query({
   args: {
     userId: v.id("users"),
+    token: v.union(v.string(), v.null()),
+  },
+  handler: async (ctx, args) => {
+    const finalUserId: Id<"users"> = args.userId;
+    const preferences = await ctx.db
+      .query("userPreferences")
+      .withIndex("by_user", (q) => q.eq("userId", finalUserId))
+      .first();
+    return preferences;
+  },
+});
+
+// Update current user preferences
+export const updateCurrentUserPreferences = mutation({
+  args: {
+    token: v.string(),
     danceAppreciation: v.optional(v.number()),
     liveOrchestraAppreciation: v.optional(v.boolean()),
     listensToSoundtracks: v.optional(v.boolean()),
@@ -289,7 +474,9 @@ export const updateUserPreferences = mutation({
     valuesActorQuality: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const { userId, ...updates } = args;
+    const { token, ...preferences } = args;
+    const user = await requireCurrentUser(ctx, token);
+    const userId = user._id;
     const now = Date.now();
 
     // Check if preferences exist
@@ -300,14 +487,14 @@ export const updateUserPreferences = mutation({
 
     if (existing) {
       await ctx.db.patch(existing._id, {
-        ...updates,
+        ...preferences,
         updatedAt: now,
       });
       return existing._id;
     } else {
       const prefId = await ctx.db.insert("userPreferences", {
         userId,
-        ...updates,
+        ...preferences,
         createdAt: now,
         updatedAt: now,
       });

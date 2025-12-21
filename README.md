@@ -165,7 +165,7 @@ This is a skeleton implementation. To make it fully functional:
 1. **Implement Convex functions**: Fill in the TODO sections in each function file
 2. **Connect components to Convex**: Use `useQuery` and `useMutation` from Convex React
 3. **Set up AI integration**: Implement the recommendation and news scanning logic
-4. **Add authentication**: Set up user authentication (Convex Auth recommended)
+4. **Add authentication**: User authentication is implemented with email/password
 5. **Implement data sources**: Connect to APIs or data sources for show information
 6. **Add Google Calendar integration**: Implement calendar export functionality
 7. **Set up notification services**: Integrate email/SMS services

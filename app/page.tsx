@@ -6,7 +6,7 @@ export default function Home() {
       <main className="container mx-auto px-6 py-16">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 text-zinc-900 dark:text-zinc-50">
-            Theatre News
+            Broadway Pulse
           </h1>
           <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
             Your complete guide to Broadway, Off-Broadway, and theatre

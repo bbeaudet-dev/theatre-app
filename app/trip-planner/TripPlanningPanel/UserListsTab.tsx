@@ -3,6 +3,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCurrentUser } from "@/lib/auth-client";
 import ShowCard from "./ShowCard";
 
 interface UserListsTabProps {
@@ -10,20 +11,15 @@ interface UserListsTabProps {
 }
 
 export default function UserListsTab({ tripId }: UserListsTabProps) {
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
   const userLists = useQuery(
     api.functions.profile.getUserLists,
     userId ? { userId } : "skip"
   );
-  
-  if (userId === undefined || userLists === undefined) {
-    return <div className="text-center text-gray-500 py-8">Loading...</div>;
-  }
-
-  // Get all shows
+  // Get all shows 
   const allShows = useQuery(api.functions.shows.getShows, {});
   
-  if (allShows === undefined) {
+  if (userId === undefined || userLists === undefined || allShows === undefined) {
     return <div className="text-center text-gray-500 py-8">Loading...</div>;
   }
 

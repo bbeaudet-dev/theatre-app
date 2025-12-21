@@ -3,15 +3,17 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 
 export default function UserPreferences() {
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
+  const token = typeof window !== "undefined" ? getAuthToken() : null;
   const preferences = useQuery(
     api.functions.profile.getUserPreferences,
-    userId ? { userId } : "skip"
+    userId && token ? { userId, token } : "skip"
   );
   const updatePreferences = useMutation(
-    api.functions.profile.updateUserPreferences
+    api.functions.profile.updateCurrentUserPreferences
   );
 
   const [danceAppreciation, setDanceAppreciation] = useState<number>(3);
@@ -41,14 +43,14 @@ export default function UserPreferences() {
   }, [preferences]);
 
   const handleSave = async () => {
-    if (!userId) {
-      alert("Please seed the database first");
+    if (!userId || !token) {
+      alert("Please sign in first");
       return;
     }
 
     try {
       await updatePreferences({
-        userId,
+        token,
         danceAppreciation,
         liveOrchestraAppreciation,
         listensToSoundtracks,
@@ -71,7 +73,7 @@ export default function UserPreferences() {
   if (!userId) {
     return (
       <div className="text-center py-12 text-gray-600 dark:text-gray-400">
-        Please seed the database first to create a user.
+        Please sign in to view your preferences.
       </div>
     );
   }

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Theatre News - Broadway Calendar & Show Recommendations",
+  title: "Theatre App - Broadway Trip Planner, Calendar, & Show Recommendations",
   description: "Stay up to date with Broadway shows, get personalized recommendations, and plan your theatre trips",
 };
 

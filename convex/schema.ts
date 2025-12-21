@@ -2,16 +2,26 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  // User profiles
   users: defineTable({
     name: v.optional(v.string()),
-    email: v.optional(v.string()),
+    email: v.string(),
+    passwordHash: v.string(), // Hashed password
     phone: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }),
+  }).index("by_email", ["email"]),
 
-  // Shows metadata (Broadway, Off-Broadway, touring, local)
+  // Sessions for authentication
+  sessions: defineTable({
+    userId: v.id("users"),
+    token: v.string(),
+    expiresAt: v.number(), // Unix timestamp
+    createdAt: v.number(),
+  })
+    .index("by_token", ["token"])
+    .index("by_user", ["userId"]),
+
+  // Shows metadata
   shows: defineTable({
     title: v.string(),
     location: v.optional(v.string()), 
@@ -53,12 +63,9 @@ export default defineSchema({
     userId: v.id("users"),
     showId: v.id("shows"),
     status: v.union(
-      v.literal("interested"),
       v.literal("seen"),
-      v.literal("planning"),
-      v.literal("want-to-see"),
-      v.literal("interested-in"),
-      v.literal("look-into"),
+      v.literal("watchlist"),
+      v.literal("considering"),
       v.literal("not-interested")
     ),
     rank: v.optional(v.number()), // For ranking seen shows (1 = best)
