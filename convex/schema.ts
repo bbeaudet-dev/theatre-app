@@ -54,6 +54,12 @@ export default defineSchema({
     description: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     playbillImageId: v.optional(v.id("_storage")), // Convex file storage
+    // Data sync tracking fields
+    sourceId: v.optional(v.string()), // External API/page identifier
+    sourceUrl: v.optional(v.string()), // URL where data was fetched from
+    lastSyncedAt: v.optional(v.number()), // Timestamp of last sync
+    syncSource: v.optional(v.string()), // Which source provided this data (e.g., "playbill", "broadway.com")
+    confidenceScore: v.optional(v.number()), // AI confidence (0-1) for extracted data
     createdAt: v.number(),
     updatedAt: v.number(),
   }),
@@ -233,5 +239,16 @@ export default defineSchema({
   })
     .index("by_trip_day", ["tripDayId"])
     .index("by_trip", ["tripId"]),
+
+  // Sync reports for tracking data sync operations
+  syncReports: defineTable({
+    syncDate: v.number(),
+    showsScanned: v.number(),
+    newShows: v.array(v.id("shows")),
+    updatedShows: v.array(v.id("shows")),
+    deletedShows: v.array(v.id("shows")),
+    errors: v.optional(v.array(v.string())),
+    createdAt: v.number(),
+  }).index("by_syncDate", ["syncDate"]),
 });
 

@@ -19,14 +19,14 @@ export default function SignInPage() {
     setLoading(true);
 
     const result = await signIn(email, password);
-    
+
     if (result.success) {
       router.push("/");
-    } else {
+      } else {
       setError(result.error || "Failed to sign in");
     }
     
-    setLoading(false);
+      setLoading(false);
   };
 
   return (

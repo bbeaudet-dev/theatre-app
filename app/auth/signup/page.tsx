@@ -31,14 +31,14 @@ export default function SignUpPage() {
     setLoading(true);
 
     const result = await signUp(email, password);
-    
+
     if (result.success) {
       router.push("/");
-    } else {
+      } else {
       setError(result.error || "Failed to create account");
     }
     
-    setLoading(false);
+      setLoading(false);
   };
 
   return (

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white dark:from-black dark:to-zinc-900">
+    <div className="min-h-screen bg-linear-to-b from-zinc-50 to-white dark:from-black dark:to-zinc-900">
       <main className="container mx-auto px-6 py-16">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 text-zinc-900 dark:text-zinc-50">

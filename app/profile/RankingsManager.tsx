@@ -155,7 +155,7 @@ export default function RankingsManager() {
                   key={ranking._id}
                   className="flex items-center gap-1.5 p-1.5 border rounded hover:bg-gray-50 dark:hover:bg-zinc-800"
                 >
-                  <div className="flex-shrink-0 w-6 text-center text-[10px] font-semibold">
+                  <div className="shrink-0 w-6 text-center text-[10px] font-semibold">
                     #{ranking.rank}
                   </div>
                   <div className="flex-1 min-w-0">
