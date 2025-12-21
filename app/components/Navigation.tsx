@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useCurrentUser, useSignOut } from "@/lib/auth-client";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -16,6 +17,14 @@ export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
+  const currentUserId = useCurrentUser();
+  const signOut = useSignOut();
+  const isAuthenticated = currentUserId !== null && currentUserId !== undefined;
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   const handleNewTrip = () => {
     router.push("/trip-planner");
@@ -37,7 +46,7 @@ export default function Navigation() {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
-            Theatre News
+            Braodway Pulse
           </Link>
           <div className="flex gap-2 items-center">
             {navItems.map((item) => (
@@ -54,16 +63,33 @@ export default function Navigation() {
               </Link>
             ))}
             <div className="flex-1" />
-            <Link
-              href="/profile"
-              className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
-                pathname === "/profile"
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                  : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              }`}
-            >
-              Profile
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/profile"
+                  className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                    pathname === "/profile"
+                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                      : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  }`}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="px-3 py-2 rounded text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className="px-3 py-2 rounded text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              >
+                Sign In
+              </Link>
+            )}
             <div className="relative">
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
@@ -108,4 +134,3 @@ export default function Navigation() {
     </nav>
   );
 }
-

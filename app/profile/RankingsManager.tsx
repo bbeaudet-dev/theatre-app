@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 
 export default function RankingsManager() {
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
+  const token = typeof window !== "undefined" ? getAuthToken() : null;
   const rankings = useQuery(
     api.functions.profile.getUserRankings,
-    userId ? { userId } : "skip"
+    userId && token ? { userId, token } : "skip"
   );
   const allShows = useQuery(api.functions.shows.getShows, {});
   const upsertUserShow = useMutation(api.functions.profile.upsertUserShow);
@@ -20,8 +22,8 @@ export default function RankingsManager() {
   );
 
   const handleAddToRankings = async (showId: Id<"shows">) => {
-    if (!userId) {
-      alert("Please seed the database first");
+    if (!userId || !token) {
+      alert("Please sign in first");
       return;
     }
 
@@ -31,6 +33,7 @@ export default function RankingsManager() {
       const newRank = maxRank + 1;
 
       await upsertUserShow({
+        token,
         userId,
         showId,
         status: "seen",
@@ -47,7 +50,7 @@ export default function RankingsManager() {
     showId: Id<"shows">,
     direction: "up" | "down"
   ) => {
-    if (!userId || !rankings) return;
+    if (!userId || !token || !rankings) return;
 
     const currentRanking = rankings.find((r) => r.showId === showId);
     if (!currentRanking || !currentRanking.rank) return;
@@ -61,6 +64,7 @@ export default function RankingsManager() {
 
     try {
       await updateRanking({
+        token,
         userId,
         showId,
         newRank,
@@ -72,11 +76,12 @@ export default function RankingsManager() {
   };
 
   const handleRemoveFromRankings = async (showId: Id<"shows">) => {
-    if (!userId) return;
+    if (!userId || !token) return;
 
     try {
       // Delete the userShow record entirely
       await deleteUserShow({
+        token,
         userId,
         showId,
       });
@@ -93,7 +98,7 @@ export default function RankingsManager() {
   if (!userId) {
     return (
       <div className="text-center py-12 text-gray-600 dark:text-gray-400">
-        Please seed the database first to create a user.
+        Please sign in to view your rankings.
       </div>
     );
   }

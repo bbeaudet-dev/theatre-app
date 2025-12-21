@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 
 interface QuickActionsProps {
   showId: Id<"shows">;
@@ -11,7 +12,7 @@ interface QuickActionsProps {
 
 export default function QuickActions({ showId }: QuickActionsProps) {
   const [showMenu, setShowMenu] = useState(false);
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
   const upsertUserShow = useMutation(api.functions.profile.upsertUserShow);
   const userLists = useQuery(
     api.functions.profile.getUserLists,
@@ -19,22 +20,22 @@ export default function QuickActions({ showId }: QuickActionsProps) {
   );
 
   const handleAction = async (
-    status:
-      | "interested"
-      | "seen"
-      | "planning"
-      | "want-to-see"
-      | "interested-in"
-      | "look-into"
-      | "not-interested"
+    status: "seen" | "watchlist" | "considering" | "not-interested"
   ) => {
     if (!userId) {
-      alert("Please seed the database first");
+      alert("Please sign in first");
+      return;
+    }
+
+    const token = getAuthToken();
+    if (!token) {
+      alert("Please sign in first");
       return;
     }
 
     try {
       await upsertUserShow({
+        token,
         userId,
         showId,
         status,
@@ -63,22 +64,16 @@ export default function QuickActions({ showId }: QuickActionsProps) {
           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-900 border rounded-lg shadow-lg z-20">
             <div className="py-1">
               <button
-                onClick={() => handleAction("interested-in")}
+                onClick={() => handleAction("watchlist")}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-sm"
               >
-                Add to Interested
+                Add to Watchlist
               </button>
               <button
-                onClick={() => handleAction("want-to-see")}
+                onClick={() => handleAction("considering")}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-sm"
               >
-                Want to See
-              </button>
-              <button
-                onClick={() => handleAction("look-into")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-sm"
-              >
-                Look Into
+                Considering
               </button>
               <button
                 onClick={() => handleAction("seen")}
@@ -88,7 +83,7 @@ export default function QuickActions({ showId }: QuickActionsProps) {
               </button>
               <button
                 onClick={() => handleAction("not-interested")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-sm text-red-600"
+                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-sm text-red-600 dark:text-red-400"
               >
                 Not Interested
               </button>

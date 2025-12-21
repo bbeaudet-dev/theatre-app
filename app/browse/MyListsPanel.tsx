@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useCurrentUser } from "@/lib/auth-client";
 import ListManager from "./ListManager";
 import ShowCard from "./ShowCard";
 
 export default function MyListsPanel() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingListId, setEditingListId] = useState<string | null>(null);
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
   const lists = useQuery(
     api.functions.profile.getUserLists,
     userId ? { userId } : "skip"
@@ -23,7 +24,7 @@ export default function MyListsPanel() {
   if (!userId) {
     return (
       <div className="text-center py-12 text-gray-600 dark:text-gray-400">
-        Please seed the database first to create a user.
+        Please sign in to view your lists.
       </div>
     );
   }

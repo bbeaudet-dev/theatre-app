@@ -2,12 +2,14 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 
 export default function TheatreCloud() {
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
+  const token = typeof window !== "undefined" ? getAuthToken() : null;
   const rankings = useQuery(
     api.functions.profile.getUserRankings,
-    userId ? { userId } : "skip"
+    userId && token ? { userId, token } : "skip"
   );
 
   if (userId === undefined || rankings === undefined) {
@@ -30,7 +32,7 @@ export default function TheatreCloud() {
           <h2 className="text-xl font-semibold mb-4">Your Theatre Cloud</h2>
           <div className="border rounded p-8 min-h-[400px] flex items-center justify-center">
             <p className="text-gray-500">
-              Please seed the database first to create a user.
+              Please sign in to view your theatre cloud.
             </p>
           </div>
         </div>

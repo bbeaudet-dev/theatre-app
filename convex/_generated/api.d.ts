@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as functions_calendar from "../functions/calendar.js";
 import type * as functions_dataSync from "../functions/dataSync.js";
 import type * as functions_notify from "../functions/notify.js";
@@ -16,7 +17,6 @@ import type * as functions_preview from "../functions/preview.js";
 import type * as functions_profile from "../functions/profile.js";
 import type * as functions_shows from "../functions/shows.js";
 import type * as functions_trips from "../functions/trips.js";
-import type * as seed from "../seed.js";
 
 import type {
   ApiFromModules,
@@ -25,6 +25,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   "functions/calendar": typeof functions_calendar;
   "functions/dataSync": typeof functions_dataSync;
   "functions/notify": typeof functions_notify;
@@ -33,7 +34,6 @@ declare const fullApi: ApiFromModules<{
   "functions/profile": typeof functions_profile;
   "functions/shows": typeof functions_shows;
   "functions/trips": typeof functions_trips;
-  seed: typeof seed;
 }>;
 
 /**

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCurrentUser } from "@/lib/auth-client";
 import ShowCard from "./ShowCard";
 
 interface ListManagerProps {
@@ -15,7 +16,7 @@ export default function ListManager({ listId, onClose }: ListManagerProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showSelector, setShowSelector] = useState(false);
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
   const existingList = useQuery(
     api.functions.profile.getUserLists,
     userId && listId ? { userId } : "skip"
@@ -42,7 +43,7 @@ export default function ListManager({ listId, onClose }: ListManagerProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      alert("Please seed the database first");
+      alert("Please sign in first");
       return;
     }
 

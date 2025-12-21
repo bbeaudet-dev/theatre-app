@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCurrentUser } from "@/lib/auth-client";
 import TripView from "./TripView";
 
 export default function TripListView() {
   const [selectedTripId, setSelectedTripId] = useState<Id<"trips"> | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const userId = useQuery(api.functions.profile.getFirstUser);
+  const userId = useCurrentUser();
   const trips = useQuery(
     api.functions.trips.getUserTrips,
     userId ? { userId } : "skip"
@@ -19,7 +20,7 @@ export default function TripListView() {
   const handleCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userId) {
-      alert("Please seed the database first (run seedMockData)");
+      alert("Please sign in first");
       return;
     }
 
@@ -173,10 +174,10 @@ export default function TripListView() {
     return (
       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
         <p className="text-yellow-800 dark:text-yellow-200 mb-2">
-          No user found. Please seed the database first.
+          Please sign in to view your trips.
         </p>
         <p className="text-sm text-yellow-600 dark:text-yellow-400">
-          Run the seedMockData function in Convex to create a test user and shows.
+          Create an account or sign in to start planning your theatre trips.
         </p>
       </div>
     );
