@@ -1,27 +1,34 @@
 import { action } from "../../_generated/server";
 import { api } from "../../_generated/api";
+import { Doc } from "../../_generated/dataModel";
 
-/**
- * Batch update playbill images for all shows that don't have images
- * Processes shows one at a time with rate limiting to avoid API limits
- */
+type Show = Doc<"shows">;
+
 export const batchUpdateAllPlaybillImages = action({
   args: {},
-  handler: async (ctx) => {
-    // Get all shows
-    const shows = await ctx.runQuery(api.functions.shows.getShows, {});
+  handler: async (ctx): Promise<{
+    total: number;
+    successful: number;
+    failed: number;
+    errors: Array<{ title: string; error: string }>;
+  }> => {
+    const shows: Show[] = await ctx.runQuery(api.functions.shows.getShows, {});
 
     console.log(`Found ${shows.length} total shows`);
 
-    // Filter to shows without images
-    const showsWithoutImages = shows.filter((show) => !show.imageUrl);
+    const showsWithoutImages: Show[] = shows.filter((show: Show) => !show.imageUrl);
     console.log(`Found ${showsWithoutImages.length} shows without images`);
 
-    const results = {
+    const results: {
+      total: number;
+      successful: number;
+      failed: number;
+      errors: Array<{ title: string; error: string }>;
+    } = {
       total: showsWithoutImages.length,
       successful: 0,
       failed: 0,
-      errors: [] as Array<{ title: string; error: string }>,
+      errors: [],
     };
 
     // Process each show with rate limiting

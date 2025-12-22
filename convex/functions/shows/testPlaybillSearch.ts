@@ -10,7 +10,7 @@ export const testPlaybillSearch = action({
   args: {
     showTitle: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{ success: boolean; imageUrl?: string; message?: string }> => {
     console.log(`Testing playbill search for: "${args.showTitle}"`);
     
     try {

@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
+import { Trip } from "@/lib/types";
 import TripView from "./TripView";
 import TripPlanningPanel from "./TripPlanningPanel";
 
@@ -221,7 +222,7 @@ export default function TripListView() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {trips.map((trip) => {
+            {trips.map((trip: Trip) => {
               const startDate = new Date(trip.startDate);
               const endDate = new Date(trip.endDate);
               const daysDiff =
