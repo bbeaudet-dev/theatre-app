@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 
 type District = "broadway" | "off-broadway" | "touring" | "local";
 
@@ -33,7 +34,7 @@ export default function CalendarView() {
 
   // Helper to check if a show is active on a given date
   const isShowActiveOnDate = (
-    show: NonNullable<typeof shows>[0],
+    show: Doc<"shows">,
     date: number
   ): boolean => {
     if (!show) return false;
@@ -67,7 +68,7 @@ export default function CalendarView() {
   // Get shows for a specific date
   const getShowsForDate = (date: number) => {
     if (!shows) return [];
-    return shows.filter((show) => isShowActiveOnDate(show, date));
+    return shows.filter((show: Doc<"shows">) => isShowActiveOnDate(show, date));
   };
 
   // Navigate months
@@ -188,7 +189,7 @@ export default function CalendarView() {
                   {showsForDate.length === 0 ? (
                     <p className="text-xs text-gray-400 dark:text-gray-500">No shows</p>
                   ) : (
-                    showsForDate.map((show) => (
+                    showsForDate.map((show: Doc<"shows">) => (
                       <div
                         key={show._id}
                         className="text-xs px-1 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded truncate"
