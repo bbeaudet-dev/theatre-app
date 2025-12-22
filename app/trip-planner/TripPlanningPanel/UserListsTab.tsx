@@ -2,7 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
 import ShowCard from "./ShowCard";
 
@@ -30,8 +30,8 @@ export default function UserListsTab({ tripId }: UserListsTabProps) {
       {/* Custom Lists */}
       {userLists && userLists.length > 0 ? (
         <div>
-          {userLists.map((list) => {
-            const listShows = (allShows || []).filter((show) =>
+          {userLists.map((list: Doc<"userLists">) => {
+            const listShows = (allShows || []).filter((show: Doc<"shows">) =>
               list.showIds.includes(show._id)
             );
             return (
@@ -44,7 +44,7 @@ export default function UserListsTab({ tripId }: UserListsTabProps) {
                 )}
                 <div className="space-y-1.5">
                   {listShows.length > 0 ? (
-                    listShows.map((show) => (
+                    listShows.map((show: Doc<"shows">) => (
                       <ShowCard key={show._id} show={show} tripId={tripId} draggable />
                     ))
                   ) : (

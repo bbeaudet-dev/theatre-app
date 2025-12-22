@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 import { 
   type PositionedShow, 
@@ -61,8 +62,8 @@ export default function TheatreCloud() {
   if (userId === undefined || rankings === undefined) {
     return (
       <div className="space-y-6">
-        <div className="border rounded p-8 min-h-[400px] flex items-center justify-center">
-          <p className="text-gray-500">Loading...</p>
+          <div className="border rounded p-8 min-h-[400px] flex items-center justify-center">
+            <p className="text-gray-500">Loading...</p>
         </div>
       </div>
     );
@@ -100,9 +101,10 @@ export default function TheatreCloud() {
   }
 
   // Filter shows based on selected district
+  type RankingItem = { rank?: number; show: Doc<"shows"> | null };
   const filteredRankings = useMemo(() => {
     if (!rankings) return [];
-    return rankings.filter(ranking => {
+    return rankings.filter((ranking: RankingItem) => {
       if (!ranking.show) return false;
       if (filter === 'all') return true;
       // Check if show has this district, or if visits have this district
@@ -121,7 +123,7 @@ export default function TheatreCloud() {
   // Helper function to count shows by district
   const getShowCountByDistrict = (district: string) => {
     if (!rankings) return 0;
-    return rankings.filter(ranking => {
+    return rankings.filter((ranking: RankingItem) => {
       if (!ranking.show) return false;
       if (ranking.show.district) {
         const showDistrict = ranking.show.district.charAt(0).toUpperCase() + ranking.show.district.slice(1).replace(/-/g, ' ');
@@ -136,7 +138,7 @@ export default function TheatreCloud() {
     if (!rankings) return;
     const initialOpacity: Record<string, number> = {};
     const initialScale: Record<string, number> = {};
-    rankings.forEach(ranking => {
+    rankings.forEach((ranking: RankingItem) => {
       if (ranking.show) {
         const slug = titleToSlug(ranking.show.title);
         initialOpacity[slug] = 1;
@@ -399,8 +401,8 @@ export default function TheatreCloud() {
                         }}
                       >
                         <Image
-                          src={ranking.show.imageUrl}
-                          alt={ranking.show.title}
+                      src={ranking.show.imageUrl}
+                      alt={ranking.show.title}
                           width={positionedShow.width}
                           height={positionedShow.height}
                           className="absolute inset-0 w-full h-full object-cover"
@@ -422,7 +424,7 @@ export default function TheatreCloud() {
                       }}
                     >
                       <span 
-                        className="font-medium text-gray-700 dark:text-gray-300 leading-tight break-words"
+                        className="font-medium text-gray-700 dark:text-gray-300 leading-tight wrap-break-word"
                         style={{ 
                           fontSize: `${Math.max(8, Math.min(12, positionedShow.width * 0.15))}px`,
                           lineHeight: '1.1'

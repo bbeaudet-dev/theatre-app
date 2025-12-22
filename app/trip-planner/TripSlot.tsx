@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 
 interface TripSlotProps {
   slot: {
@@ -48,7 +48,7 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
 
   const displayBackupShows =
     backupShows && slot.backupShowIds
-      ? backupShows.filter((s) => slot.backupShowIds?.includes(s._id))
+      ? backupShows.filter((s: Doc<"shows">) => slot.backupShowIds?.includes(s._id))
       : [];
 
   const timeDisplay = slot.endTime
@@ -141,7 +141,7 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
           {slot.type === "show" && displayBackupShows.length > 0 && (
             <div className="mt-0.5">
               <p className="text-[9px] text-gray-600 dark:text-gray-400">
-                Backup: {displayBackupShows.map(s => s.title).join(", ")}
+                Backup: {displayBackupShows.map((s: Doc<"shows">) => s.title).join(", ")}
               </p>
             </div>
           )}

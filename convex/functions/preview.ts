@@ -1,6 +1,7 @@
 import { query, mutation, action } from "../_generated/server";
 import { api } from "../_generated/api";
 import { v } from "convex/values";
+import { Doc } from "../_generated/dataModel";
 import { generateRecommendationPrompt, formatUserRankings, formatElementRankings, formatThemeRankings } from "../lib/ai/recommendations";
 import { searchRedditForShow, formatRedditPostsForPrompt } from "../lib/reddit";
 
@@ -125,9 +126,10 @@ export const getRecommendation = action({
     }
 
     // Format data for prompt
+    type RankingItem = { rank?: number; show: Doc<"shows"> | null };
     const filteredRankings = (rankings || [])
-      .filter((r) => r.rank !== undefined && r.show !== null)
-      .map((r) => ({
+      .filter((r: RankingItem) => r.rank !== undefined && r.show !== null)
+      .map((r: RankingItem) => ({
         rank: r.rank!,
         show: {
           title: r.show!.title,

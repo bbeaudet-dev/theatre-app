@@ -277,7 +277,7 @@ export default function UserPreferences() {
       <h2 className="text-xl font-semibold">Theatre Preferences</h2>
 
       {/* Force-ranked elements */}
-      <div>
+        <div>
         <h3 className="text-lg font-medium mb-3">
           Rank Theatre Elements (Drag to reorder)
         </h3>
@@ -348,7 +348,7 @@ export default function UserPreferences() {
             );
           })}
         </div>
-      </div>
+        </div>
 
       {/* Additional preferences */}
       <div className="space-y-6 border-t pt-6">
@@ -445,12 +445,12 @@ export default function UserPreferences() {
         </div>
       </div>
 
-      <button
-        onClick={handleSave}
-        className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Save Preferences
-      </button>
+        <button
+          onClick={handleSave}
+          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Save Preferences
+        </button>
     </div>
   );
 }
