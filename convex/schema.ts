@@ -161,6 +161,15 @@ export default defineSchema({
         })
       )
     ),
+    // Force-ranked themes
+    rankedThemes: v.optional(
+      v.array(
+        v.object({
+          theme: v.string(),
+          rank: v.number(),
+        })
+      )
+    ),
     // Additional preferences
     avgTicketPrice: v.optional(v.number()),
     audiencePreference: v.optional(v.string()), // "any", "adults", "family", "kids"

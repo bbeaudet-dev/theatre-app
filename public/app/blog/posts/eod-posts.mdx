@@ -1,0 +1,908 @@
+---
+title: "Daily Bootcamp Reflections"
+publishedAt: "2025-06-02"
+summary: "Daily reflections during Fractal Bootcamp, plus links to portfolio projects and PRs"
+tags: ["Fractal"]
+---
+
+_(Anything in italics/parentheses are notes added after the original posts.)_
+
+## Table of Contents
+
+- **[Week 1](#week-1)** - Getting started with TypeScript, React, and tic-tac-toe. Learning fundamentals and deploying first projects.
+- **[Week 2](#week-2)** - Building chatbots, exploring authentication with Elysia, and participating in hackathon weekend.
+- **[Week 3](#week-3)** - Starting externship with Cerelog, working with embedded systems and EEG data processing.
+- **[Week 4](#week-4)** - Algorithm visualization projects, emotional workshops, and balancing externship work.
+- **[Week 5](#week-5)** - React Native development, mobile app features, and team collaboration on blob game.
+- **[Week 6](#week-6)** - Team development work and Git collaboration challenges.
+- **[Break: July 13–20](#break-july-13–20)** - One week break from bootcamp.
+- **[Week 7](#week-7)** - _Coming soon_
+- **[Week 8](#week-8)** - _Coming soon_
+- **[Week 9](#week-9)** - _Coming soon_
+- **[Week 10](#week-10)** - _Coming soon_
+- **[Week 11](#week-11)** - _Coming soon_
+- **[Week 12](#week-12)** - _Coming soon_
+
+---
+
+# Week 1
+
+_(Weekly reflection: [Week 1 Reflection](/blog/wk1-reflection))_
+
+### EOD 1 - Monday 6/2
+
+**Blockers** - I think I'm struggling with some fundamental concepts and syntax. I haven't done any TypeScript, which felt like it compounded any problem I ran into. I followed along super well when Andrew built tic-tac-toe, but it felt like I instantly forgot everything I've learned when I sat down to make it. Simple things seem to throw me off very easily, such as moving the game logic to a separate file, certain aspects of functions, or the distinction between game logic and client side. I think I took "no AI" to mean that Googling was also discouraged, and I learn better when I struggle with something on my own anyways, but maybe I'm just in a position where I need to be asking for more help or studying more fundamentals.
+
+**Wins** - Picked up TypeScript pretty quickly and understand its benefits. Finished most of tic-tac-toe with minimal help/googling, stuck with it even when frustrated. Loved hearing about the culture/expectations and setting the tone for the bootcamp. Didn't get lost as Andrew blazed through our entire day's work.
+
+**PRs:**
+[tictactoe #1](https://github.com/bbeaudet-dev/tictactoe/pull/1),
+[tictactoe #2](https://github.com/bbeaudet-dev/tictactoe/pull/2),
+[tictactoe #3](https://github.com/bbeaudet-dev/tictactoe/pull/3),
+[tictactoe #4](https://github.com/bbeaudet-dev/tictactoe/pull/4)
+
+### EOD 2 - Tuesday 6/3
+
+**Blockers:** Need to deepen my understanding of general CSS layouts and React (specifically props). Made it through the Messages Thread and partly through the Post. I also need to make a point of not letting other areas slip - like code reviews, readings, trainings, etc. - due to hyperfocusing on the exercises all day.
+
+**Wins:** Lots of 'Aha!' moments today, many of which came from things I struggled with yesterday. Overall, this gave me a much more positive attitude today, even though I wasn't able to finish all the examples. Tailwind came surprisingly naturally and I'm super happy we had a day dedicated to styling, which in a way felt like a "break" from being crushed by tic-tac-toe yesterday. The power of clsx finally became clear around 8pm and I think a lot of things are starting to click.
+
+**PRs:**
+[styling-practice #1](https://github.com/bbeaudet-dev/styling-practice/pull/1),
+[styling-practice #2](https://github.com/bbeaudet-dev/styling-practice/pull/2),
+[styling-practice #3](https://github.com/bbeaudet-dev/styling-practice/pull/3),
+[styling-practice #4](https://github.com/bbeaudet-dev/styling-practice/pull/4)
+
+**Code Review:** didn't get to this yet - will do tonight/tomorrow before 9am.
+
+### EOD 3 - Wednesday 6/4
+
+**Blockers:** Felt super burnt out today, couldn't focus at all, didn't understand new concepts introduced. Feeling behind already and finding it very difficult to catch up, especially on top of readings/reviews/etc. Being an "out of sight out of mind" person, I'm finding it tough to keep track of everything between the monorepo, Discord channels, and online resources/documentations. A lot of concepts in today's lectures were new to me and it felt like I was expected to already have mastered them - I get that we aren't going to "waste time being taught every concept", but this led to confusing expectations for me and likely contributed to feeling burnt out. I don't mind the feeling of flying by the seat of my pants, but when my whole day is banging my head against the wall and Googling/AI, it feels like I'm not making any progress / getting left behind.
+
+**Wins:** got a decent conceptual understanding of interfaces and implementations, and expanded on my knowledge of databases and servers.
+
+**PRs:**
+[tictactoe-multi #1](https://github.com/bbeaudet-dev/tictactoe-multi/pull/1),
+[tictactoe-multi #2](https://github.com/bbeaudet-dev/tictactoe-multi/pull/2)
+
+**Code Review:** Looked over a bunch of PRs but not feeling confident/qualified to assess other people's code. Should I be trying/making comments anyways, even if they are wrong?
+
+### EOD 4 - Thursday 6/5
+
+**Blockers:** Other than having a lot of catching up and learning to do, I'm happy to say there were very few blockers today. Couldn't have asked for better support from the instructors as I navigated some mental/emotional challenges. Need to put some time towards lobbying, routing, live updates, on top of nailing down server/database/api communication.
+
+**Wins:** Started today from the example tic-tac-toe code from Day 1 and finished the day with a working client-server game and the bones of a client-database game (that at least adds a new game to the Supabase db). Learned a ton about error handling, fetching, useEffect, promises, databases, and interfaces. I have a renewed vigor and am excited to be here.
+
+**PRs:**
+[tictactoe-main #1](https://github.com/bbeaudet-dev/tictactoe-main/pull/1),
+[tictactoe-main #2](https://github.com/bbeaudet-dev/tictactoe-main/pull/2),
+[tictactoe-main #3](https://github.com/bbeaudet-dev/tictactoe-main/pull/3)
+
+### EOD 5 - Friday 6/6
+
+**Blockers:** Deployment was a bit unintuitive - I was just happy to get it working. The last few days have been backwards for me - I deployed my shitty app and now need to go back and do web sockets and add APIs.
+
+**Wins:** Very few blockers again, yesterday and today have felt like a rocketship learning pace and I'm having a seriously good time. Routing was easier than I expected and unlocked a lot of other insights. By the time I started making my lobby (around lunch), I was in a great flow state and felt like I understood how every file/part of my app was communicating/working with each other. Took a break after deployment to add some cool styles to my lobby and feel a lot more confident with CSS now too.
+
+**PRs:**
+[tictactoe-main #4](https://github.com/bbeaudet-dev/tictactoe-main/pull/4),
+[tictactoe-main #5](https://github.com/bbeaudet-dev/tictactoe-main/pull/5),
+[tictactoe-main #6](https://github.com/bbeaudet-dev/tictactoe-main/pull/6),
+[tictactoe-main #7](https://github.com/bbeaudet-dev/tictactoe-main/pull/7),
+[tictactoe-main #8](https://github.com/bbeaudet-dev/tictactoe-main/pull/8),
+[tictactoe-main #9](https://github.com/bbeaudet-dev/tictactoe-main/pull/9),
+[tictactoe-main #10](https://github.com/bbeaudet-dev/tictactoe-main/pull/10)
+
+**Code Review:**
+[BrooksFlannery/tictactoe #9](https://github.com/BrooksFlannery/tictactoe/pull/9#pullrequestreview-2906425603)
+
+### EOD 6 - Saturday 6/7
+
+**Blockers:** I spend too much time nitpicking the editing of blog posts, takes longer than I think to write. I got most of the core concepts into my tic tac toe game, but still have the feeling that I'm leaving it unfinished, so I hope to return to it at some point.
+
+**Wins:** Pumped about the blog, being able to deploy it, and finally posting something publicly. Squibler was very cool to use and prevented me from overthinking. Crazy that it's only been 1 week, stoked to see how much I can get out of this in 12 weeks.
+
+**PR:** [tictactoe-main #11](https://github.com/bbeaudet-dev/tictactoe-main/pull/11),
+**Blog:** https://personal-portfolio-sandy-omega-68.vercel.app/
+
+# Week 2
+
+_(Weekly reflection: [Week 2 Reflection](/blog/wk2-reflection))_
+
+### EOD 7 - Monday 6/9
+
+**Blockers:** Struggling with moving on from bothersome low-value low-impact work, like figuring out why my input field was unfocusing after every typed character. Actually, in this case, it was a misunderstanding of React, which IS important and I still need to work on. But in general I tend to get lost in hyperfixation, which wasn't great for my afternoon. It also hit me in the afternoon that a lot of my struggles today came from not being familiar with Next.js and I will likely be spending the evening finishing the App Router course.
+
+**Wins:** Despite waking up grumpy, I had a super productive morning and felt very measured/methodical working through any instructions, bugs, and mental modeling. I kept the urge to just get something working as quickly as possible at bay, and acknowledged that software is complex and difficult and that "should" statements don't get me anywhere. For a moment there it almost felt like I was a competent engineer AND had great emotional intelligence... Working through the AI chatbot assignment was all wins until at least lunchtime and I soaked up a lot of new info today.
+
+**PRs:**
+[my-chatbot #1](https://github.com/bbeaudet-dev/my-chatbot/pull/1),
+[my-chatbot #3](https://github.com/bbeaudet-dev/my-chatbot/pull/3),
+[my-chatbot #4](https://github.com/bbeaudet-dev/my-chatbot/pull/4)
+
+**Code Reviews:**
+[dantedupont/chatbot #4](https://github.com/dantedupont/chatbot/pull/4#pullrequestreview-2911520270),
+[angihe93/chatbot #2](https://github.com/angihe93/chatbot/pull/2#pullrequestreview-2911627390)
+
+### EOD 8 - Tuesday 6/10
+
+**Wins:** Feeling surprisingly organized and confident after installing some QOL extensions (error lens, indent rainbow, bookmarks), tbh thought this would be another low-value thing. Spent some time in the evening giving the chat bot a "riddlemaster" theme and really happy with it. ([my-chatbot-olive-seven.vercel.app](https://my-chatbot-olive-seven.vercel.app/)). Spent a chunk of time breaking my frontend into React components which was massive for my understanding of props/destructuring and mental modeling.
+
+**Blockers:** Been struggling to get the supplementary work done - I keep falling prey to the promise that I will keep working when I get home and/or wake up early. Will fall further behind if I don't adapt. Need to build in some open-ended time each day just to explore all the little things I think of of that catch my interest, plus writing/journaling time, so I can stay focused when I need to.
+
+**PRs:**
+[my-chatbot #5](https://github.com/bbeaudet-dev/my-chatbot/pull/5),
+[my-chatbot #6](https://github.com/bbeaudet-dev/my-chatbot/pull/6)
+
+### EOD 9 - Wednesday 6/11
+
+**Blockers:** Hump day just isn't my day... Today flew by and was unfocused all day. Would like to spend more time with the instructors tomorrow and need to make some kind of catch-up plan. Behind on readings, behind on assignments, behind on sleep. Not sure what to prioritize. The amount of brackets/braces/parentheses used in Elysia seemed very unnecessary and the type errors are infuriating. The syntax feels familiar enough that I can make sense of it but at other times it feels completely foreign.
+
+**Wins:** Really enjoyed lecture and grasped the diagrams / concepts well.
+
+**PRs:**
+[auth-app #1](https://github.com/bbeaudet-dev/auth-app/pull/1),
+[auth-app #2](https://github.com/bbeaudet-dev/auth-app/pull/2)
+
+### EOD 10 - Thursday 6/12
+
+**Wins:** Made a ton of progress with Elysia in the morning, blazed through steps 3-8.
+
+**Blockers:** Stuck on a user auth bug (steps 9/10), set up test but still not solved. Been crashing hard in the afternoons and can't seem to regain focus. Had some existential "why am I here" thoughts around EOD (transcript available upon request lol) - realized that my main blockers are personal/self-image-related (which is still a big reason I am here) and have less to do with not actually understanding concepts.
+
+**PRs:**
+[auth-app #3](https://github.com/bbeaudet-dev/auth-app/pull/3),
+[auth-app #4](https://github.com/bbeaudet-dev/auth-app/pull/4),
+[auth-app #5](https://github.com/bbeaudet-dev/auth-app/pull/5)
+
+**Code Review:**
+[HarStu/hserver #2](https://github.com/HarStu/hserver/pull/2)
+
+### EOD 11/12 - Friday 6/13 & Saturday 6/14
+
+_(Hackathon Weekend)_
+
+**Wins:** Better-auth tutorial went well. Really appreciated the time Friday morning to take a step back and talk through how not to be stuck, the "enemies" of learning, etc. Learned a lot during the hackathon and dispelled the illusion that vibe coding is "too good to be true".
+
+**Blockers:** Got very frustrated when the AI didn't do what I wanted it to do - feel like it only has a gas pedal and no brakes, trying to solve every problem by adding more code.
+
+**PRs:**
+[my-chatbot #7](https://github.com/bbeaudet-dev/my-chatbot/pull/7),
+[balatrice](https://github.com/bbeaudet-dev/balatrice)
+
+# Week 3
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 13 - Monday 6/16
+
+_(Skipped EOD post today - I rememeber I was feeling very existential and stressed about being behind on bootcamp work while also considering taking an externship opportunity. I felt like adding \_anything_ to my current workload would be the straw that broke the camel's back.)\_
+
+### EOD 14 - Tuesday 6/17
+
+_(Ended up getting and accepting the externship opportunity with [Cerelog](https://www.cerelog.com/). Had a long walk with Andrew and the thing that stuck with me the most was when he said "there's a saying that if you want something done, ask a busy person".)_
+
+**Wins:** Solid externship onboarding, learned a lot already and great to be in a real production environment. Also great to be able to combine MechE knowledge with SWE and be able to see hardware and software working together.
+
+**Blockers:** Some minor syntax changes going from JS to C++ and Python. Lots of nitty gritty concepts related to buffering, serial reading, hardware integration, ADCs, SPIs, etc.
+
+**PRs:**
+Cleaned up AI's slop on my hackathon project: [balahtzee slop-cleanup](https://github.com/bbeaudet-dev/balahtzee/tree/slop-cleanup),
+Captured ADS1299 EEG data stream through Arduino (private repo),
+Wrote a working test procedure to get Brainflow's expected protocol to work with MacOS (private repo)
+
+### EOD 15 - Wednesday 6/18
+
+**Blockers:** Rough day debugging cross-platform serial issues. Don't understand cmake and why any changes to C++ files require rebuilding. Trouble navigating serial libraries like FTDI. Lots of general frustration with the abstractness of coding.
+
+**Wins:** Feeling a lot more solid at debugging - i.e. reading the error message and gradually gathering more info through logging. Learned handshakes what handshakes are and created one on my own.
+
+**PRs:**
+Established a handshake between Arduino and BrainFlow for EEG data format,
+Retrieved and parsed data sample from ADC → Arduino → C++ → Python
+
+### EOD 16 - Thursday 6/19
+
+Needed a win, got a big one. Started the day failing 2/3 tests; had all 3 running (but not reading data) before lunch; reading data by the afternoon; and had the full EEG live dashboard up and running before 5pm.
+
+**No blockers today, just some difficult tasks ahead.**
+
+**PRs:**
+Implemented a debug mode into Arduino firmware and improved visibility of data transfer,
+Got C++ data stream working with separate implementations of Python/PySerial and BrainFlow,
+Got the full EEG live dashboard running and a solid plan for next steps.
+
+**Reviews:**
+[KaiHay/vibeguessr #9](https://github.com/KaiHay/vibeguessr/pull/9#pullrequestreview-2944190084),
+[ostsam/malan #12](https://github.com/ostsam/malan/pull/12#pullrequestreview-2944197760),
+[vo-eric/decohr #11](https://github.com/vo-eric/decohr/pull/11)
+
+### EOD 17 - Friday 6/20
+
+**Wins:** More wins today despite not making much progress until the afternoon. After seemingly solving the cross-platform issues, I was able to get a solid chunk of the high priority externship items done. Feeling like I'm getting a handle on embedded systems / hardware.
+
+**Blockers:** Trying to balance when to read/watch videos/learn on my own vs. when to ask AI for explanations/guidance. Ultimately need to figure out how to respond to not knowing where to start. Could also work on structuring commits / PRs so they're easier to parse through.
+
+**PRs:**
+Implemented port scanning and variable baud rates across all operating systems,
+BrainFlow integration working with MacOS (view sample data through Python scripts),
+Arduino is successfully sending UNIX timestamps with EEG data
+
+### EOD 18 - Saturday 6/21
+
+_(Apparently skipped Saturday.)_
+
+# Week 4
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 19 - Monday 6/23
+
+_(Posted on Wednesday, fell behind.)_
+
+**B:** Lost the rhythm today, honestly just neglected the things that give my days structure like keeping up on Discord, organizing code into PRs, etc. Expected the algorithms work to go a lot more smoothly - probs partly due to how intuitive it felt and that the last week of externship work has boosted my confidence. Alas, the same blockers from pre-externship greeted me. Had to totally scrap my code when Andrew pointed out that I had mixed React and algorithm logic into one file.
+
+**W:** Things started making more sense once I started over and separated algorithm logic. Also, I'm on track to finish the externship work early - I'm really enjoying it and feeling very optimistic about job searching (usually I dread it).
+
+**PRs:**
+Made UNIX timestamping, port scanning, serial config, etc. much more organized and robust,
+Created most of insertion sort algorithm, needs a few small tweaks
+
+**Review:** (Cerelog) reviewed BrainFlow library changes from this past week.
+
+### EOD 20 - Tuesday 6/24
+
+_(Posted on Wednesday, fell behind.)_
+
+**B:** No learning blockers today, just wish I had a clone so I could work on algorithms and externship simultaneously. Should've come in a bit earlier.
+
+**W:** Got the insertion sort algorithm working (in the console) by early morning. Spent the afternoon merging Cerelog PRs and testing full system integration. Feeling very optimistic about the mindset of "every frustration is a learning opportunity". AI makes the "easy route" VERY tempting, but I've found a good learning flow by asking tons of curious/nuanced questions until I understand every word.
+
+**PRs:**
+Finished insertion sort algorithm (working in console), with ability for user to generate new array of length N,
+Organized, cleaned up, and merged PRs into main implementation repo,
+Pushed new firmware for a better handshake setup and integrated the improvements from previous PRs into the secondary Python implementation
+
+**Review:** (Cerelog) reviewed Arduino firmware and Python implementation changes from this past week.
+
+### EOD 21 - Wednesday 6/25
+
+Didn't touch algorithms today but had a fantastic day of externship work. Learned a lot during the animation lecture and feeling more confident when I get back to it tomorrow/tonight. I have a looming concern that my confidence is only based on finishing one of the "easy" algorithms, but I will be happy if I can somehow manage a decent Insertion Sort animation while also balancing externship work.
+
+![Cerelog Priority Board](/images-blog/cerelog_priority.jpg)
+
+Might be able to wrap up the externship with one more day of work (so basically a week early, which is dope) and considering staying on if the next steps are interesting. Getting paid would be cool too. Only task left as of now is parametric configuration, which I've already set up all the bones for.
+
+**PRs:**
+Implemented a 12-byte timestamp handshake between firmware and BrainFlow API with no user input required,
+Created test for baud rate switching and created a comprehensive "test suite" script,
+Built variable baud rates into the handshake, also no user input required. Current codebase passes all test scripts.
+
+**Code Review:**
+Will do this after dinner 🙂 _(Spoiler alert: I didn't do it)_
+
+### EOD 22 - Thursday 6/26
+
+**W:** Recognized that I needed to write an algorithm to handle data buffering for my externship work and successfully made it O(n). Learned what data buffers are, the different kinds, and why they are necessary - and then built one.
+
+**B:** I thought the externship work would only take the morning today but ended up taking most of the day. It felt right to prioritize the externship, but I don't want to use it as an "excuse" for not understanding other fundamental concepts.
+
+**PRs/Commits/Review:**
+Implemented continuous ring buffer into firmware for capturing EEG data stream,
+Implemented O(n) search algorithm for detecting handshake attempts within ring buffer,
+Reviewed collective firmware changes from this week
+
+### EOD 23 - Friday 6/27
+
+**W:** Proud that I was able to make a main menu with routing for different algorithms, with solid repo organization and breaking down into React components - kinda felt like a wizard being to do all of this quickly, competently, and without help.
+
+**B:** None
+
+**PRs:**
+Main menu and routing,
+Bubble sort algorithm and visualization,
+Added shape presets
+
+### EOD 24 - Saturday 6/28
+
+**W:** Emotional workshop was very cathartic and powerful - happy to see that this kind of conversation can be more normalized within our cohort and I think the group feels closer together now. Rode the high from yesterday and kept adding to my algorithm project. Added a few features with Cursor and got very little slop.
+
+**B:** Still facing resistance to posting blogs unless I feel it's in a "perfect" state. And then bargaining with myself that "I will catch up this weekend" or "work even harder". This weekend my wife was in town and that "set me back from catching up", if that's a real thing.
+
+**PRs:**
+Turned the chess piece analyzer into a generic image analyzer,
+Allowed users to upload any image and turn it into an array of numbers that can be sorted using algorithms
+
+# Week 5
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 25 - Monday 6/30
+
+**B:** Unfocused. Struggled with scope today. Finding it very difficult to learn when using Cursor and very easy to get carried away with thinking of new features instead of focusing on a more concrete goal. Also struggle with pushing out PRs particularly when using AI.
+
+**W:** React Native feels pretty intuitive. Got a few small things working.
+
+**PRs:**
+[core-access-game #1](https://github.com/bbeaudet-dev/core-access-game/pull/1)
+
+### EOD 26 - Tuesday 7/1
+
+**W/B:** Bit of a rollercoaster of a day. Woke up super grumpy so I started by doing some readings and wrapping up loose ends with my algorithms project and blog posts. This gave me a lot of momentum into my Native app, but I found myself backtracking to the start of the day due to some Cursor complications with Auth. Found another second wind and got auth working with a Neon database and Express server. Spent way too long without realizing that React Native apps don't really work with Vercel, I think? Not sure if I should've asked for help sooner or if it's a skill issue lol. Learned Render and got deployed backend working with auth. Got integrations with gyroscope, magnetometer, and microphone working on mobile device - worked on camera, accelerometer, wi-fi, and others but having more trouble.
+
+**PRs:**
+[visual-algorithm #6](https://github.com/bbeaudet-dev/visual-algorithm/pull/6),
+[core-access-game #2](https://github.com/bbeaudet-dev/core-access-game/pull/2),
+[core-access-game #3](https://github.com/bbeaudet-dev/core-access-game/pull/3),
+[core-access-game #4](https://github.com/bbeaudet-dev/core-access-game/pull/4),
+[core-access-game #6](https://github.com/bbeaudet-dev/core-access-game/pull/6),
+[core-access-game #7](https://github.com/bbeaudet-dev/core-access-game/pull/7)
+Added portfolio section to personal website and worked on a few posts (pushed straight to main)
+
+### EOD 27 - Wednesday 7/2
+
+**Blockers:** Oh boy, spent almost all day tackling NativeWind and an issue where all my styling disappeared. Ultimately fixed my app and was able to keep some of the additions I made, but I never figured out what was causing it. Took longer than necessary because of disorganized/big PRs.
+
+**Wins:** Really happy with how the app is coming along and enjoying working with React Native. I'm happy with how much I've been able to break up features/pages into components and modularize things like buttons, headers, borders, etc. into reusable components. Feeling more confident tackling larger codebases.
+
+**Review:**
+[PushpalPatil/practiceExpo #3](https://github.com/PushpalPatil/practiceExpo/pull/3#pullrequestreview-2983351977)
+
+**PRs:**
+[core-access-game #9](https://github.com/bbeaudet-dev/core-access-game/pull/9),
+A few troubleshooting PRs,
+[core-access-game #13](https://github.com/bbeaudet-dev/core-access-game/pull/13)
+
+### EOD 28 - Thursday 7/3
+
+**No blockers today, felt great to explore all of the different native features on mobile devices. Feeling more confident using AI and avoiding slop while maximizing my own understanding. Still need to practice externalizing my thinking process into diagrams/mental models rather than "thinking through things" inside of the Cursor chat.**
+
+**Review:**
+[graslowsnail/artefact-ai-mobile #16](https://github.com/graslowsnail/artefact-ai-mobile/pull/16#pullrequestreview-2987217132)
+**PRs:**
+[core-access-game #14](https://github.com/bbeaudet-dev/core-access-game/pull/14),
+[core-access-game #15](https://github.com/bbeaudet-dev/core-access-game/pull/15),
+[core-defender-game #16](https://github.com/bbeaudet-dev/core-defender-game/pull/16),
+[core-defender-game #17](https://github.com/bbeaudet-dev/core-defender-game/pull/17)
+
+### EOD 29 - Friday 7/4
+
+Was feeling a bit disheartened/disappointed today. Spent too much time trying to get small bugs fixed before moving on to bigger picture features - I find it difficult to move on since odds are I will forget about and never return to an issue once I leave it.
+
+**PRs:**
+[core-defender-game #18](https://github.com/bbeaudet-dev/core-defender-game/pull/18),
+[core-defender-game #19](https://github.com/bbeaudet-dev/core-defender-game/pull/19)
+
+### EOD 30 - Saturday 7/5
+
+**B:** Still attaching too much self-worth to the things I create - felt like shit because I wasn't happy with my project. Also have a tendency for black and white thinking, i.e. even if only one thing is wrong with the project, the whole thing is doomed in my mind.
+
+**W:** Was able to solve a bunch of issues and tie up loose ends just in time for presentations, and I'm happy enough with how it turned out. Feeling more confident presenting.
+
+**PRs:**
+[core-defender-game #20](https://github.com/bbeaudet-dev/core-defender-game/pull/20)
+
+# Week 6
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 31 - Monday 7/7
+
+**Blockers:** Don't understand working in a team on Git, merge conflicts are a bitch and feel like a waste of time. Just got pissed off at Git and Cursor all day, not really learning anything.
+
+**Wins:** fun blob game
+
+**Code Review:** PRs within game team
+**PRs:**
+[andreicstoica/blob-game #3](https://github.com/andreicstoica/blob-game/pull/3),
+[andreicstoica/blob-game #10](https://github.com/andreicstoica/blob-game/pull/10),
+[andreicstoica/blob-game #15](https://github.com/andreicstoica/blob-game/pull/15),
+[andreicstoica/blob-game #19](https://github.com/andreicstoica/blob-game/pull/19)
+
+### EOD 32 - Tuesday 7/8
+
+**Blockers:** Bro, I just needed to work out and all of my blockers disappeared…who knew! Today was the complete opposite of yesterday: everything that made me pissed off yesterday turned into thoughtful, well-articulated conversations and specifications - with my team and with Cursor. Alas, I rode the high a little too hard and ended up working too late and noticed some of those same feelings of frustration creeping back in. I could get better at knowing when to stop, when to be okay calling it a day and be happy with what I accomplish.
+
+**Wins:** Made a lot of progress on blob game and felt a lot more connected to the team and the work. Optimistic about an externship prospect for the start of August, meeting in-person tomorrow.
+
+**PRs:**
+[blob-game #24](https://github.com/andreicstoica/blob-game/pull/24),
+[blob-game #25](https://github.com/andreicstoica/blob-game/pull/25),
+[blob-game #28](https://github.com/andreicstoica/blob-game/pull/28),
+[blob-game #31](https://github.com/andreicstoica/blob-game/pull/31),
+[blob-game #39](https://github.com/andreicstoica/blob-game/pull/39),
+[blob-game #40](https://github.com/andreicstoica/blob-game/pull/40)
+
+**Reviews:**
+[blob-game #34](https://github.com/andreicstoica/blob-game/pull/34#pullrequestreview-2999809644),
+[blob-game #33](https://github.com/andreicstoica/blob-game/pull/33#pullrequestreview-2999812614)
+
+### EOD 33 - Wednesday 7/9
+
+**Blockers:** Lack of separation of concerns becoming a huge problem for adding any new features to the actual game state.
+
+**Wins:** Had a morning standup and made a great plan for the day and were able to implement some exciting features in our game.
+
+**PRs:**
+[blob-game #44](https://github.com/andreicstoica/blob-game/pull/44),
+[blob-game #45](https://github.com/andreicstoica/blob-game/pull/45),
+[blob-game #46](https://github.com/andreicstoica/blob-game/pull/46),
+[blob-game #47](https://github.com/andreicstoica/blob-game/pull/47)
+[blob-game #48](https://github.com/andreicstoica/blob-game/issues/48),
+[blob-game #49](https://github.com/andreicstoica/blob-game/issues/49)
+
+### EOD 34 - Thursday 7/10
+
+**Blockers:** Feels like team contributions become less organized/cautious throughout the day.
+
+**Wins:** Felt really good to have a morning standup meeting and establish priorities for the day. Built in a ton of new features and our game is starting to feel really solid and polished.
+
+**PRs:**
+[blob-game #57](https://github.com/andreicstoica/blob-game/pull/57),
+[blob-game #58](https://github.com/andreicstoica/blob-game/pull/58),
+[blob-game #62](https://github.com/andreicstoica/blob-game/pull/62),
+[blob-game #65](https://github.com/andreicstoica/blob-game/pull/65),
+[blob-game #67](https://github.com/andreicstoica/blob-game/pull/67),
+[blob-game #70](https://github.com/andreicstoica/blob-game/pull/70),
+[blob-game #72](https://github.com/andreicstoica/blob-game/pull/72),
+[blob-game #74](https://github.com/andreicstoica/blob-game/pull/74),
+[blob-game #79](https://github.com/andreicstoica/blob-game/pull/79),
+[blob-game #81](https://github.com/andreicstoica/blob-game/pull/81),
+[blob-game #84](https://github.com/andreicstoica/blob-game/pull/84),
+[blob-game #85](https://github.com/andreicstoica/blob-game/pull/85)
+
+**Reviews:**
+[blob-game #61](https://github.com/andreicstoica/blob-game/pull/61#pullrequestreview-3006505538)
+
+### EOD 35 - Friday 7/11
+
+**Blockers:** Frustrated with rework and sifting through AI slop. Our team (including me) is in the practice of pushing/merging to main without review, testing, deployment checks, etc. I think we are a bit caught up in the excitement of making a game, adding new features, and using AI to accelerate work.
+
+**Wins:** Despite the challenges, we're making progress and learning about the importance of proper development practices.
+
+**PRs:**
+[blob-game #89](https://github.com/andreicstoica/blob-game/pull/89),
+[blob-game #92](https://github.com/andreicstoica/blob-game/pull/92),
+[blob-game #96](https://github.com/andreicstoica/blob-game/pull/96),
+[blob-game #100](https://github.com/andreicstoica/blob-game/pull/100),
+[blob-game #102](https://github.com/andreicstoica/blob-game/pull/102),
+[blob-game #103](https://github.com/andreicstoica/blob-game/pull/103),
+[blob-game #111](https://github.com/andreicstoica/blob-game/pull/111),
+[blob-game #115](https://github.com/andreicstoica/blob-game/pull/115),
+[blob-game #117](https://github.com/andreicstoica/blob-game/pull/117),
+[blob-game #118](https://github.com/andreicstoica/blob-game/pull/118)
+
+### EOD 36 - Saturday 7/12
+
+Presentation Day, flew to northern Michigan for a wedding. Glad we got the game to a pretty finished state and tied up loose ends.
+
+# (Break: July 13–20)
+
+# Week 7
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 37 - Monday 7/21
+
+**Blockers:** Feeling a little burnt, tired, recovering from the break. Recovery meaning that I haven't really been "working" on anything difficult for a week and getting back into the flow took me a day.
+
+**Wins:** Felt good to review other people's job plans, both to provide feedback and inspiration for my own.
+
+**PRs:**
+[personal-portfolio #12](https://github.com/bbeaudet-dev/personal-portfolio/pull/12),
+[personal-portfolio #13](https://github.com/bbeaudet-dev/personal-portfolio/pull/13)
+
+**Documents:**
+[Job Search Plan](https://docs.google.com/document/d/1TLYCUuQ93Ykcv5sYumk2Tfc0jFPkJMZSNac9gFzAut0/edit?tab=t.0#heading=h.ljz23lpgslpc)
+
+### EOD 38 - Tuesday 7/22
+
+**Blockers:** Kinda got derailed today by starting a new project, a CLI-only dice rolling game. I learned a ton and have a lot of ideas, but feeling guilty about shirking career week stuff.
+
+**Wins:** My goal with the game was to make something fun before I make something pretty. When I previously vibe-coded a Balatro-dice game, and then later on made another app based more on the algorithms of Balatro, I got too caught up in the visuals and also inevitably ended up mixing frontend and backend logic, which got very sticky and basically broke both of these games eventually, and it was too late to go back and salvage them. So my goal with this new one was to make a game that is fun before any styling is ever added to it, and that's going very well and leading to deeper understandings of software.
+
+**PRs:**
+[rollio #1](https://github.com/bbeaudet-dev/rollio/pull/1),
+[rollio #2](https://github.com/bbeaudet-dev/rollio/pull/2),
+[rollio #3](https://github.com/bbeaudet-dev/rollio/pull/3),
+[rollio #4](https://github.com/bbeaudet-dev/rollio/pull/4)
+
+### EOD 39 - Wednesday 7/23
+
+**Blockers:** Trying to work on my portfolio, which should mean now is NOT the time to add new features, but apparently that signals to my brain that now is the time to create new features IN ORDER TO make my portfolio look good. This creates a cycle where I keep adding complexity instead of focusing on what's actually needed for career week.
+
+**Wins:** Despite the blockers, made solid progress on game dev. The CLI game is coming together nicely and I'm learning a lot about game state management and user interaction. The modular design approach is working well and making the codebase much more maintainable than my previous attempts.
+
+**PRs:**
+[rollio #5](https://github.com/bbeaudet-dev/rollio/pull/5),
+[rollio #6](https://github.com/bbeaudet-dev/rollio/pull/6),
+[rollio #7](https://github.com/bbeaudet-dev/rollio/pull/7),
+[rollio #8](https://github.com/bbeaudet-dev/rollio/pull/8),
+[rollio #9](https://github.com/bbeaudet-dev/rollio/pull/9)
+
+### EOD 40 - Thursday 7/24
+
+**Wins:** Found a decent flow with using Cursor, with docs, architecture diagrams, specs, handoffs, context, etc. Been able to produce a lot of cohesive work.
+
+**Blockers:** Still having trouble with giving Cursor the right context so that it doesn't slip back into bad habits.
+
+**PRs:**
+[personal-portfolio #14](https://github.com/bbeaudet-dev/personal-portfolio/pull/14),
+[rollio #10](https://github.com/bbeaudet-dev/rollio/pull/10),
+[rollio #11](https://github.com/bbeaudet-dev/rollio/pull/11)
+[Resume](https://github.com/bbeaudet-dev/swe-resume)
+
+### EOD 41 - Friday 7/25
+
+Spent a lot of the day Reflecting on career direction and my values as a human. Values clarification and talking with Andrew for a while did a lot for me. I put a lot of unnecesarry guilt / shame / presure on myself, and often make prioritizaiton a moral dilemna.
+
+**PRs:**
+[rollio #13](https://github.com/bbeaudet-dev/rollio/pull/13),
+[rollio #14](https://github.com/bbeaudet-dev/rollio/pull/14),
+[rollio #15](https://github.com/bbeaudet-dev/rollio/pull/15),
+[rollio #16](https://github.com/bbeaudet-dev/rollio/pull/16),
+[personal-portfolio #15](https://github.com/bbeaudet-dev/personal-portfolio/pull/15)
+
+### EOD 42 - Saturday 7/26
+
+**Blockers:** Crazy how I can ship fullstack applications from start to finish in a week, but I struggle to solve leetcode easy problems during mock interviews. Got the hang of it quickly, think I just needed to put some practice into it, as I haven't been practicing this week.
+
+**Wins:** Great reality check today with the Neetcode mock interviews. Very inspired for career direction. Feeling very strongly about direction, particularly creative coding and game dev, low level programming and hardware, and potentially a FAANG route where I focus on "correct" system design and architecture. Jazzed up about the future and again feeling like this program is extremely valuable!
+Had a moment where I thought to myself "I could very well NOT be in this room right now, hearing exactly what I need to be hearing right now. I could just not be here. But I am. And it's exactly where I need to be. Who put me in this room? My former self? Good on him."
+
+**PRs:**
+Blog updates
+
+**Resources:**
+[Andrew's Career Specialization Letter](https://github.com/fractal-bootcamp/bootcamp-monorepo/blob/main/curriculum/weeks/07-career/career-specialization-letter.md)
+
+### Saturday 7/26 - Part 2
+
+5 week plan:
+Week 1: Grind low-level programming - do one week of CS50x per day
+Weeks 2-3: Hardware/firmware internship with Bats-Toi
+Weeks 4-5: Potential game dev internship w/ Kai, or explore other options
+Backup plans: if Bats-Toi isn’t going well, return to low-level programming grinding, or start 3rd internship early. If game dev internship falls through, consider looking for a new one, making games, or work with Andrew on a new plan.
+
+Wins: Great reality check to go from shipping fullstack applications in a week to struggling to solve leetcode easy problems during mock interviews. Got the hang of it quickly, think I just needed to put some practice into it, as I haven't been practicing this week.
+Very inspired with new career direction and plan. Creative coding and game dev, low level programming and hardware, and potentially a FAANG route where I focus on "correct" system design and architecture all feel like valid paths that I’m genuinely excited about, and I’d rather have TOO many things to be interested in than have NONE of the path be interesting to me. 
+This program is extremely valuable! Had a moment where I thought to myself "I could very well NOT be in this room right now, hearing exactly what I need to be hearing right now. I could just not be here. But I am. And it's exactly where I need to be. Who put me in this room? My former self? Good on him, and the people that encouraged me to be here".
+
+Blockers: none!
+
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/16
+
+# Week 8
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 43 - Monday 7/28
+
+Wins: Got an offer for a third internship, excited to try out some game dev. CS50x is very cool and I’m happy to be closer to the computer science world. Spent some time updating portfolio projects and made surprising progress - was even able to embed the blob game into the portfolio project page.
+
+Blockers: Don’t understand why it’s necessary to recompile/build for C code but not for other/higher language. Nervous about second internship, underdelivering. 
+
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/17
+https://github.com/bbeaudet-dev/blob-game/pull/2
+https://github.com/bbeaudet-dev/blob-game/pull/3
+https://github.com/bbeaudet-dev/blob-game/pull/4
+https://github.com/bbeaudet-dev/core-defender-game/pull/21
+https://github.com/bbeaudet-dev/core-defender-game/pull/22
+CS50x Week 0
+CS50x Week 1 (50%)
+
+### EOD 44 - Tuesday 7/29
+
+Wins: Feels good to be told that something I make is cool, especially when it’s something I love and really want to become good at. Felt famous for a minute, thanks Andrew. 
+
+Blockers: Diverged from low-level progrmaming today, not planned. Committing some time in the evening to finishing the C lecture at least. 
+
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/18
+https://github.com/bbeaudet-dev/core-defender-game/pull/22
+https://github.com/bbeaudet-dev/core-defender-game/pull/23
+https://github.com/bbeaudet-dev/core-defender-game/pull/24
+https://github.com/bbeaudet-dev/core-defender-game/pull/25
+
+### EOD 45 - Wednesday 7/30
+
+Blockers: Very sleepy, I think the heat affected me a lot more than I expected. 
+
+Wins: Made a lot of progress on portfolio website and resume today - feeling like it’s almost presentable to an employer (at least enough not to scare them away immediately). Moderate progress on CS50x. 
+
+PRs:
+CS50x Week 1 (C)
+Resume updated
+https://github.com/bbeaudet-dev/personal-portfolio/pull/20
+
+### EOD 46 - Thursday 7/31
+
+Spent most of the day on the phone, which is usually something I dread, so this ended up being a good exercise for me. 
+Had my mind blown over and over by videos on transistors, microchips, and GPUs. Ended up doing some job searching and found a lot that interests me. 
+CS50x exercises are easier than I anticipated so far, excited to get to NandToTetris. 
+
+https://www.youtube.com/watch?v=_Pqfjer8-O4
+https://www.youtube.com/watch?v=dX9CGRZwD-w
+https://www.youtube.com/watch?v=h9Z4oGN89MU&t=1154s
+
+### EOD 47 - Friday 8/1
+
+Blockers: Similar feelings of dread/overwhelm coming into a new internship. Afternoon: A bit disillusioned with the Bats-Toi internship. We had our kickoff meeting today: the team is super cool and it’s a really great opportunity with potential to turn into a solid 6+ month contract position, but my responsibilities aren’t quite what I thought we agreed on. We have a top-of-the-industry mechanical/computational designer handling the mechanical side, and a SWE in Pakistan pioneering sensor integration and firmware, which basically leaves me as a “mesh” between the two areas, as well as a support role for electrical engineering, which was never discussed and is not a strength of mine. Also the start date is apparently August 11th, and the lack of communication is pissing me off - I don't like waiting around, especially when bootcamp time feels so precious. 
+
+Wins: Feeling the dread/overwhelm again reminds me that the right path to take is often the one that feels the scariest, and in this case, would prevent me from falling into funks. Had the honor of buying Savino’s first ever pizza. 
+
+PRs: 
+https://github.com/bbeaudet-dev/personal-portfolio/pull/21
+Blog post(s)
+CS50x Week 1 exercises
+
+
+### EOD 48 - Saturday 8/2
+
+Similar thoughts to yesterday, disillusioned with the internship and feeling a bit aimless about what to do next, even if there are several good options in front of me. 
+
+# Week 9
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 49 - Monday 8/4
+
+Blockers: Intended to get back to CS50 today but did not - feeling some resistance with returning to it, even if I do find it interesting. I’d like to start seeking feedback earlier before I get too many cycles into any particular task. Navigating a lot of uncertainty with the Bats-Toi internship. 
+
+Wins: Good chat with Andrew. Drafting up a message to Bats-Toi was good practice for seeking quick feedback. 
+
+Bats-Toi Design Document & Development Questionnaire
+https://github.com/bbeaudet-dev/personal-portfolio/pull/22
+https://github.com/bbeaudet-dev/personal-portfolio/pull/23
+https://github.com/bbeaudet-dev/personal-portfolio/pull/24
+
+### EOD 50 - Tuesday 8/5
+
+Blockers: Feeling very non-confrontational today, having trouble communicating with the Bats-Toi team. 
+
+Wins: Updated a couple more portfolio projects and my website. Made a first pass at a frontend for my dice rolling game. 
+
+https://github.com/bbeaudet-dev/visual-algorithm/pull/8
+https://github.com/bbeaudet-dev/visual-algorithm/pull/9
+https://github.com/bbeaudet-dev/rollio/pull/18
+https://github.com/bbeaudet-dev/rollio/pull/19
+https://github.com/bbeaudet-dev/rollio/pull/20
+https://github.com/bbeaudet-dev/rollio/pull/21
+https://github.com/bbeaudet-dev/rollio/pull/22
+https://github.com/bbeaudet-dev/personal-portfolio/pull/25
+
+### EOD 51 - Wednesday 8/6
+
+Wins: Broke through some imposter syndrome and learned to just communicate what I need. Had a good chat with Mario and we’re in talks for starting a contract position post-bootcamp. Don't want to count my chickens before they've hatched!
+
+Blockers: Was avoiding some confrontation and “bothering” people, when I could’ve been more proactive.
+
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/26
+https://github.com/bbeaudet-dev/rollio/pull/23
+https://github.com/bbeaudet-dev/rollio/pull/24
+https://github.com/bbeaudet-dev/rollio/pull/25
+https://github.com/bbeaudet-dev/rollio/pull/26
+https://github.com/bbeaudet-dev/rollio/pull/27
+https://github.com/bbeaudet-dev/rollio/pull/28
+Bats-Toi CAD package
+Bats-Toi .STEP files
+
+### EOD 52 - Thursday 8/7
+
+Blockers: Sleep schedule is whack rn, a bit manic. Not sustainable and inevitably impedes my ability to do good work. There’s no question my work output right now is insane but it’s not always directed at the highest priority items for my goals rn. 
+
+Wins: Made a quick tool that looks pretty today - I want to start adding some of my longer commitments/project results to my portfolio. Feeling really positive about my website, ready for some more feedback on it. Even if implementing online multiplayer into my dice game isn’t necessarily the format I’m locked into, it was a good exercise in web sockets and deploying full stack apps. 
+
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/27
+https://github.com/bbeaudet-dev/balatro-sticker-tracker/commit/924a06013a09b6ee8d17ab5d05638caa158171cd
+https://github.com/bbeaudet-dev/balatro-sticker-tracker/commit/d462cb02e02980674a3c6d25a4ed9505c079f33c
+https://github.com/bbeaudet-dev/rollio/pull/29
+
+### EOD 53 - Friday 8/8
+
+Blockers: Wife in town for the weekend, a bit distracted. 
+
+Wins: Got some portfolio work done, ready for feedback: https://personal-portfolio-sandy-omega-68.vercel.app/
+
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/28
+https://github.com/bbeaudet-dev/personal-portfolio/pull/29/
+
+### EOD 54 - Saturday 8/9
+
+Darn it Sophia, you're a bad influence on my EOD posts!
+
+# Week 10
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 55 - Monday 8/11
+
+Wins: Focus work on CS50x, NandToTetris, and Neetcode. Paris’ new study sessions are great! Made a cool animation (https://benbeaudet.com/for-fun/games)
+Blockers: Headache all afternoon
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/30
+CS50x + NandToTetris - https://github.com/bbeaudet-dev/cs50x
+Neetcode
+
+### EOD 56 - Tuesday 8/12
+
+Blockers: Think I need to get through more CS50x before getting into NandToTetris. Headaches again today. 
+PRs:
+https://github.com/bbeaudet-dev/personal-portfolio/pull/31
+https://github.com/bbeaudet-dev/personal-portfolio/pull/32
+Leetcode: https://github.com/bbeaudet-dev/leetcode-practice
+CS50x / NandToTetris
+
+### EOD 57 - Wednesday 8/13
+
+Blockers: Fever/headaches, slept in and stayed home to rest
+PRs:
+Leetcode: https://github.com/bbeaudet-dev/leetcode-practice
+https://github.com/bbeaudet-dev/balatro-sticker-tracker/pull/2
+https://github.com/bbeaudet-dev/balatro-sticker-tracker/pull/3
+https://github.com/bbeaudet-dev/balatro-sticker-tracker/pull/4
+
+### EOD 58 - Thursday 8/14
+
+Blockers: Felt like trash this morning, a little better throughout the day, plan to come back in tomorrow. Don’t have a solid idea for final capstone yet, feeling a general lack of direction this week.
+
+https://github.com/bbeaudet-dev/balatro-sticker-tracker/pull/5
+https://github.com/bbeaudet-dev/rollio/pull/30
+Portfolio updates
+Bats-Toi contract research/terms
+
+### EOD 59 - Friday 8/15
+
+Blockers: None really, left early to buy some hardware for my capstone project and getting a jumpstart on it tonight. 
+
+Wins: Deciding on a project gave me a lot of direction/motivation and I’m excited to work on it for the next 2 weeks. 
+
+Project proposal
+Hardware specs + shopping list
+Fundamentals exercises
+(Tonight) Configure Raspberry Pi 5 and connect to WiFi and Pi GUI
+(Tonight) Display basic web page on monitor from Pi
+
+### EOD 60 - Saturday 8/16
+
+Wins: Lots of progress today, but still a long way to go with an ambitious project. Got the Raspberry Pi displaying a React app with real weather data from WeatherAPI, set up Express server for API and OpenAI calls, and set up OpenAI API with several prompts for different actions (e.g. providing an outfit recommendation based on today’s weather).
+
+Blockers: None
+
+PRs:
+Fully configured Raspberry Pi 5 CPU environment
+Project presentation + updated project proposal + implementation plan
+https://github.com/bbeaudet-dev/smart-mirror/pull/1
+https://github.com/bbeaudet-dev/smart-mirror/pull/2
+https://github.com/bbeaudet-dev/smart-mirror/pull/3
+https://github.com/bbeaudet-dev/smart-mirror/pull/4
+https://github.com/bbeaudet-dev/smart-mirror/pull/5
+https://github.com/bbeaudet-dev/smart-mirror/pull/6
+https://github.com/bbeaudet-dev/smart-mirror/pull/7
+
+# Week 11
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 61 - Monday 8/18
+
+Blockers: I’m sometimes spending too much effort polishing features before I’m even sure that that feature will be sticking around and/or won’t change significantly. It’s coming from a place of not wanting to leave something unfinished before moving onto the next thing - since I am often forgetful and doing this too often piles up technical debt - and also not wanting to totally scrap features, even if they are buggy and unfinished. 
+
+Wins: Today was 14 straight hours of progress (even though some of that progress may have been misdirected, still progress!), which makes it feel like I’m flying through the project. However, a system with hardware, firmware, software, AI, and…manufacturing?… requires a lot more progress to get anywhere substantial. Learning a lot and still jazzed up about the project.
+
+PRs:
+https://github.com/bbeaudet-dev/smart-mirror/pull/9
+https://github.com/bbeaudet-dev/smart-mirror/pull/10
+https://github.com/bbeaudet-dev/ai-smart-mirror/pull/1
+https://github.com/bbeaudet-dev/ai-smart-mirror/pull/2
+https://github.com/bbeaudet-dev/ai-smart-mirror/pull/3
+https://github.com/bbeaudet-dev/ai-smart-mirror/pull/4
+https://github.com/bbeaudet-dev/personal-portfolio/pull/34
+https://github.com/bbeaudet-dev/personal-portfolio/pull/35
+
+### EOD 62 - Tuesday 8/19
+
+Blockers: Been sleeping like shit. Kind of a step backwards today, started questioning whether to build on an existing library or make my own React/Electron app. Paris also helped me realize some of the slop that made its way into my code while proofing a concept. 
+
+Wins: Realizing how little I knew about the MagicMirror library was actually what unblocked me. Made the decision to stick with the smaller monitor I already have since it has double the brightness of any larger monitor I could get for a reasonable price. Deciding on this paved the way for more decisions, and I know have a mostly complete list of hardware, with the main "mirror" on the way now.
+
+PRs:
+https://github.com/bbeaudet-dev/ai-smart-mirror/pull/5
+https://github.com/bbeaudet-dev/smart-mirror/pull/11
+https://github.com/bbeaudet-dev/smart-mirror/pull/12
+https://github.com/bbeaudet-dev/smart-mirror/pull/13
+Specified hardware and bought acrylic sheets from a local glass shop.
+
+### EOD 63 - Wednesday 8/20
+
+Blockers: Nothing really, just troubleshooting WebRTC working on desktop but not mobile. 
+
+Wins: Had a great walk & talk with Andrew. Made a ton of progress after getting back into the spec creation flow with Cursor. Got WebRTC server running and live video feed working with desktop. 
+
+Lots of journaling
+https://github.com/bbeaudet-dev/smart-mirror/pull/14 - WebRTC server
+https://github.com/bbeaudet-dev/smart-mirror/pull/15 - WebRTC client
+https://github.com/bbeaudet-dev/smart-mirror/pull/15 - client separation
+
+### EOD 64 - Thursday 8/21
+
+Blockers: Was too focused on getting a proof of concept to work that I didn’t see how the bigger picture didn’t really mesh together and that there were better alternatives. 
+
+Wins: Shoutout to Paris for the strong advice, he was right. Made a ton of progress after picking up a webcam. Made my first trip to Brownsville and made it out alive.
+
+I have most of the puzzle pieces now - putting them together for a coherent demo tomorrow will be interesting…
+
+Fundamentals practice
+https://github.com/bbeaudet-dev/smart-mirror/pull/16 - WebRTC cleanup
+https://github.com/bbeaudet-dev/smart-mirror/pull/17 - USB Webcam integration
+Acquired USB webcam and mirror and tested with display
+https://github.com/bbeaudet-dev/smart-mirror/pull/18
+
+### EOD 65 - Friday 8/22
+
+Demos went well, feeling good about the project. Crashed hard after the demos. Getting the AI responses to be meaningful will be challenging. 
+
+https://github.com/bbeaudet-dev/smart-mirror/pull/19
+https://github.com/bbeaudet-dev/smart-mirror/pull/20
+Demo setup
+https://github.com/bbeaudet-dev/smart-mirror/pull/21
+https://github.com/bbeaudet-dev/smart-mirror/pull/22
+
+### EOD 66 - Saturday 8/23
+
+Good progress after a slow start. Praying that all of the hardware / assembly works out. 
+
+https://github.com/bbeaudet-dev/smart-mirror/pull/23
+Generally designed the full smart mirror assembly
+Bought mirror stand, VHB tape, and picture frame mat
+Bought bolts and standoff spacers
+Bought 90-degree HDMI cable
+https://github.com/bbeaudet-dev/smart-mirror/pull/24/
+https://github.com/bbeaudet-dev/smart-mirror/pull/25
+
+# Week 12
+
+_(Weekly reflection: [Coming soon])_
+
+### EOD 67 - Monday 8/25
+
+Didn’t get along with Ai today. I expect libraries like ElevenLabs to be plug-and-play, especially when I’m tired, and today was just one of those days. Did successfully integrate OpenAI’s text-to-speech which has some pretty good voices.
+
+https://github.com/bbeaudet-dev/smart-mirror/pull/26
+https://github.com/bbeaudet-dev/smart-mirror/pull/27
+https://github.com/bbeaudet-dev/smart-mirror/pull/28
+https://github.com/bbeaudet-dev/smart-mirror/pull/29
+
+
+### EOD 68 - Tuesday 8/26
+
+Not many blockers today. Assembled the whole mirror and it turned out even better than I thought. Measurements and hardware worked out perfectly. Ran out of time to practice the demo but feeling better about it. Lots of great feedback - the toughest part will be deciding which feedback I can actually incorporate in the next 16 hours.
+
+https://github.com/bbeaudet-dev/smart-mirror/pull/30
+Assembled entire mirror
+https://github.com/bbeaudet-dev/smart-mirror/pull/31
+Demo
+https://github.com/bbeaudet-dev/smart-mirror/pull/32
+
+### EOD 69 - Wednesday 8/27
+
+Great demo day, huge relief and boost of confidence
+
+### EOD 70 - Thursday 8/28
+
+Lots of confidence, optimistic, overwhelmed by the amount of positive things happening all at once
+
+### EOD 71 - Friday 8/29
+
+Might’ve been the craziest day of my life. Or at least the bootcamp. Talked to multiple people interested in buying or working on the smart mirror. Looked at ramping up to build more and how that might look. Had a great walk with Andrew to bring me back down to reality. 
+
+### EOD 72 - Saturday 8/30
+
+Weird mood this morning during the hackathon. Might just be because someone was in my seat.
+
+Made a sale! Frightening and exciting

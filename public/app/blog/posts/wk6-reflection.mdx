@@ -1,0 +1,79 @@
+---
+collection: "fractal-weekly-reflection"
+title: "All Gas, No Brakes"
+publishedAt: "2025-07-12"
+summary: ""
+tags: ["Fractal 6"]
+---
+
+_Week 6 of Fractal Tech's AI Accelerator & Engineering Bootcamp_
+
+### The Intoxication of Vibe Coding
+
+During the three months leading up to this program, I spent a fair amount of time vibe coding while self-teaching. Honestly? I'm glad I did.
+
+Vibe coding with AI tools like Cursor or Replit can be intoxicating, especially in those early days. Work no longer feels like a chore. You don't have to fight syntax or remember library names. You can just be a fountain of ideas, typing out dreams and watching them materialize as thousands of lines of code. All it takes is clicking accept accept accept, and you can have a fully-built application without ever typing a single line yourself.
+
+But eventually, that euphoria hits a wall.
+
+Because while humans have general intelligence, AI doesn't. Ask it to generate a new app from scratch and it will move at light speed. Ask it to go back and tweak an existing feature, and it'll stare blankly into the void. AI is all gas and no brakes. It forgets what it built as soon as it finishes building it. This inevitably leads to a lot of slop—code that works in isolation but doesn't fit together, components that duplicate logic, architectures that make sense to no one (often not even the AI that made it).
+
+In my experience, AI agents are also notoriously bad at taking a project from 90% to 100%. With a decent specification, AI has a pretty good chance at one-shotting a project from 0% to 90% in minutes. But ask it to apply finishing touches and it can easily crash and burn or gradually sink the whole project. I got so excited about that initial 0% to 90% leap that I figured the remaining 10% would be easy—but AI often brings you to a place that _feels_ like 90% when it really took shortcuts, skipped functionality, or built an unscalable foundation.
+
+I'm glad I didn't have to learn that lesson during this bootcamp project.
+
+### Conflicts
+
+This week brought our first group project, and our first time using AI tools for direct code generation. The assignment: build a game in one week using everything we'd learned so far. Make it delightful, fun, and polished.
+
+I made it clear upfront that my primary goal was learning to work well in a team, letting my teammates drive the creative direction. One of my obstacles has been getting carried away with new features instead of staying focused, so I wanted to practice restraint.
+
+Right off the bat, no one felt confident working in the shared repo. Merge conflicts terrified us. We were constantly worried about overwriting each other's work. It wasn't just about Git—it was about trust and visibility. Everyone was trying to move forward, but we kept stepping on each other's toes.
+
+AI makes it easier to go faster, but harder to coordinate. Three people vibe coding on the same project meant no one really owned the data flow or architecture. Logic was embedded in components, then moved, then duplicated. Frontend and backend got tangled. At one point, we had duplicated enough calculations, logic, and state that essentially two distinct instances of the game were emerging.
+
+I put together a list of the blockers we were facing and brought them to the instructors:
+
+- How to structure repos to minimize merge conflicts
+- How to assign tasks to reduce overlap
+- When to PR, how often, and who should review
+- How to test each other's changes while in progress
+- How to feel confident that pulling won't break what you're working on
+
+They ended up using my breakdown as the basis for a lecture on Git workflow and collaborative teamwork. However, even with better Git hygiene, we were still drowning in a messy codebase. So I stepped up. Not formally, but out of necessity. I started taking on the role of integration lead—designing structure, reviewing PRs, creating documentation, and helping establish boundaries between frontend and backend, UI and logic. I even experimented with Mermaid diagrams to clarify state transitions and user flows.
+
+And unexpectedly, **I loved it**.
+
+### The Hard Thing About Hard Things
+
+System design, component structure, data flow—it all felt natural. Like breathing clean air after wading through fog.
+
+This got me thinking about something: everything in life is work. From making software to preparing food, even creative endeavors like content creation and painting. Life is work. That doesn't mean it has to be _suffering_, but it does mean I should pursue things where even the _difficult parts_ are still somewhat enjoyable, or at least tolerable.
+
+Integration, data flow, architecture—this is work I don't mind doing the difficult parts of.
+
+At its best, this kind of work means making high-level system decisions, looking at clean diagrams of well-structured codebases, and establishing shared standards so engineers can work individually without stepping on each other's toes. At its worst, it means having tough conversations when things aren't working, confronting teammates about mistakes that block everyone's workflow, and refactoring tangled code without breaking everything - and that's before any of the tough work related to managing yourself, recognizing and admitting mistakes and weaknesses, and fostering a welcoming and respectful environment.
+
+It's tough work. But it's tough work that energizes rather than drains me.
+
+Compare this to product management, which also requires difficult work—lots of meetings, getting everyone aligned, designing specifications, sprint planning, working across every team in the business. Equally challenging, but the kind of challenge that feels like a drag to me personally.
+
+You shouldn't chase what's easy in life. But finding something that _comes_ easily to you might be a lead for discovering what you don't mind doing the tough work of. As my wife tells me: "you build self-respect by doing difficult things."
+
+### Nuance
+
+During our five-day project, I spent two full days refactoring the codebase and cleaning up architectural mistakes. We kept adding logic to our main App.tsx file, which should be as clean as possible. Hours after our instructor told us to touch top-level files as little as possible because it guarantees merge conflicts, we were still doing exactly that.
+
+Paris pointed out something crucial on Friday: if someone makes a bad architectural decision, I communicate the issue, but then I'm the one who fixes it, I'm enabling that behavior. My job should be creating shared standards _before_ pointing to problems, not becoming a self-appointed police officer with my own uncommunicated rules.
+
+This kind of nuance excites me. I've noticed a pattern in my life where I hop from new thing to new thing without ever becoming **great** at anything—only ever good at a lot of things. (I wrote about this feeling [here](/blog/taking-the-leap) as well.) I learn quickly, pick things up fast, work hard, get passionate and energetic, which makes it easy to go from zero to decent competence. But I'm also highly susceptible to getting distracted by the next shiny thing.
+
+I lose interest when taking the next step requires more nuance than I'm willing to learn. I could probably get pretty good at marketing, business, or finance quickly, but once I hit the nuance layer—when the work becomes genuinely tough—I lose interest because I'm no longer riding the high of easy wins.
+
+Content creators spend thousands of dollars and hours perfecting their lighting. ASMRtists obsess over audio quality. Mechanical engineers navigate complex specifications unique to each company. Everything has nuance at the expert level. Everything requires tough work.
+
+But with software architecture, I'm finding something I enjoy doing even when it's tough. I'm not an expert obviously, but I'm discovering work where the nuance feels interesting rather than tedious.
+
+---
+
+You can play and read about the game [here](/portfolio/blob-game).

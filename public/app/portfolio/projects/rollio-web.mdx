@@ -1,0 +1,75 @@
+---
+title: "Roguelike Dice Game"
+completedAt: "2026-01-01"
+summary: "A web-based dice-rolling roguelike inspired by Farkle and Balatro"
+technologies: "TypeScript, React, Node.js, Express, Socket.io, Vercel, Render"
+githubUrl: "https://github.com/bbeaudet-dev/rollio"
+liveUrl: "https://rollio.vercel.app"
+tags: ["Game Dev", "Software"]
+image: "/images-portfolio/rollio/Rollio-sceenshot.jpg"
+---
+
+_A web-based version of a dice-rolling roguelike inspired by Balatro and Farkle_
+
+<LaunchButton
+  href="https://rollio.vercel.app"
+  title="Play Rollio"
+  description=""
+  icon="🎲"
+  color="blue"
+/>
+
+<div className="my-8 w-full max-w-4xl mx-auto">
+  <div
+    className="relative"
+    style={{ paddingBottom: "56.25%", height: 0, overflow: "hidden" }}
+  >
+    <iframe
+      className="absolute top-0 left-0 w-full h-full rounded-lg"
+      src="https://www.youtube.com/embed/OiAZwY3sad4"
+      title="Rollio Web Demo"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    ></iframe>
+  </div>
+</div>
+
+After [building a CLI-only version of a dice-rolling roguelike](/portfolio/rollio), my next challenge was to create a web-based version without breaking the CLI version or rewriting core game logic.
+
+After severely over-engineering my game engine's type safety, I started this iteration by flattening my file structure, refactoring game logic, and building a working roguelike progression system.
+
+Once the core CLI game was once again playable, enjoyable, and even somewhat "finished", I took another swing at implementing a web version - and was shocked to see how quickly and cleanly I got it working. Better GameState management definitely helped, and I had also come a lot closer to having a game engine running exclusively on _pure functions_.
+
+<div className="my-8 w-full max-w-4xl mx-auto">
+  <div
+    className="relative"
+    style={{ paddingBottom: "56.25%", height: 0, overflow: "hidden" }}
+  >
+    <iframe
+      className="absolute top-0 left-0 w-full h-full rounded-lg"
+      src="https://www.youtube.com/embed/IvawNeYjMFw"
+      title="Rollio Web Demo"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    ></iframe>
+  </div>
+</div>
+
+From there, I was able to rapidly introduce new game mechanics and content, and it was starting to feel like an actual roguelike game.
+
+However, I had somewhat left the CLI version in the dust, so I decided to implement a GameAPI, which could be used with the CLI, web, and any future implementations without burdening the code down with too much implementation-specific code. This way, the WebGameManager exclusively interacted with the GameAPI and _never_ needed to import or use anything directly from the game engine. This refactor also made me realize that I needed to clean up my game logic and functions, so I made GameAPI the "orchestrator" of different game interactions, i.e. it essentially calls a function for each step of a major game action like "Scoring", and each group of related functions (e.g. charms.ts, consumables.ts) have their own file where they are organized and kept pure.
+
+While the GameAPI refactor was pretty brutal and almost cracked me several times, it again paved the way for a deluge of new game mechanics and content. It was at this point that I created a document called [content-polish.md](https://github.com/bbeaudet-dev/rollio/blob/main/docs/specs/in-progress/content-polish.md), which would serve as the basis of the next 25+ major pull requests of this project, taking Rollio from a basic dice-rolling game to a fully-built roguelike world.
+
+## Technologies Used
+
+- TypeScript (core logic and type safety)
+- React (frontend)
+- Node.js & Express (API + server)
+
+## Links
+
+- [Github Repository](https://github.com/bbeaudet-dev/rollio)
+- [Phase 1: CLI Version](/portfolio/rollio)

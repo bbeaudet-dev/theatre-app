@@ -1,0 +1,314 @@
+---
+collection: "beginner-programmer"
+title: "Tools for the Beginner Programmer"
+publishedAt: "2025-06-11"
+summary: "Extensions, settings, and tools that have made me feel more confident and comfortable in my coding environment, from the perspective of a beginner still figuring it all out"
+tags: []
+---
+
+_These VS Code extensions are helping me be more productive and find my programming stride._
+
+As a beginner software engineer, I wanted to share the extensions that have genuinely made coding easier and more enjoyable for me. This is by no means an objective or exhaustive list of the "best" tools — just the ones that helped me feel more confident, learn quicker, and get stuff done.
+
+The screenshot below shows a majority of the extensions discussed, including colors, themes, error and bracket lenses, spell check, bookmarks, and to-dos:
+
+<Image
+  src="/images-blog/all-styling.jpg"
+  alt="Screenshot showing various VS Code extensions in action"
+  width={1200}
+  height={800}
+  className="rounded-lg my-8"
+/>
+
+---
+
+## Troubleshooting & Quality of Life
+
+_Catching mistakes early and writing better code_
+
+- **[Error Lens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens)** - See code errors immediately
+- **[Bracket Lens](https://marketplace.visualstudio.com/items?itemName=wraith13.bracket-lens)** - Know exactly where brackets start and end
+- **[Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)** - Catch typos
+- **[Headwind](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind)** - Sort Tailwind CSS classes
+- **[Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)** - CSS auto-completion
+- **[Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)** - Never mistype file paths
+
+### Error Lens
+
+Shows errors and warnings directly on the line where they occur - great for quickly glancing over your code and a QOL must-have.
+
+<Image
+  src="/images-blog/errors-brackets.jpg"
+  alt="Screenshot showing Error Lens and Bracket Lens in action"
+  width={1200}
+  height={800}
+  className="rounded-lg my-8"
+/>
+
+### Bracket Lens
+
+Shows which opening bracket corresponds to each closing bracket with inline info like start/end lines and type of object - great for quickly parsing through nested JavaScript objects. (shown in image above)
+
+### Code Spell Checker
+
+Spell-checks your code comments, strings, and variable names, catching typos that could cause hard-to-track bugs. Not everyone will like this, but I think it provides a good safety net, even if only just for blog posts!
+
+### Tailwind CSS IntelliSense + Headwind
+
+Provides autocomplete, syntax highlighting, hover information, and consistent auto-sorting for Tailwind CSS classes, so you can learn Tailwind while you use it.
+
+### Path Intellisense
+
+Autocompletes file paths as you type them in import statements, eliminating "module not found" errors from typos.
+
+---
+
+## Customization & Visualization
+
+_Personalizing your workspace and making your code easier to read at a glance_
+
+- **[Peacock](https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock)** - Color-code your projects
+- **[Indent Rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)** - Visualize your code structure
+- **[Folder Path Color](https://marketplace.visualstudio.com/items?itemName=alexanderte.folder-path-color)** - Better file tree visualization
+- **[Custom CSS and JS Loader](https://marketplace.visualstudio.com/items?itemName=be5invis.vscode-custom-css)** - Personalize everything
+
+### Indent Rainbow
+
+Colors your indentation levels, making it easier to visualize hierarchies, nested objects, and looping. Also highlights when lines are not correctly indented / have unnecessary spaces. IMO this one has an outsized impact for how simple it is.
+
+<Image
+  src="/images-blog/indent.jpg"
+  alt="Screenshot showing Indent Rainbow extension in action"
+  width={1200}
+  height={800}
+  className="rounded-lg my-8"
+/>
+
+### Peacock
+
+Changes your VSCode window color per project - that's it! Picking new colors for each new project is fun. This looks great with the Monokai theme imo.
+
+<Image
+  src="/images-blog/peacock.jpg"
+  alt="Screenshot showing Peacock extension in action"
+  width={1200}
+  height={800}
+  className="rounded-lg my-8"
+/>
+
+**Setup:** Once installed, press `Cmd/Ctrl + Shift + P`, search "Peacock", and (e.g.) run the "Change to a favorite color" command.
+
+### Folder Path Color
+
+Assign colors to individual folders/paths. Here was my styling for the chatbot project:
+
+<Image
+  src="/images-blog/folder-color.jpg"
+  alt="Screenshot showing Folder Color extension in action"
+  width={400}
+  height={200}
+  className="rounded-lg my-8"
+/>
+
+The colors also apply to the file names and tabs on your VS Code windows, which is a game changer. This is a great concept but imo a not great execution - this extension requires manual setup for each project and also has some shortcomings (e.g. the higher level folder will always overwrite the lower levels, so making /app/server will be overwrited by whatever you set /app to). Somebody should make a better one! (looking at you Andrew)
+
+**Setup:** Configure your `settings.json` file like:
+
+```json
+"folderPathColor.folders": [
+  {"path": "src/components", "color": "#4FC3F7"},
+  {"path": "server", "color": "#81C784"}
+]
+```
+
+### Custom CSS and JS Loader
+
+Injects custom CSS and JavaScript into VSCode for visual tweaks. I've barely scratched the surface of this one, but there is a lot of potential.
+
+**Setup:** Requires creating CSS files in your project and configuring the extension to load them. Check the extension documentation for instructions.
+
+---
+
+## Project Management
+
+_Tracking progress, automatic reminders, and source control_
+
+- **[Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.Bookmarks)** - Never lose your place
+- **[Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)** - Actually functional comments
+- **[Git History](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)** - Track your project's evolution
+
+### Bookmarks
+
+Bookmark specific lines in your code and jump between them instantly instead of scrolling through hundreds of lines trying to find "that one function."
+
+**Setup:** Use `Cmd/Ctrl + Shift + P` and search for "Bookmarks: Toggle" to mark lines, then "Bookmarks: List" to see all your bookmarks.
+
+### Todo Tree
+
+Scans your code for TODO, FIXME, and other comment tags and displays them in a tree view so you never forget about unfinished business.
+
+<Image
+  src="/images-blog/todo.jpg"
+  alt="Screenshot showing Todo Tree extension in action"
+  width={600}
+  height={300}
+  className="rounded-lg my-8"
+/>
+
+I haven't tried this yet, but I imagine these tags would make your intentions very clear to the AI when you ask it to edit your code.
+
+### Git History
+
+Provides a visual representation of your Git commit history, so you can see exactly what changed when and debug newly-introduced issues.
+
+---
+
+## Efficiency & Navigation (WIP)
+
+Everything here makes me feel like a legit coder / hacker, and also saves me a bunch of time and effort over the 1,000s of micro-actions every day.
+
+### Navigation & Positioning
+
+General recs:
+
+- Window/tab navigation and positioning
+- Moving/editing lines of code
+- CLI navigation
+- Go through all Mac settings
+- Coding-specific typing practice (SpeedCoder, Typing.io)
+- Clipboard manager
+- You can [set up folders in your dock using aliases](https://support.apple.com/guide/mac-help/open-apps-from-the-dock-mh35859/15.0/mac/15.0#mchlpf80766d), which helps me compartmentalize, example here:
+
+<Image
+  src="/images-blog/dock-folders.jpg"
+  alt="Screenshot showing organized dock folders"
+  width={600}
+  height={300}
+  className="rounded-lg my-8"
+/>
+
+- Get a window positioning app - [Rectangle](https://rectangleapp.com/) is free, [Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12) is $4.99, and [BetterSnapTool](https://apps.apple.com/us/app/bettersnaptool/id417375580?mt=12) is $1.99. I use BetterSnapTool only because it's the one I'm used to - from my understanding they are all very similar. I have keyboard shortcuts configured for common layouts like left/right half, left/middle/right third, full screen, etc.
+
+<Image
+  src="/images-blog/bettersnaptool.jpg"
+  alt="Screenshot showing BetterSnapTool window management"
+  width={300}
+  height={150}
+  className="rounded-lg my-8"
+/>
+
+### Keyboard Shortcuts
+
+My most used:
+(Note: these are for Mac - Windows uses Control/Alt/Windows instead of Control/Option/Command, with some differences)
+
+- Fn + Backspace = Delete (like the Windows key)
+- Option⌥ + Backspace = Move cursor one word left/right
+- Option⌥ + L/R Arrow = Move cursor one word left/right
+- Option⌥ + Up/Dn Arrow = Move current line up/down
+- Option⌥ + Shift + Arrow = Copy current line up/down
+- Command⌘ + Shift + K = Delete Line
+- Command⌘ + D = Duplicate cursor to next occurrence
+- Command⌘ + Shift + \ = Jump to matching bracket
+- Command⌘ + K + P = Copy path of active file
+- Command⌘ + Opt + I (or Fn F12) = Inspect / Dev Console
+- Command⌘ + Shift + . = Toggle hidden files in Finder
+- Command⌘ + , = Open VS Code settings
+- Command⌘ + Shift + P = VS Code command window
+- ⌘ + Tab = Switch applications
+- Ctrl + Tab = Switch tabs
+- (Custom) Window Positioning shortcuts, like with Magnet or BetterSnap Tool: left/right half = Command⌘ 9/0; left/middle/right third = Command⌘ 1/2/3; left two thirds/right two thirds = Command⌘ 4/5
+
+---
+
+## Helpful Tools (that I don't fully understand yet)
+
+_Extensions that have a lot of potential but I either haven't used yet or I'm not qualified enough to explain_
+
+- **[REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)** - Test APIs without leaving VSCode
+- **[Postman](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode)** - API development and testing
+- **[ES7+ React/Redux/React-Native snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets)** - Speed up React development
+- **[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)** - Consistent dev environments
+
+### REST Client
+
+Lets you send HTTP requests directly from VSCode, which seems helpful for testing APIs without switching tools.
+
+### Postman
+
+A comprehensive tool for API development and testing that everyone talks about for backend work.
+
+### ES7+ React/Redux/React-Native snippets
+
+Provides shortcuts for common React code patterns and component boilerplate.
+
+### Dev Containers
+
+Lets you develop inside a containerized environment, which can solves the "it works on my machine" problem.
+
+---
+
+## Settings Tweaks
+
+_Small changes that make a big difference_
+
+### Theme
+
+I personally love **Monokai** or other high-contrast themes with clear color-coding. Good syntax highlighting makes it easier to scan your code quickly and spot different types of elements (strings, functions, variables, etc.).
+
+### File Tree Indentation
+
+I find it helpful to increase the file tree indentation from the default 8px to ~20px for better visual hierarchy:
+
+```json
+"workbench.tree.indent": 20
+```
+
+### Render Indent Guides
+
+Always show indent guides to help with code structure visualization:
+
+```json
+"editor.renderIndentGuides": true,
+"editor.guides.indentation": true
+```
+
+### Other Helpful Settings
+
+```json
+{
+  "editor.fontSize": 14,
+  "editor.lineHeight": 1.5,
+  "editor.minimap.enabled": false,
+  "editor.wordWrap": "on",
+  "files.autoSave": "afterDelay",
+  "terminal.integrated.fontSize": 13
+}
+```
+
+---
+
+## More Extensions & Further Reading
+
+If you have suggestions, feel free to submit a PR to [this Github repository](https://github.com/bbeaudet-dev/personal-portfolio/pulls).
+
+### Other Popular Extensions Worth Exploring
+
+- **[Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)** - Instant preview for HTML/CSS projects
+- **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)** - Code formatting
+- **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)** - JavaScript linting
+- **[Auto Rename Tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag)** - Keeps HTML tag pairs in sync
+- **[GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)** - Enhanced Git capabilities
+- **[Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)** - Lightweight API testing
+- **[Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)** - Better Markdown support
+- **[Material Icon Theme](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)** - Better file icons
+- **[Bracket Pair Colorizer](https://marketplace.visualstudio.com/items?itemName=CoenraadS.bracket-pair-colorizer)** - Color-coded bracket pairs
+- **[Settings Sync](https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync)** - Sync your settings across devices
+
+### Articles & Videos
+
+- [VSCode Tips and Tricks - Official Documentation](https://code.visualstudio.com/docs/getstarted/tips-and-tricks)
+- [25 VSCode Productivity Tips and Speed Hacks](https://www.youtube.com/watch?v=ifTF3ags0XI) (YouTube)
+- [VSCode Extensions Every Developer Should Know](https://dev.to/theme_selection/best-vscode-extensions-2024-56l8)
+
+A good setup is the one that makes you feel confident and productive, not necessarily what's the most popular. Don't feel pressured to download everything at once — having a bunch of new tools with no knowledge of how to use them will probably end up being a net-negative on your experience. Add them gradually as you identify specific pain points in your workflow and get a grasp on each extension's benefits.

@@ -1,7 +1,7 @@
 import { query, mutation, action } from "../_generated/server";
 import { api } from "../_generated/api";
 import { v } from "convex/values";
-import { generateRecommendationPrompt, formatUserRankings, formatElementRankings } from "../lib/ai/recommendations";
+import { generateRecommendationPrompt, formatUserRankings, formatElementRankings, formatThemeRankings } from "../lib/ai/recommendations";
 import { searchRedditForShow, formatRedditPostsForPrompt } from "../lib/reddit";
 
 // Helper to call OpenAI API
@@ -54,7 +54,7 @@ async function callAnthropic(prompt: string): Promise<string> {
     },
     body: JSON.stringify({
       model: "claude-3-5-sonnet-20241022",
-      max_tokens: 2048,
+      max_tokens: 4000, // Allow longer, more thoughtful responses
       messages: [
         {
           role: "user",
@@ -142,6 +142,10 @@ export const getRecommendation = action({
     const elementRankingsText = preferences?.rankedElements
       ? formatElementRankings(preferences.rankedElements as Array<{ element: string; rank: number }>)
       : "No preferences set";
+    
+    const themeRankingsText = preferences?.rankedThemes
+      ? formatThemeRankings(preferences.rankedThemes as Array<{ theme: string; rank: number }>)
+      : undefined;
 
     const emotionalResponses = preferences?.emotionalResponses as Record<string, "neutral" | "positive" | "negative"> | undefined;
     const positiveEmotions = emotionalResponses
@@ -165,6 +169,7 @@ export const getRecommendation = action({
     const prompt = generateRecommendationPrompt({
       userRankings: userRankingsText || "No shows ranked yet",
       userElementRankings: elementRankingsText,
+      userThemeRankings: themeRankingsText,
       totalRankedShows: totalRankedShows,
       avgTicketPrice: preferences?.avgTicketPrice,
       audiencePreference: preferences?.audiencePreference,

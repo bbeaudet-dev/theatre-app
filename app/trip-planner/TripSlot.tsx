@@ -115,9 +115,17 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
     }
   };
 
+  // Determine the main title: show title takes precedence over slot.title (Matinee/Evening)
+  const mainTitle = slot.type === "show" && show ? show.title : slot.title;
+  
+  // Determine slot background color - purple for shows
+  const slotBgColor = slot.type === "show" 
+    ? "bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800"
+    : "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700";
+
   return (
     <div
-      className={`border rounded p-1.5 hover:shadow transition-shadow cursor-pointer text-xs min-w-[200px] max-w-[300px] flex flex-col ${
+      className={`border rounded p-1.5 hover:shadow transition-shadow cursor-pointer text-xs min-w-[200px] max-w-[300px] flex flex-col ${slotBgColor} ${
         isDraggingOver ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""
       }`}
       onClick={onEdit}
@@ -127,20 +135,8 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
     >
       <div className="flex justify-between items-start gap-1 flex-1">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1 flex-wrap">
-            <span
-              className={`px-1 py-0.5 rounded text-[9px] font-medium ${typeColors[slot.type]}`}
-            >
-              {slot.type}
-            </span>
-            <span className="text-[10px] font-semibold">{slot.title}</span>
-          </div>
-
-          {slot.type === "show" && show && (
-            <div className="mt-0.5">
-              <p className="text-[10px] font-medium truncate">{show.title}</p>
-            </div>
-          )}
+          {/* Main title - show title if show exists, otherwise slot.title */}
+          <span className="text-[10px] font-semibold">{mainTitle}</span>
 
           {slot.type === "show" && displayBackupShows.length > 0 && (
             <div className="mt-0.5">
@@ -165,10 +161,15 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
         </button>
       </div>
       
-      {/* Time at bottom with different background */}
-      <div className="mt-1.5 pt-1 border-t bg-gray-100 dark:bg-zinc-800 rounded-b -mx-1.5 -mb-1.5 px-1.5 pb-1">
-        <span className="text-[9px] font-medium text-gray-700 dark:text-gray-300">
+      {/* Time and badge at bottom */}
+      <div className="mt-1.5 pt-1 border-t border-gray-300 dark:border-zinc-600 flex justify-between items-center gap-2">
+        <span className="text-[11px] font-medium text-gray-700 dark:text-gray-300">
           {timeDisplay}
+        </span>
+        <span
+          className={`px-1.5 py-0.5 rounded text-[9px] font-medium shrink-0 ${typeColors[slot.type]}`}
+        >
+          {slot.type}
         </span>
       </div>
     </div>

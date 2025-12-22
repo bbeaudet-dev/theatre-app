@@ -6,24 +6,43 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 
-// Theatre elements that users can rank
+// Theatre elements that users can rank (consolidated and refined)
 const THEATRE_ELEMENTS = [
-  "Storytelling",
-  "Dance",
-  "Choreography",
-  "Orchestration",
-  "Singalong Quality",
-  "Unique Stage Elements",
+  "Storytelling/Plot",
+  "Music/Orchestration/Singalong",
+  "Dance/Choreography",
+  "Unique Stage Elements/Prop Efficiency",
   "Wow Moments",
-  "Resonance",
-  "Morality/Message",
+  "Message/Morality/Resonance",
   "Star Actors/Actresses",
 ] as const;
 
+// Thematic elements that users can rank
+const THEME_ELEMENTS = [
+  "Self-Discovery",
+  "Hero's Journey/Adventure",
+  "Social Justice/Activism",
+  "Love/Romance",
+  "Family Dynamics",
+  "Personal Growth/Transformation",
+  "Overcoming Adversity/Underdog/Defying Odds",
+  "Historical Events",
+  "True Story/Biographical",
+  "Social/Political Commentary",
+  "Moral Complexity/Ethics",
+  "Satire/Comedy",
+] as const;
+
 type TheatreElement = typeof THEATRE_ELEMENTS[number];
+type ThemeElement = typeof THEME_ELEMENTS[number];
 
 interface RankedElement {
   element: TheatreElement;
+  rank: number;
+}
+
+interface RankedTheme {
+  theme: ThemeElement;
   rank: number;
 }
 
@@ -38,7 +57,7 @@ export default function UserPreferences() {
     api.functions.profile.updateCurrentUserPreferences
   );
 
-  // Force-ranked elements
+  // Force-ranked theatre elements
   const [rankedElements, setRankedElements] = useState<RankedElement[]>(() => {
     return THEATRE_ELEMENTS.map((el, idx) => ({
       element: el,
@@ -46,8 +65,18 @@ export default function UserPreferences() {
     }));
   });
   
+  // Force-ranked themes
+  const [rankedThemes, setRankedThemes] = useState<RankedTheme[]>(() => {
+    return THEME_ELEMENTS.map((theme, idx) => ({
+      theme,
+      rank: idx + 1,
+    }));
+  });
+  
   const [draggedElement, setDraggedElement] = useState<string | null>(null);
   const [dragOverElement, setDragOverElement] = useState<string | null>(null);
+  const [draggedTheme, setDraggedTheme] = useState<string | null>(null);
+  const [dragOverTheme, setDragOverTheme] = useState<string | null>(null);
 
   // Additional preferences
   const [avgTicketPrice, setAvgTicketPrice] = useState<number>(100);
@@ -58,10 +87,41 @@ export default function UserPreferences() {
 
   useEffect(() => {
     if (preferences) {
-      // Load ranked elements if stored
+      // Load ranked elements if stored - but only if they match current element names
       if (preferences.rankedElements) {
-        setRankedElements(preferences.rankedElements as RankedElement[]);
+        const savedElements = preferences.rankedElements as RankedElement[];
+        const currentElementNames = new Set(THEATRE_ELEMENTS);
+        const validElements = savedElements.filter(e => currentElementNames.has(e.element as TheatreElement));
+        
+        // If we have valid saved elements, use them; otherwise use defaults
+        if (validElements.length === THEATRE_ELEMENTS.length) {
+          setRankedElements(savedElements as RankedElement[]);
+        } else {
+          // Migration needed - reset to defaults
+          setRankedElements(THEATRE_ELEMENTS.map((el, idx) => ({
+            element: el,
+            rank: idx + 1,
+          })));
+        }
       }
+      
+      // Load ranked themes if stored
+      if (preferences.rankedThemes) {
+        const savedThemes = preferences.rankedThemes as RankedTheme[];
+        const currentThemeNames = new Set(THEME_ELEMENTS);
+        const validThemes = savedThemes.filter(t => currentThemeNames.has(t.theme as ThemeElement));
+        
+        if (validThemes.length === THEME_ELEMENTS.length) {
+          setRankedThemes(savedThemes as RankedTheme[]);
+        } else {
+          // Reset to defaults
+          setRankedThemes(THEME_ELEMENTS.map((theme, idx) => ({
+            theme,
+            rank: idx + 1,
+          })));
+        }
+      }
+      
       setAvgTicketPrice(preferences.avgTicketPrice || 100);
       setAudiencePreference(preferences.audiencePreference || "any");
       setSeatingPreference(preferences.seatingPreference || "close");
@@ -129,6 +189,52 @@ export default function UserPreferences() {
     return emotionalResponses[response] || "neutral";
   };
 
+  // Theme drag handlers
+  const handleThemeDragStart = (e: React.DragEvent, theme: ThemeElement) => {
+    setDraggedTheme(theme);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleThemeDragOver = (e: React.DragEvent, theme: ThemeElement) => {
+    e.preventDefault();
+    if (draggedTheme && draggedTheme !== theme) {
+      setDragOverTheme(theme);
+    }
+  };
+
+  const handleThemeDragLeave = () => {
+    setDragOverTheme(null);
+  };
+
+  const handleThemeDrop = (e: React.DragEvent, targetTheme: ThemeElement) => {
+    e.preventDefault();
+    setDragOverTheme(null);
+
+    if (!draggedTheme || draggedTheme === targetTheme) {
+      setDraggedTheme(null);
+      return;
+    }
+
+    const sourceRank = rankedThemes.find((r) => r.theme === draggedTheme)?.rank || 0;
+    const targetRank = rankedThemes.find((r) => r.theme === targetTheme)?.rank || 0;
+
+    const newRanked = [...rankedThemes];
+    const sourceIdx = newRanked.findIndex((r) => r.theme === draggedTheme);
+    const targetIdx = newRanked.findIndex((r) => r.theme === targetTheme);
+
+    newRanked[sourceIdx].rank = targetRank;
+    newRanked[targetIdx].rank = sourceRank;
+
+    newRanked.sort((a, b) => a.rank - b.rank);
+    setRankedThemes(newRanked);
+    setDraggedTheme(null);
+  };
+
+  const handleThemeDragEnd = () => {
+    setDraggedTheme(null);
+    setDragOverTheme(null);
+  };
+
   const handleSave = async () => {
     if (!userId || !token) {
       alert("Please sign in first");
@@ -139,6 +245,7 @@ export default function UserPreferences() {
       await updatePreferences({
         token,
         rankedElements: rankedElements,
+        rankedThemes: rankedThemes,
         avgTicketPrice,
         audiencePreference,
         seatingPreference,
@@ -199,6 +306,43 @@ export default function UserPreferences() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{element}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Force-ranked themes */}
+      <div className="border-t pt-6">
+        <h3 className="text-lg font-medium mb-3">
+          Rank Themes (Drag to reorder)
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Rank these thematic elements from most important (1) to least important ({THEME_ELEMENTS.length})
+        </p>
+        <div className="space-y-1">
+          {[...rankedThemes].sort((a, b) => a.rank - b.rank).map(({ theme, rank }) => {
+            const isDragging = draggedTheme === theme;
+            const isDragOver = dragOverTheme === theme;
+            return (
+              <div
+                key={theme}
+                draggable
+                onDragStart={(e) => handleThemeDragStart(e, theme)}
+                onDragOver={(e) => handleThemeDragOver(e, theme)}
+                onDragLeave={handleThemeDragLeave}
+                onDrop={(e) => handleThemeDrop(e, theme)}
+                onDragEnd={handleThemeDragEnd}
+                className={`flex items-center gap-2 py-1.5 px-2 hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-grab active:cursor-grabbing ${
+                  isDragging ? "opacity-50" : ""
+                } ${isDragOver ? "bg-blue-50 dark:bg-blue-900/20 border-b-2 border-blue-500" : ""}`}
+              >
+                <div className="shrink-0 w-8 text-center text-xs font-semibold text-gray-500 dark:text-gray-400">
+                  #{rank}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{theme}</p>
                 </div>
               </div>
             );

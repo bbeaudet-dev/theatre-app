@@ -1,0 +1,88 @@
+---
+collection: "fractal-weekly-reflection"
+title: "Pulling Back the Curtain"
+publishedAt: "2025-07-05"
+summary: ""
+tags: ["Fractal 5"]
+---
+
+_Week 5 of Fractal Tech's AI Accelerator & Engineering Bootcamp_
+_See the final result of this week's project on my portfolio page: [link to my Core Defender project portfolio page]()_
+
+"How you do things is not who you are. The answer is not condemnation by correction."
+
+My wife told me this recently, and this week I would discover just how much I needed to learn it for myself. What started as pulling back the curtain on mobile device capabilities turned into pulling back the curtain on my own relationship with failure, identity, and the things I build.
+
+This week we dove into React Native and chose projects that tapped into mobile devices' native capabilities. What started as displaying my phone's live accelerometer data turned into a [subversive puzzle game](add link to my portfolio core defender game) requiring players to literally throw their phone across the room, and a rollercoaster of a journey to get there.
+
+### Behind the Screen
+
+There's something profound about realizing your phone isn't just a magic screen that lives in your pocket—it's a complex sensor array more sophisticated than most scientific instruments from a generation ago. This was another moment of "expanding my previous limitations of imaginable possibilities," similar to [one of my earlier revelations](link to my blog post taking the leap) that "the limit of a computer is not just what the app on the screen allows me to do." This time, I realized the limit isn't merely "displaying things on screen" or "providing buttons to tap"—it's about accessing the complex sensors that make everyday features feel effortless.
+
+Take Google Maps: it knows where you are, which direction you're facing, how fast you're traveling compared to speed limits. We've become so accustomed to this “omniscience” that we’ve abstracted them away as essentially “magic” and we rarely stop to ask _how these features are actually made_. Your phone is constantly measuring magnetic fields to determine orientation, triangulating GPS signals bounced off satellites, calculating velocity from position changes over time. Each "simple" feature is actually a symphony of sensors working in perfect coordination.
+
+We take this for granted because our devices feel like extensions of ourselves—"I always have my device on me, of COURSE it should know where I am! I know where I am..." But there is a large gap between human intuition and digital sensing. You know you're facing north because you can see landmarks or the sun's position. But your phone does not have intelligence—instead, it feels the invisible pull of the Earth's magnetic field, the same magnetic field that pulls iron filings into patterns and swings compass needles toward magnetic north, and then translates those physical tugs into coordinates in 3-dimensional space. Just like your inner ear uses physical “sensors” to detect balance through forces you can't consciously feel, your phone is constantly sensing and interpreting these “invisible forces” of electromagnetic fields and gravitational pull.
+
+The deeper I dug into React Native and native capabilities, the more I realized I'd only ever lived on the surface of what these pocket computers can perceive. I'd pulled back the curtain just enough to become fascinated with what I'd found, and hungry to understand how much more was hidden behind the interface.
+
+### The Couch Cushion Hypothesis
+
+My project started simple—not even knowing what native capabilities meant, I just started tinkering. The first thing I got working was displaying live accelerometer data on my screen. Magical stuff—maybe like how cooking something yourself makes it taste better, just seeing a number respond to me waving my phone around was fascinating.
+
+Then I thought: "Hey, since I can't see the actual number while waving my phone around, maybe I could track the maximum value!" And then: "I can add a data plot and show a graph over time!"
+
+And finally, the thought that led to Core Defender: "What if I made a puzzle where someone has to achieve a certain acceleration value to unlock the next level?"
+
+After experimenting, the max I could reach sitting at my desk was ~50 m/s². So naturally I asked: "What would I have to do to get higher? Could I set the required value so players would need some clever solution to reach 60, 75, 100 m/s²?"
+
+I immediately thought of the couches in the lounge. I walked over and chucked my phone into the cushions with all my might. I hit around 90 m/s²—my highest yet. While there are probably clever ways to "cheese” this puzzle, I felt I had a solid puzzle design requiring a clever and delightful solution. My brain instantly lit up like a Christmas tree with dozens of other ideas for crafting puzzles from native capabilities. (screenshot of accelerometer app)
+
+### Off to the Races
+
+Although my mind was blown by these discoveries, I couldn't shake the feeling that this puzzle game would end up being boring. Sure, it's fascinating to peel back the curtain on how compass or camera functionality works, but is a puzzle where you figure out how to use a compass really going to be fun?
+
+That's when the corruption concept was born: what if the user's phone has become "corrupted," and they must "restore" each device function by solving gamified puzzles like the couch-chucking one?
+
+The plan was ambitious: disguise the whole game as a generic tower defense—user logs in, sees a generic start screen, plays an intentionally underwhelming tower defense game protecting your circuit's CORE from approaching bugs. But it would be impossible to win, triggering an "infection sequence" where the screen glitches into "emergency bootup mode," leading to what I originally called the “Vault”—a barebones display showing the corrupted core and apps needing restoration.
+
+I drew inspiration from games like Anatomy (add link to markiplier's anatomy video on youtube), There is No Game, and later discovered Pony Island and Blackbox had similar subversive elements. I intended more horror elements, where the “Core" is actually a living entity that corrupted everything, with restoring it as the final boss, but I didn't get far into this. (show unused animation of eye)
+
+The idea quickly morphed into building an actual phone interface with navigation like your real device. And that's when I went buckwild adding new apps. What was originally ~4 apps and a "final boss" turned into me adding features as fast as humanly possible: (video of corrupted app names)
+
+Music app where players select theme songs! Camera puzzles with hidden messages! Microphone requiring certain decibel levels! WiFi! Flashlight! Clock with timer and stopwatch! Battery puzzles involving charge levels! Games! Weather! Calculator! Maps and location puzzles!
+
+I quickly went overboard. By Wednesday, my scope was in shambles. I ran into the existential question: "Am I actually building anything here?" Was I just reinventing a crappier version of the literal phone? Rather than implementing a couple apps really well and making them fun, I had 15+ apps, maybe half working, none really gamified.
+
+### Identity Crisis
+
+This was my classic recurring problem: making things look good before they work well. I'd disappear into visual element rabbit holes while critical functionality remained broken. On Thursday, I spent most of the day building out the tower defense "decoy screen," intending to really _sell_ that initial “woah” moment of discovery and infection. But it broke other features and my project was suddenly in shambles on the day meant for polishing.
+
+At this point, I had the strong urge to give up, to scrap the project and accept I wouldn't have a portfolio piece at the end of the week like everyone else. Nothing felt cohesive—the core was broken, maybe just reinventing the wheel, scope exploded, time running out. Game mechanics going one direction, visuals another, neither connecting to my original inspiration.
+
+With guidance from Paris, I scrapped almost a full day of work. Fantastic decision in hindsight, but brutal in the moment. I get very attached to code I've written and things I’ve built, even when it goes against other principles or objectives. I attach a lot of my identity to what I build. Reverting changes literally felt like losing part of myself.
+
+### Cutting It Close
+
+The day before demos, I listed everything needed to make the game feel "finished." Seemed doable. Then I spent that whole day accomplishing basically nothing major on the list. The silver lining: I spent Friday removing bugs and cleaning up features feverishly.
+
+On Saturday, I had Cursor working nonstop from morning until literally seconds before presenting. Making significant changes right before demo—any one could've caused gamebreaking errors. On top of that, I hadn't tested whether people could actually access and play the game.
+
+The demo went way better than I could've hoped. Moments after posting the QR code, I heard my buggy, cursed sound effects coming from several phones. Immediate wave of relief and confidence. For as much pressure as I'd placed on myself and as low as my confidence in the game was, it was quite delightful. Sloppy? Very. But that's often secondary to providing a delightful baseline experience.
+
+Everything led to the full circle moment: live demo of the accelerometer couch cushion puzzle, the original inspiration. With the phone screen projected, I gripped my phone and launched it into cushions with Olympic javelin thrower conviction. **103 m/s²**. The perfect moment to successfully close the loop—so much work and buildup for one moment, and it worked!
+
+### For What It's Worth
+
+In a lot of ways, I got lucky and took shortcuts. I felt shame, like a failure, like an imposter when I was ready to scrap the project. But I'm actually pretty happy with how it turned out.
+
+After my end-of-day reflection about attaching too much self-worth to things I create and black-and-white thinking, Andrew messaged: "fwiw i think yours was one of the best apps we saw today. was genuinely fun, used mobile well, was well-designed, responsive, and basically didn't have any major bugs that stopped my experience." Paris agreed: "same here, I think for what it was you did a great job on polish."
+
+It's an important reminder to believe in myself. To not give up. To not attach too much identity to things I build, but also to believe in what I can make and my capabilities.
+
+Turns out my wife was right again, and discovering this on my own this week was an extremely valuable lesson. This week wasn't just about pulling back the curtain on native mobile capabilities—it was about pulling back the curtain on my own development process, my relationship with failure, and my tendency to tie my identity to my work.
+
+It’s in these moments when we feel the most down, have the least hope, ready to give up and scrap the whole project, admit failure, that we have the greatest opportunities to learn something new about how we relate to ourselves and the world, and to transform ourselves into someone new.
+
+And often those moments come about from something simple or silly, like chucking your phone into a couch cushion and calling it game design.
+
+Until next week.
