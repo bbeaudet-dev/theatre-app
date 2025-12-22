@@ -49,7 +49,7 @@ export default defineSchema({
     openingDate: v.optional(v.number()), // Unix timestamp
     previewDate: v.optional(v.number()),
     closingDate: v.optional(v.number()), // null for open runs
-    isOpenRun: v.boolean(),
+    isOpenRun: v.optional(v.boolean()), 
     isInPreviews: v.optional(v.boolean()),
     description: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
@@ -152,15 +152,20 @@ export default defineSchema({
   // User general theatre preferences (profile questions)
   userPreferences: defineTable({
     userId: v.id("users"),
-    // General preferences
-    danceAppreciation: v.optional(v.number()), // 1-5 scale
-    liveOrchestraAppreciation: v.optional(v.boolean()),
-    listensToSoundtracks: v.optional(v.boolean()),
-    appreciatesStageElements: v.optional(v.number()), // 1-5 scale
-    appreciatesPropEfficiency: v.optional(v.number()), // 1-5 scale
-    valuesMessageMoral: v.optional(v.number()), // 1-5 scale
-    valuesActorQuality: v.optional(v.number()), // 1-5 scale
-    // Additional preferences can be added as needed
+    // Force-ranked theatre elements
+    rankedElements: v.optional(
+      v.array(
+        v.object({
+          element: v.string(),
+          rank: v.number(),
+        })
+      )
+    ),
+    // Additional preferences
+    avgTicketPrice: v.optional(v.number()),
+    audiencePreference: v.optional(v.string()), // "any", "adults", "family", "kids"
+    seatingPreference: v.optional(v.string()), // "close", "orchestra", "mezzanine", "balcony", "any"
+    emotionalResponses: v.optional(v.any()), // Record<string, "neutral" | "positive" | "negative">
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_user", ["userId"]),

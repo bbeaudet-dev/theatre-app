@@ -7,7 +7,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import ShowCard from "./ShowCard";
 
 interface FindTabProps {
-  tripId: Id<"trips">;
+  tripId: Id<"trips"> | null;
 }
 
 export default function FindTab({ tripId }: FindTabProps) {

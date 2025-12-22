@@ -19,10 +19,10 @@ interface ShowCardProps {
       saturday: string | null;
       sunday: string | null;
     };
-    isOpenRun: boolean;
+    isOpenRun?: boolean;
     closingDate?: number;
   };
-  tripId: Id<"trips">;
+  tripId: Id<"trips"> | null;
   draggable?: boolean;
 }
 
@@ -39,7 +39,10 @@ function formatTime(time: string): string {
 }
 
 export default function ShowCard({ show, tripId, draggable = false }: ShowCardProps) {
-  const trip = useQuery(api.functions.trips.getTrip, { tripId });
+  const trip = useQuery(
+    api.functions.trips.getTrip,
+    tripId ? { tripId } : "skip"
+  );
   
   // Check if show is in trip as primary or backup
   const showInTrip = trip ? (() => {
@@ -55,7 +58,9 @@ export default function ShowCard({ show, tripId, draggable = false }: ShowCardPr
   const handleDragStart = (e: React.DragEvent) => {
     if (draggable) {
       e.dataTransfer.setData("showId", show._id);
-      e.dataTransfer.setData("tripId", tripId);
+      if (tripId) {
+        e.dataTransfer.setData("tripId", tripId);
+      }
     }
   };
 

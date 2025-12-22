@@ -7,7 +7,7 @@ import { useCurrentUser } from "@/lib/auth-client";
 import ShowCard from "./ShowCard";
 
 interface UserListsTabProps {
-  tripId: Id<"trips">;
+  tripId: Id<"trips"> | null;
 }
 
 export default function UserListsTab({ tripId }: UserListsTabProps) {

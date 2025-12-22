@@ -39,6 +39,8 @@ export const getShows = query({
 });
 
 // Add or update a show
+// Note: This function does its own matching, so when called from sync, the shows have already been matched
+// and this will find existing shows and update them. For truly new shows, use insertShow instead.
 export const upsertShow = internalMutation({
   args: {
     title: v.string(),
@@ -56,7 +58,7 @@ export const upsertShow = internalMutation({
     openingDate: v.optional(v.number()),
     previewDate: v.optional(v.number()),
     closingDate: v.optional(v.number()),
-    isOpenRun: v.boolean(),
+    isOpenRun: v.optional(v.boolean()),
     isInPreviews: v.optional(v.boolean()),
     description: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
@@ -111,6 +113,58 @@ export const upsertShow = internalMutation({
       });
       return showId;
     }
+  },
+});
+
+// Insert a new show (no matching - assumes show doesn't exist)
+// Use this for shows that have already been verified as new by the sync process
+export const insertShow = internalMutation({
+  args: {
+    title: v.string(),
+    district: v.optional(
+      v.union(
+        v.literal("broadway"),
+        v.literal("off-broadway"),
+        v.literal("touring"),
+        v.literal("local")
+      )
+    ),
+    location: v.optional(v.string()),
+    venue: v.optional(v.string()),
+    theatre: v.optional(v.string()),
+    openingDate: v.optional(v.number()),
+    previewDate: v.optional(v.number()),
+    closingDate: v.optional(v.number()),
+    isOpenRun: v.optional(v.boolean()),
+    isInPreviews: v.optional(v.boolean()),
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    showtimes: v.optional(
+      v.object({
+        monday: v.union(v.string(), v.null()),
+        tuesday: v.union(v.string(), v.null()),
+        wednesday: v.union(v.string(), v.null()),
+        thursday: v.union(v.string(), v.null()),
+        friday: v.union(v.string(), v.null()),
+        saturday: v.union(v.string(), v.null()),
+        sunday: v.union(v.string(), v.null()),
+      })
+    ),
+    sourceId: v.optional(v.string()),
+    sourceUrl: v.optional(v.string()),
+    syncSource: v.optional(v.string()),
+    lastSyncedAt: v.optional(v.number()),
+    confidenceScore: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    // Always insert - no matching logic
+    const showId = await ctx.db.insert("shows", {
+      ...args,
+      createdAt: now,
+      updatedAt: now,
+    });
+    return showId;
   },
 });
 

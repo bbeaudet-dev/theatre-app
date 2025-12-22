@@ -11,7 +11,7 @@ crons.daily(
     hourUTC: 2, // 2 AM UTC
     minuteUTC: 0,
   },
-  internal.functions.dataSync.syncAllShows,
+  internal.functions.sync.dataSync.syncAllShows,
   {}
 );
 

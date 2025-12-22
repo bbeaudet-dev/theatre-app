@@ -1,65 +1,9 @@
-import { action, internalAction, internalMutation } from "../_generated/server";
+import { action, internalAction, internalMutation } from "../../_generated/server";
 import { v } from "convex/values";
-import { Id } from "../_generated/dataModel";
-import { api, internal } from "../_generated/api";
-import { EXTRACTION_PROMPT, VALIDATION_PROMPT } from "../lib/ai/extraction";
-
-// Data source configuration
-// Verified URLs from playbill.com and broadway.com
-// These pages render all shows without pagination or JavaScript requirements
-const DATA_SOURCES = [
-  // Playbill.com - Well-structured, reliable source
-  {
-    name: "playbill-broadway",
-    url: "https://playbill.com/shows/broadway",
-    enabled: true,
-    type: "current", // current, upcoming, historical
-  },
-  {
-    name: "playbill-offbroadway",
-    url: "https://playbill.com/shows/offbroadway",
-    enabled: false,
-    type: "current",
-  },
-  {
-    name: "playbill-upcoming-broadway",
-    url: "https://playbill.com/article/schedule-of-upcoming-and-announced-broadway-shows",
-    enabled: false,
-    type: "upcoming",
-  },
-  // Broadway.com - Secondary source for validation
-  {
-    name: "broadway-com-all",
-    url: "https://www.broadway.com/shows/tickets/",
-    enabled: false,
-    type: "current",
-  },
-  {
-    name: "broadway-com-broadway",
-    url: "https://www.broadway.com/shows/tickets/?category=broadway",
-    enabled: false,
-    type: "current",
-  },
-  {
-    name: "broadway-com-offbroadway",
-    url: "https://www.broadway.com/shows/tickets/?category=off-broadway",
-    enabled: false,
-    type: "current",
-  },
-  // Historical sources (for rankings feature - disabled by default, can enable later)
-  // {
-  //   name: "playbill-vault",
-  //   url: "https://playbill.com/vault",
-  //   enabled: false,
-  //   type: "historical",
-  // },
-  // {
-  //   name: "broadway-com-classics",
-  //   url: "https://www.broadway.com/shows/tickets/?category=classics",
-  //   enabled: false,
-  //   type: "historical",
-  // },
-];
+import { Id } from "../../_generated/dataModel";
+import { api, internal } from "../../_generated/api";
+import { EXTRACTION_PROMPT, VALIDATION_PROMPT } from "../../lib/ai/extraction";
+import { DATA_SOURCES, SYNC_CONFIG } from "../../config/dataSources";
 
 // Helper to call OpenAI API
 async function callOpenAI(prompt: string, content: string): Promise<string> {
@@ -187,10 +131,14 @@ export const fetchSourceContent = internalAction({
       const response = await retryWithBackoff(async () => {
         const res = await fetch(args.sourceUrl, {
           headers: {
-            "User-Agent": "Mozilla/5.0 (compatible; TheatreAppBot/1.0)",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
           },
           // Add timeout
-          signal: AbortSignal.timeout(30000), // 30 second timeout
+          signal: AbortSignal.timeout(SYNC_CONFIG.fetchTimeout),
         });
 
         if (!res.ok) {
@@ -207,7 +155,7 @@ export const fetchSourceContent = internalAction({
         }
 
         return { ok: true, text: await res.text() };
-      }, 3, 2000); // 3 retries, starting with 2 second delay
+      }, SYNC_CONFIG.fetchRetries, SYNC_CONFIG.fetchRetryDelay);
 
       if (!response.ok) {
         return {
@@ -381,6 +329,12 @@ export const syncAllShows = internalAction({
     errors: number;
     reportId: Id<"syncReports"> | null;
     duration: number;
+    errorDetails?: string[];
+    extractionSummary?: {
+      sourcesAttempted: string[];
+      sourcesProcessed: string[];
+      showsPerSource: Array<{ source: string; count: number }>;
+    };
   }> => {
     const startTime = Date.now();
     const errors: string[] = [];
@@ -389,39 +343,107 @@ export const syncAllShows = internalAction({
     let showsScanned = 0;
 
     // 1. Fetch content from all enabled sources
-    for (const source of DATA_SOURCES) {
-      if (!source.enabled) continue;
+    const enabledSources = DATA_SOURCES.filter(s => s.enabled);
+    console.log(`\n=== STARTING SYNC ===`);
+    console.log(`Enabled sources (${enabledSources.length}): ${enabledSources.map(s => s.name).join(", ")}`);
+    console.log(`Total sources configured: ${DATA_SOURCES.length}`);
+    
+    let enabledIndex = 0; // Track index within enabled sources for logging
+    for (let i = 0; i < DATA_SOURCES.length; i++) {
+      const source = DATA_SOURCES[i];
+      if (!source.enabled) {
+        console.log(`[${i + 1}/${DATA_SOURCES.length}] Skipping disabled source: ${source.name} (enabled: ${source.enabled})`);
+        continue;
+      }
 
+      enabledIndex++;
+      console.log(`\n[${enabledIndex}/${enabledSources.length}] Processing source: ${source.name}`);
+      console.log(`  URL: ${source.url}`);
+      console.log(`  Type: ${source.type}`);
+      
       try {
-        const fetchResult = await ctx.runAction(internal.functions.dataSync.fetchSourceContent, {
+        console.log(`  → Fetching content...`);
+        const fetchStartTime = Date.now();
+        const fetchResult = await ctx.runAction(internal.functions.sync.dataSync.fetchSourceContent, {
           sourceUrl: source.url,
         });
+        const fetchDuration = Date.now() - fetchStartTime;
 
         if (!fetchResult.success || !fetchResult.html) {
-          errors.push(`Failed to fetch from ${source.name}: ${fetchResult.error || "Unknown error"}`);
+          const errorMsg = `Failed to fetch from ${source.name}: ${fetchResult.error || "Unknown error"}`;
+          errors.push(errorMsg);
+          console.error(`  ✗ ${errorMsg}`);
+          console.log(`  Duration: ${fetchDuration}ms`);
           continue;
         }
 
+        console.log(`  ✓ Fetched ${fetchResult.html.length.toLocaleString()} characters in ${fetchDuration}ms`);
+
         // 2. Extract show data using AI (action, so use api)
-        const extracted = await ctx.runAction(api.functions.dataSync.extractShowDataWithAI, {
+        console.log(`  → Extracting shows with AI...`);
+        const extractStartTime = Date.now();
+        const extracted = await ctx.runAction(api.functions.sync.dataSync.extractShowDataWithAI, {
           htmlContent: fetchResult.html,
           sourceName: source.name,
           sourceUrl: source.url,
         });
+        const extractDuration = Date.now() - extractStartTime;
 
+        console.log(`  ✓ Extracted ${extracted.length} shows in ${extractDuration}ms`);
+        if (extracted.length > 0) {
+          console.log(`  → Sample shows: ${extracted.slice(0, 3).map((s: any) => s.title || "untitled").join(", ")}`);
+        }
+        
         extractedShowsBySource[source.name] = extracted;
         allExtractedShows.push(...extracted);
         showsScanned += extracted.length;
       } catch (error: any) {
-        errors.push(`Error processing ${source.name}: ${error.message}`);
-        console.error(`Error processing ${source.name}:`, error);
+        const errorMsg = `Error processing ${source.name}: ${error.message}`;
+        errors.push(errorMsg);
+        console.error(`  ✗ ${errorMsg}`);
+        console.error(`  Stack: ${error.stack || "No stack trace"}`);
       }
     }
 
+    console.log(`\n=== EXTRACTION SUMMARY ===`);
+    console.log(`Total shows scanned: ${showsScanned.toLocaleString()}`);
+    console.log(`Total extracted shows: ${allExtractedShows.length.toLocaleString()}`);
+    console.log(`Sources processed: ${Object.keys(extractedShowsBySource).length}/${enabledSources.length}`);
+    console.log(`Shows per source:`, Object.entries(extractedShowsBySource).map(([name, shows]) => `  ${name}: ${shows.length}`).join("\n"));
+    console.log(`Errors: ${errors.length}`);
+    if (errors.length > 0) {
+      console.log(`Error details:`, errors);
+    }
+
     // 3. Get existing shows from database
+    // If we didn't scan any shows, abort early to avoid marking everything as deleted
+    if (showsScanned === 0 && allExtractedShows.length === 0) {
+      console.error("CRITICAL: No shows were scanned from any source. Aborting sync to prevent data loss.");
+      return {
+        success: false,
+        showsScanned: 0,
+        newShows: 0,
+        updatedShows: 0,
+        deletedShows: 0,
+        errors: errors.length,
+        reportId: null,
+        duration: Date.now() - startTime,
+        errorDetails: errors, // Include errors in response so user can see them
+        extractionSummary: {
+          sourcesAttempted: DATA_SOURCES.filter(s => s.enabled).map(s => s.name),
+          sourcesProcessed: Object.keys(extractedShowsBySource),
+          showsPerSource: Object.entries(extractedShowsBySource).map(([name, shows]) => ({ source: name, count: shows.length })),
+        },
+      };
+    }
+
+    console.log(`\n=== FETCHING EXISTING SHOWS ===`);
+    const existingShowsQueryStart = Date.now();
     const existingShows = await ctx.runQuery(api.functions.calendar.getShows, {});
+    console.log(`Found ${existingShows.length.toLocaleString()} existing shows in database (${Date.now() - existingShowsQueryStart}ms)`);
 
     // 4. Normalize and group shows by title+theatre for matching
+    console.log(`\n=== NORMALIZING AND GROUPING SHOWS ===`);
     const showMap = new Map<string, any>();
     const sourceGroups: Record<string, any[]> = {};
 
@@ -433,12 +455,24 @@ export const syncAllShows = internalAction({
       sourceGroups[key].push(extracted);
     }
 
+    console.log(`Grouped into ${Object.keys(sourceGroups).length.toLocaleString()} unique show groups`);
+    const multiSourceGroups = Object.values(sourceGroups).filter(group => group.length > 1);
+    if (multiSourceGroups.length > 0) {
+      console.log(`  ${multiSourceGroups.length} shows found in multiple sources (will validate)`);
+    }
+
     // 5. Validate shows from multiple sources
+    console.log(`\n=== VALIDATING SHOWS ===`);
     const validatedShows: any[] = [];
+    let validationCount = 0;
     for (const [key, sources] of Object.entries(sourceGroups)) {
       try {
         if (sources.length > 1) {
-          const validated = await ctx.runAction(api.functions.dataSync.validateShowDataWithAI, {
+          validationCount++;
+          if (validationCount % 10 === 0) {
+            console.log(`  Validating... (${validationCount}/${multiSourceGroups.length} multi-source groups)`);
+          }
+          const validated = await ctx.runAction(api.functions.sync.dataSync.validateShowDataWithAI, {
             showDataArray: sources,
           });
           if (validated) validatedShows.push(validated);
@@ -451,6 +485,7 @@ export const syncAllShows = internalAction({
         errors.push(`Validation failed for ${key}: ${error.message}`);
       }
     }
+    console.log(`✓ Validated ${validatedShows.length.toLocaleString()} shows`);
 
     // 6. Compare with existing shows and detect changes
     const newShows: any[] = [];
@@ -492,9 +527,10 @@ export const syncAllShows = internalAction({
     console.log(`Found ${newShows.length} new shows, ${updatedShows.length} shows to update`);
 
     // 7. Find deleted shows (existing shows not found in any source)
-    const deletedShows = existingShows.filter(
-      (existing: any) => !matchedExistingIds.has(existing._id)
-    );
+    // CRITICAL: Only mark shows as deleted if we successfully extracted shows from sources
+    const deletedShows = showsScanned > 0 
+      ? existingShows.filter((existing: any) => !matchedExistingIds.has(existing._id))
+      : []; // Don't mark anything as deleted if we didn't scan any shows
 
     // 8. Upsert changes to database
     const newShowIds: Id<"shows">[] = [];
@@ -502,8 +538,10 @@ export const syncAllShows = internalAction({
     const now = Date.now();
 
     // Insert new shows
-    console.log(`Attempting to insert ${newShows.length} new shows`);
-    for (const show of newShows) {
+    console.log(`\n=== INSERTING NEW SHOWS ===`);
+    console.log(`Attempting to insert ${newShows.length.toLocaleString()} new shows`);
+    for (let i = 0; i < newShows.length; i++) {
+      const show = newShows[i];
       try {
         if (!show.title) {
           errors.push(`Skipping show with missing title: ${JSON.stringify(show)}`);
@@ -511,68 +549,102 @@ export const syncAllShows = internalAction({
           continue;
         }
 
-        console.log(`Inserting new show: "${show.title}"`);
-        const showId = await ctx.runMutation(internal.functions.calendar.upsertShow, {
+        if ((i + 1) % 10 === 0 || i === 0) {
+          console.log(`  Inserting... (${i + 1}/${newShows.length})`);
+        }
+        
+        // Build insert object - all fields except title are optional
+        const insertData: any = {
           title: show.title,
-          theatre: show.theatre,
-          district: show.district as any,
+          theatre: show.theatre ?? undefined,
+          district: show.district ?? undefined,
           openingDate: show.openingDate ? new Date(show.openingDate).getTime() : undefined,
           previewDate: show.previewDate ? new Date(show.previewDate).getTime() : undefined,
           closingDate: show.closingDate ? new Date(show.closingDate).getTime() : undefined,
-          isOpenRun: show.isOpenRun ?? true,
-          isInPreviews: show.isInPreviews,
-          description: show.description,
-          imageUrl: show.imageUrl,
-          showtimes: show.showtimes,
-          sourceId: show.sourceId || show.title, // Use title as fallback ID
-          sourceUrl: show.sourceUrl,
-          syncSource: show.sourceName,
+          isOpenRun: show.isOpenRun ?? undefined,
+          isInPreviews: show.isInPreviews ?? undefined,
+          description: show.description ?? undefined,
+          imageUrl: show.imageUrl ?? undefined,
+          sourceId: show.sourceId ?? show.title, // Use title as fallback ID
+          sourceUrl: show.sourceUrl ?? undefined,
+          syncSource: show.sourceName ?? undefined,
           lastSyncedAt: now,
-          confidenceScore: show.confidence || 0.8,
-        });
+          confidenceScore: show.confidence ?? undefined,
+        };
+        
+        // Only include showtimes if it's a valid object (null/undefined are handled by omitting the field)
+        // The schema accepts showtimes as optional, so omitting it (undefined) is fine
+        if (show.showtimes != null && typeof show.showtimes === 'object') {
+          insertData.showtimes = show.showtimes;
+        }
+        
+        const showId = await ctx.runMutation(internal.functions.calendar.insertShow, insertData);
         if (showId) newShowIds.push(showId as Id<"shows">);
       } catch (error: any) {
-        errors.push(`Failed to insert show ${show.title}: ${error.message}`);
+        const errorMsg = `Failed to insert show ${show.title}: ${error.message}`;
+        errors.push(errorMsg);
+        console.error(`  ✗ [${i + 1}/${newShows.length}] ${errorMsg}`);
       }
     }
+    console.log(`✓ Inserted ${newShowIds.length.toLocaleString()}/${newShows.length.toLocaleString()} new shows`);
 
     // Update existing shows (with error handling - continue on individual failures)
-    for (const { show, existingId } of updatedShows) {
+    console.log(`\n=== UPDATING EXISTING SHOWS ===`);
+    console.log(`Attempting to update ${updatedShows.length.toLocaleString()} shows`);
+    for (let i = 0; i < updatedShows.length; i++) {
+      const { show, existingId } = updatedShows[i];
       try {
         if (!existingId) {
           errors.push(`Skipping update for show with missing ID: ${show.title}`);
           continue;
         }
 
-        const showId = await ctx.runMutation(internal.functions.calendar.updateShow, {
+        // Build update object - all fields except showId are optional
+        // Convert null to undefined since schema uses v.optional() which expects undefined, not null
+        const updateData: any = {
           showId: existingId,
-          theatre: show.theatre,
-          district: show.district as any,
+          theatre: show.theatre ?? undefined,
+          district: show.district ?? undefined,
           openingDate: show.openingDate ? new Date(show.openingDate).getTime() : undefined,
           previewDate: show.previewDate ? new Date(show.previewDate).getTime() : undefined,
           closingDate: show.closingDate ? new Date(show.closingDate).getTime() : undefined,
-          isOpenRun: show.isOpenRun ?? true,
-          isInPreviews: show.isInPreviews,
-          description: show.description,
-          imageUrl: show.imageUrl,
-          showtimes: show.showtimes,
-          sourceUrl: show.sourceUrl,
-          syncSource: show.sourceName,
+          isOpenRun: show.isOpenRun ?? undefined,
+          isInPreviews: show.isInPreviews ?? undefined,
+          description: show.description ?? undefined,
+          imageUrl: show.imageUrl ?? undefined,
+          sourceUrl: show.sourceUrl ?? undefined,
+          syncSource: show.sourceName ?? undefined,
           lastSyncedAt: now,
-          confidenceScore: show.confidence || 0.8,
-        });
+          confidenceScore: show.confidence ?? undefined,
+        };
+        
+        // Only include showtimes if it's not null/undefined (must be an object)
+        if (show.showtimes != null) {
+          updateData.showtimes = show.showtimes;
+        }
+        
+        const showId = await ctx.runMutation(internal.functions.calendar.updateShow, updateData);
         if (showId) updatedShowIds.push(existingId);
       } catch (error: any) {
-        errors.push(`Failed to update show ${show.title}: ${error.message}`);
+        const errorMsg = `Failed to update show ${show.title}: ${error.message}`;
+        errors.push(errorMsg);
+        console.error(`  ✗ [${i + 1}/${updatedShows.length}] ${errorMsg}`);
       }
     }
+    console.log(`✓ Updated ${updatedShowIds.length.toLocaleString()}/${updatedShows.length.toLocaleString()} shows`);
 
     // Mark deleted shows as closed (don't delete, just update)
+    console.log(`\n=== MARKING DELETED SHOWS ===`);
+    console.log(`Found ${deletedShows.length.toLocaleString()} shows not in any source`);
     const deletedShowIds: Id<"shows">[] = [];
-    for (const deleted of deletedShows) {
+    for (let i = 0; i < deletedShows.length; i++) {
+      const deleted = deletedShows[i];
       // Only mark as deleted if it was previously an open run
       if (deleted.isOpenRun) {
         try {
+          if ((i + 1) % 10 === 0 || i === 0) {
+            console.log(`  Marking as closed... (${i + 1}/${deletedShows.length})`);
+          }
           await ctx.runMutation(internal.functions.calendar.updateShow, {
             showId: deleted._id,
             isOpenRun: false,
@@ -581,19 +653,25 @@ export const syncAllShows = internalAction({
           });
           deletedShowIds.push(deleted._id);
         } catch (error: any) {
-          errors.push(`Failed to mark show ${deleted.title} as closed: ${error.message}`);
+          const errorMsg = `Failed to mark show ${deleted.title} as closed: ${error.message}`;
+          errors.push(errorMsg);
+          console.error(`  ✗ ${errorMsg}`);
         }
       }
     }
+    console.log(`✓ Marked ${deletedShowIds.length.toLocaleString()} shows as closed`);
 
     // 9. Create sync report
-    const reportId: Id<"syncReports"> | null = await ctx.runMutation(internal.functions.dataSync.createSyncReport, {
+    console.log(`\n=== CREATING SYNC REPORT ===`);
+    console.log(`Summary: ${showsScanned.toLocaleString()} scanned, ${newShowIds.length.toLocaleString()} new, ${updatedShowIds.length.toLocaleString()} updated, ${deletedShowIds.length.toLocaleString()} deleted, ${errors.length} errors`);
+    const reportId: Id<"syncReports"> | null = await ctx.runMutation(internal.functions.sync.dataSync.createSyncReport, {
       showsScanned,
       newShows: newShowIds,
       updatedShows: updatedShowIds,
       deletedShows: deletedShowIds,
       errors: errors.length > 0 ? errors : undefined,
     });
+    console.log(`Sync report created with ID: ${reportId}`);
 
     // 10. Fetch existing show data for comparison (for updated shows)
     const updatedShowsWithOldData: any[] = [];
@@ -619,25 +697,28 @@ export const syncAllShows = internalAction({
 
     // 11. Send email report (only if report was created successfully)
     if (reportId) {
+      console.log(`Sending email report for reportId: ${reportId}`);
       try {
-        await ctx.runAction(internal.functions.email.sendSyncReportEmail, {
+        const emailResult = await ctx.runAction(internal.functions.sync.email.sendSyncReportEmail, {
           reportId,
           showsScanned,
           newShowsCount: newShowIds.length,
           updatedShowsCount: updatedShowIds.length,
           deletedShowsCount: deletedShowIds.length,
           errors: errors.length > 0 ? errors : undefined,
-          newShows: newShows.map((s: any) => ({
-            title: s.title,
-            theatre: s.theatre,
-            district: s.district,
-            openingDate: s.openingDate,
-            closingDate: s.closingDate,
-            isOpenRun: s.isOpenRun,
-            syncSource: s.sourceName,
-            sourceUrl: s.sourceUrl,
-            confidence: s.confidence,
-          })),
+          // Map new shows for email - only include fields that have values (schema uses v.optional())
+          newShows: newShows.map((s: any) => {
+            const mapped: any = { title: s.title };
+            if (s.theatre) mapped.theatre = s.theatre;
+            if (s.district) mapped.district = s.district;
+            if (s.openingDate) mapped.openingDate = s.openingDate;
+            if (s.closingDate) mapped.closingDate = s.closingDate;
+            if (s.isOpenRun !== undefined && s.isOpenRun !== null) mapped.isOpenRun = s.isOpenRun;
+            if (s.sourceName) mapped.syncSource = s.sourceName;
+            if (s.sourceUrl) mapped.sourceUrl = s.sourceUrl;
+            if (s.confidence !== undefined && s.confidence !== null) mapped.confidence = s.confidence;
+            return mapped;
+          }),
           updatedShows: updatedShowsWithOldData,
           deletedShows: deletedShows.map((s: any) => ({
             title: s.title,
@@ -647,10 +728,13 @@ export const syncAllShows = internalAction({
           })),
           sourcesScanned: DATA_SOURCES.filter((s) => s.enabled).map((s) => s.name),
         });
+        console.log(`Email sent successfully:`, emailResult);
       } catch (error: any) {
         console.error("Failed to send email report:", error);
         errors.push(`Email report failed: ${error.message}`);
       }
+    } else {
+      console.error("Cannot send email - reportId is null");
     }
 
     return {
@@ -662,6 +746,12 @@ export const syncAllShows = internalAction({
       errors: errors.length,
       reportId,
       duration: Date.now() - startTime,
+      errorDetails: errors.length > 0 ? errors : undefined,
+      extractionSummary: {
+        sourcesAttempted: DATA_SOURCES.filter(s => s.enabled).map(s => s.name),
+        sourcesProcessed: Object.keys(extractedShowsBySource),
+        showsPerSource: Object.entries(extractedShowsBySource).map(([name, shows]) => ({ source: name, count: shows.length })),
+      },
     };
   },
 });
@@ -700,11 +790,11 @@ export const syncShow = action({
   },
   handler: async (ctx, args): Promise<{ extracted: any } | { message: string }> => {
     if (args.sourceUrl) {
-      const fetchResult: { html?: string; success: boolean; error?: string } = await ctx.runAction(internal.functions.dataSync.fetchSourceContent, {
+      const fetchResult: { html?: string; success: boolean; error?: string } = await ctx.runAction(internal.functions.sync.dataSync.fetchSourceContent, {
         sourceUrl: args.sourceUrl,
       });
       if (fetchResult.success && fetchResult.html) {
-        const extracted: any[] = await ctx.runAction(api.functions.dataSync.extractShowDataWithAI, {
+        const extracted: any[] = await ctx.runAction(api.functions.sync.dataSync.extractShowDataWithAI, {
           htmlContent: fetchResult.html,
           sourceName: "manual",
           sourceUrl: args.sourceUrl,
@@ -720,7 +810,7 @@ export const detectNewShows = internalAction({
   args: {},
   handler: async (ctx): Promise<{ newShows: number; message: string }> => {
     // This is now part of syncAllShows
-    const result = await ctx.runAction(internal.functions.dataSync.syncAllShows, {});
+    const result = await ctx.runAction(internal.functions.sync.dataSync.syncAllShows, {});
     return {
       newShows: result.newShows,
       message: `Found ${result.newShows} new shows`,
@@ -732,7 +822,7 @@ export const detectClosings = internalAction({
   args: {},
   handler: async (ctx): Promise<{ deletedShows: number; message: string }> => {
     // This is now part of syncAllShows
-    const result = await ctx.runAction(internal.functions.dataSync.syncAllShows, {});
+    const result = await ctx.runAction(internal.functions.sync.dataSync.syncAllShows, {});
     return {
       deletedShows: result.deletedShows,
       message: `Found ${result.deletedShows} closed shows`,
@@ -744,7 +834,7 @@ export const updateShowtimes = internalAction({
   args: {},
   handler: async (ctx): Promise<{ updatedShows: number; message: string }> => {
     // This is now part of syncAllShows
-    const result = await ctx.runAction(internal.functions.dataSync.syncAllShows, {});
+    const result = await ctx.runAction(internal.functions.sync.dataSync.syncAllShows, {});
     return {
       updatedShows: result.updatedShows,
       message: `Updated ${result.updatedShows} shows`,
@@ -756,7 +846,7 @@ export const updateShowtimes = internalAction({
  * Manual trigger for testing sync (can be called from client/admin panel)
  * This is a public action for manual testing - consider making it internalMutation in production
  */
-export const manualSync = internalAction({
+export const manualSync = action({
   args: {},
   handler: async (ctx): Promise<{
     success: boolean;
@@ -767,9 +857,41 @@ export const manualSync = internalAction({
     errors: number;
     reportId: Id<"syncReports"> | null;
     duration: number;
+    errorDetails?: string[];
+    extractionSummary?: any;
   }> => {
     console.log("Manual sync triggered");
-    const result = await ctx.runAction(internal.functions.dataSync.syncAllShows, {});
+    const result = await ctx.runAction(internal.functions.sync.dataSync.syncAllShows, {});
+    
+    // Print detailed summary to console for terminal visibility
+    console.log("\n" + "=".repeat(60));
+    console.log("SYNC COMPLETE - SUMMARY");
+    console.log("=".repeat(60));
+    console.log(`Duration: ${(result.duration / 1000).toFixed(1)}s`);
+    console.log(`Shows Scanned: ${result.showsScanned.toLocaleString()}`);
+    console.log(`New Shows: ${result.newShows.toLocaleString()}`);
+    console.log(`Updated Shows: ${result.updatedShows.toLocaleString()}`);
+    console.log(`Deleted Shows: ${result.deletedShows.toLocaleString()}`);
+    console.log(`Errors: ${result.errors}`);
+    
+    if (result.extractionSummary) {
+      console.log("\nSources:");
+      result.extractionSummary.showsPerSource?.forEach((item: any) => {
+        console.log(`  ${item.source}: ${item.count} shows`);
+      });
+    }
+    
+    if (result.errorDetails && result.errorDetails.length > 0) {
+      console.log(`\nErrors (${result.errorDetails.length}):`);
+      result.errorDetails.slice(0, 10).forEach((err: string, idx: number) => {
+        console.log(`  ${idx + 1}. ${err.substring(0, 100)}${err.length > 100 ? "..." : ""}`);
+      });
+      if (result.errorDetails.length > 10) {
+        console.log(`  ... and ${result.errorDetails.length - 10} more errors`);
+      }
+    }
+    console.log("=".repeat(60) + "\n");
+    
     return result;
   },
 });

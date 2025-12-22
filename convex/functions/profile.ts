@@ -465,13 +465,18 @@ export const getUserPreferences = query({
 export const updateCurrentUserPreferences = mutation({
   args: {
     token: v.string(),
-    danceAppreciation: v.optional(v.number()),
-    liveOrchestraAppreciation: v.optional(v.boolean()),
-    listensToSoundtracks: v.optional(v.boolean()),
-    appreciatesStageElements: v.optional(v.number()),
-    appreciatesPropEfficiency: v.optional(v.number()),
-    valuesMessageMoral: v.optional(v.number()),
-    valuesActorQuality: v.optional(v.number()),
+    rankedElements: v.optional(
+      v.array(
+        v.object({
+          element: v.string(),
+          rank: v.number(),
+        })
+      )
+    ),
+    avgTicketPrice: v.optional(v.number()),
+    audiencePreference: v.optional(v.string()),
+    seatingPreference: v.optional(v.string()),
+    emotionalResponses: v.optional(v.any()), // Record<string, "neutral" | "positive" | "negative">
   },
   handler: async (ctx, args) => {
     const { token, ...preferences } = args;

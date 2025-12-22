@@ -11,7 +11,7 @@ Return a JSON array of show objects, where each object has these fields:
 - openingDate (string, optional, format: YYYY-MM-DD or null) - Official opening date
 - previewDate (string, optional, format: YYYY-MM-DD or null) - Preview date
 - closingDate (string, optional, format: YYYY-MM-DD or null, null if open run) - Closing date
-- isOpenRun (boolean, required) - Whether the show is an open run
+- isOpenRun (boolean, optional) - Whether the show is an open run
 - isInPreviews (boolean, optional) - Whether the show is currently in previews
 - description (string, optional) - Brief synopsis or description
 - imageUrl (string, optional) - URL to show poster/image

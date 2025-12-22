@@ -3,43 +3,71 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCurrentUser } from "@/lib/auth-client";
 import ShowCard from "./ShowCard";
 
 interface TripListTabProps {
-  tripId: Id<"trips">;
+  tripId: Id<"trips"> | null;
 }
 
 export default function TripListTab({ tripId }: TripListTabProps) {
-  const trip = useQuery(api.functions.trips.getTrip, { tripId });
+  const trip = useQuery(
+    api.functions.trips.getTrip,
+    tripId ? { tripId } : "skip"
+  );
+  const userId = useCurrentUser();
+  const allTrips = useQuery(
+    api.functions.trips.getUserTrips,
+    userId ? { userId } : "skip"
+  );
 
+  const shows = useQuery(api.functions.shows.getShows, {});
+  
   // Collect all unique shows from trip slots
   const tripShows = new Set<Id<"shows">>();
   
-  if (trip) {
+  if (tripId && trip) {
+    // Single trip mode
     trip.days.forEach((day) => {
       day.slots.forEach((slot) => {
         if (slot.showId) {
           tripShows.add(slot.showId);
         }
-        // Also include backup shows
         slot.backupShowIds?.forEach((backupId) => {
           tripShows.add(backupId);
         });
       });
     });
+  } else if (!tripId && allTrips) {
+    // All trips mode - collect shows from all trips
+    allTrips.forEach((t) => {
+      t.days?.forEach((day) => {
+        day.slots?.forEach((slot) => {
+          if (slot.showId) {
+            tripShows.add(slot.showId);
+          }
+          slot.backupShowIds?.forEach((backupId) => {
+            tripShows.add(backupId);
+          });
+        });
+      });
+    });
   }
 
-  // Get show details for all shows in the trip
   const showIds = Array.from(tripShows);
-  const shows = useQuery(
-    api.functions.shows.getShows,
-    {} // We'll filter client-side
-  );
-
   const tripShowDetails = shows?.filter((show) => showIds.includes(show._id)) || [];
 
-  if (trip === undefined || shows === undefined) {
+  if ((tripId && trip === undefined) || shows === undefined || (!tripId && allTrips === undefined)) {
     return <div className="text-center text-gray-500 py-8">Loading...</div>;
+  }
+
+  if (!tripId) {
+    return (
+      <div className="text-center text-gray-500 py-8">
+        <p className="text-sm mb-2">Select a trip to view its shows</p>
+        <p className="text-xs text-gray-400">or browse from the Find tab</p>
+      </div>
+    );
   }
 
   if (tripShowDetails.length === 0) {

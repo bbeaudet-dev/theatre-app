@@ -1,4 +1,4 @@
-import { internalAction, action } from "../_generated/server";
+import { internalAction, action } from "../../_generated/server";
 import { v } from "convex/values";
 
 /**
