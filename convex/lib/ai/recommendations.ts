@@ -8,22 +8,9 @@
 /**
  * Generate the recommendation prompt with user data
  */
-export function generateRecommendationPrompt(params: {
-  userRankings: string;
-  userElementRankings: string;
-  userThemeRankings?: string;
-  totalRankedShows?: number;
-  avgTicketPrice?: number;
-  audiencePreference?: string;
-  seatingPreference?: string;
-  emotionalResponses?: string[];
-  showTitle: string;
-  showDistrict?: string;
-  showTheatre?: string;
-  showDescription?: string;
-  showGenreThemes?: string;
-  redditContext?: string;
-}) {
+import type { RecommendationPromptParams } from "../../../lib/types";
+
+export function generateRecommendationPrompt(params: RecommendationPromptParams) {
   const {
     userRankings,
     userElementRankings,

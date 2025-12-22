@@ -3,28 +3,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-
-interface ShowCardProps {
-  show: {
-    _id: Id<"shows">;
-    title: string;
-    theatre?: string;
-    district?: string;
-    showtimes?: {
-      monday: string | null;
-      tuesday: string | null;
-      wednesday: string | null;
-      thursday: string | null;
-      friday: string | null;
-      saturday: string | null;
-      sunday: string | null;
-    };
-    isOpenRun?: boolean;
-    closingDate?: number;
-  };
-  tripId: Id<"trips"> | null;
-  draggable?: boolean;
-}
+import { ShowCardProps } from "@/lib/types";
 
 // Convert 24-hour time to 12-hour format
 function formatTime(time: string): string {
@@ -98,12 +77,11 @@ export default function ShowCard({ show, tripId, draggable = false }: ShowCardPr
   const dayAbbrevs = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const showtimes = show.showtimes || {};
 
-  // Get showtimes for each day (can be multiple)
-  const getShowtimesForDay = (day: string) => {
+  const getShowtimesForDay = (day: string): string[] => {
     const time = showtimes[day as keyof typeof showtimes];
-    if (!time || time === null) return [];
-    // Handle multiple times (e.g., "14:00,19:00" or just "19:00")
-    return String(time).split(",").map(t => t.trim()).filter(Boolean);
+    if (!time) return [];
+    const times = time as string[];
+    return times.filter(Boolean);
   };
 
   return (

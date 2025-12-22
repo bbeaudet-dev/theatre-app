@@ -3,8 +3,9 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id, Doc } from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
 import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
+import { RankingItem, UserShowVisit, Show, ShowDistrict } from "@/lib/types";
 
 // District badge component
 function ShowDistrictBadges({ userShowId }: { userShowId: Id<"userShows"> }) {
@@ -15,10 +16,9 @@ function ShowDistrictBadges({ userShowId }: { userShowId: Id<"userShows"> }) {
 
   if (!visits || visits.length === 0) return null;
 
-  // Get unique districts
-  const districts = Array.from(new Set(visits.map((v: Doc<"userShowVisits">) => v.district).filter((d) => d != null && d !== undefined))) as string[];
+  const districts = Array.from(new Set(visits.map((v: UserShowVisit) => v.district).filter(Boolean))) as ShowDistrict[];
 
-  const getDistrictColor = (district: string) => {
+  const getDistrictColor = (district: ShowDistrict | string) => {
     switch (district) {
       case "Broadway":
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
@@ -39,7 +39,7 @@ function ShowDistrictBadges({ userShowId }: { userShowId: Id<"userShows"> }) {
 
   return (
     <div className="flex gap-1">
-      {districts.map((district) => (
+      {districts.map((district: ShowDistrict) => (
         <span
           key={district}
           className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${getDistrictColor(district)}`}
@@ -83,7 +83,7 @@ function ShowDetailsPanel({
             <p className="text-gray-600 dark:text-gray-400">No visits recorded yet</p>
           ) : (
             <div className="space-y-1">
-              {visits.map((visit: Doc<"userShowVisits">, idx: number) => (
+              {visits.map((visit: UserShowVisit, idx: number) => (
                 <div key={visit._id} className="text-xs">
                   <span className="font-medium">
                     {new Date(visit.visitDate).toLocaleDateString()}
@@ -156,7 +156,6 @@ export default function RankingsManager() {
       return;
     }
 
-    type RankingItem = { rank?: number; show: Doc<"shows"> | null; _id: Id<"userShows">; showId: Id<"shows"> };
     const sourceRanking = rankings.find((r: RankingItem) => r._id === sourceRankingId);
     const targetRanking = rankings.find((r: RankingItem) => r._id === targetRankingId);
     
@@ -164,9 +163,6 @@ export default function RankingsManager() {
       setDraggedRankingId(null);
       return;
     }
-    
-    // Define RankingItem for use in the component
-    type RankingItemType = { rank?: number; show: Doc<"shows"> | null; _id: Id<"userShows">; showId: Id<"shows"> };
 
     try {
       await updateRanking({
@@ -215,8 +211,6 @@ export default function RankingsManager() {
     );
   }
 
-  type RankingItemType = { rank?: number; show: Doc<"shows"> | null; _id: Id<"userShows">; showId: Id<"shows"> };
-
   return (
       <div>
       <h3 className="text-sm font-semibold mb-2">Ranked Shows</h3>
@@ -226,7 +220,7 @@ export default function RankingsManager() {
           </p>
         ) : (
         <div>
-          {rankings.map((ranking: RankingItemType) => {
+          {rankings.map((ranking: RankingItem) => {
             if (!ranking.show) return null;
             const isDragging = draggedRankingId === ranking._id;
             const isDragOver = dragOverRankingId === ranking._id;
@@ -323,10 +317,10 @@ export function RankingsSearch() {
   const availableShows = useMemo(() => {
     if (!allShows || !rankings) return [];
     
-    const rankedShowIds = new Set(rankings.map(r => r.showId));
+    const rankedShowIds = new Set(rankings.map((r: RankingItem) => r.showId));
     return allShows
-      .filter(show => !rankedShowIds.has(show._id))
-      .filter(show => 
+      .filter((show: Show) => !rankedShowIds.has(show._id))
+      .filter((show: Show) => 
         show.title.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .slice(0, 10);
@@ -360,7 +354,7 @@ export function RankingsSearch() {
         />
         {searchQuery && availableShows.length > 0 && (
           <div className="absolute z-10 w-full mt-1 bg-white dark:bg-zinc-800 border rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {availableShows.map((show: Doc<"shows">, index: number) => (
+            {availableShows.map((show: Show, index: number) => (
               <button
                 key={show._id}
                 onClick={() => handleAddToRankings(show._id)}

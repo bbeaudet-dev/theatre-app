@@ -225,13 +225,16 @@ export const getRecommendation = action({
       }
     }
 
-    return {
-      recommendation: parsedResponse.prediction || "uncertain",
+    // Note: Using inline type definition since Convex functions can't easily import from lib/
+    const response = {
+      prediction: (parsedResponse.prediction || "uncertain") as "yes" | "no" | "uncertain",
       reasoning: finalReasoning,
       questions: parsedResponse.questions || [],
       ratingOutOf10: parsedResponse.ratingOutOf10,
       projectedRanking: parsedResponse.projectedRanking,
     };
+    
+    return response;
   },
 });
 

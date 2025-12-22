@@ -2,8 +2,9 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id, Doc } from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
+import { TripWithDays, DayWithSlots, TripDaySlot, Show, Trip } from "@/lib/types";
 import ShowCard from "./ShowCard";
 
 interface TripListTabProps {
@@ -26,14 +27,11 @@ export default function TripListTab({ tripId }: TripListTabProps) {
   // Collect all unique shows from trip slots
   const tripShows = new Set<Id<"shows">>();
   
-  type DayWithSlots = Doc<"tripDays"> & { slots: Doc<"tripDaySlots">[] };
-  type TripWithDays = Doc<"trips"> & { days: DayWithSlots[] };
-  
   if (tripId && trip) {
     // Single trip mode
     const tripWithDays = trip as TripWithDays;
     tripWithDays.days.forEach((day: DayWithSlots) => {
-      day.slots.forEach((slot: Doc<"tripDaySlots">) => {
+      day.slots.forEach((slot: TripDaySlot) => {
         if (slot.showId) {
           tripShows.add(slot.showId);
         }
@@ -44,10 +42,10 @@ export default function TripListTab({ tripId }: TripListTabProps) {
     });
   } else if (!tripId && allTrips) {
     // All trips mode - collect shows from all trips
-    allTrips.forEach((t: Doc<"trips">) => {
+    allTrips.forEach((t: Trip) => {
       const tripWithDays = t as TripWithDays;
       tripWithDays.days?.forEach((day: DayWithSlots) => {
-        day.slots?.forEach((slot: Doc<"tripDaySlots">) => {
+        day.slots?.forEach((slot: TripDaySlot) => {
           if (slot.showId) {
             tripShows.add(slot.showId);
           }
@@ -60,7 +58,7 @@ export default function TripListTab({ tripId }: TripListTabProps) {
   }
 
   const showIds = Array.from(tripShows);
-  const tripShowDetails = shows?.filter((show: Doc<"shows">) => showIds.includes(show._id)) || [];
+  const tripShowDetails = shows?.filter((show: Show) => showIds.includes(show._id)) || [];
 
   if ((tripId && trip === undefined) || shows === undefined || (!tripId && allTrips === undefined)) {
     return <div className="text-center text-gray-500 py-8">Loading...</div>;
@@ -87,7 +85,7 @@ export default function TripListTab({ tripId }: TripListTabProps) {
   return (
     <div className="space-y-2 text-xs">
       <h3 className="font-semibold text-sm mb-2">This Trip</h3>
-      {tripShowDetails.map((show: Doc<"shows">) => (
+      {tripShowDetails.map((show: Show) => (
         <ShowCard key={show._id} show={show} tripId={tripId} draggable={false} />
       ))}
     </div>

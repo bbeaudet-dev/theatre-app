@@ -5,9 +5,17 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
+import { 
+  RankedElement, 
+  RankedTheme, 
+  TheatreElement, 
+  ThemeElement,
+  EmotionalResponseState,
+  EmotionalResponses
+} from "@/lib/types";
 
 // Theatre elements that users can rank (consolidated and refined)
-const THEATRE_ELEMENTS = [
+const THEATRE_ELEMENTS: readonly TheatreElement[] = [
   "Storytelling/Plot",
   "Music/Orchestration/Singalong",
   "Dance/Choreography",
@@ -18,7 +26,7 @@ const THEATRE_ELEMENTS = [
 ] as const;
 
 // Thematic elements that users can rank
-const THEME_ELEMENTS = [
+const THEME_ELEMENTS: readonly ThemeElement[] = [
   "Self-Discovery",
   "Hero's Journey/Adventure",
   "Social Justice/Activism",
@@ -32,19 +40,6 @@ const THEME_ELEMENTS = [
   "Moral Complexity/Ethics",
   "Satire/Comedy",
 ] as const;
-
-type TheatreElement = typeof THEATRE_ELEMENTS[number];
-type ThemeElement = typeof THEME_ELEMENTS[number];
-
-interface RankedElement {
-  element: TheatreElement;
-  rank: number;
-}
-
-interface RankedTheme {
-  theme: ThemeElement;
-  rank: number;
-}
 
 export default function UserPreferences() {
   const userId = useCurrentUser();

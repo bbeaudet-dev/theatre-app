@@ -3,22 +3,14 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id, Doc } from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
+import { TripSlotProps as TripSlotPropsType, Show } from "@/lib/types";
 
 interface TripSlotProps {
-  slot: {
-    _id: Id<"tripDaySlots">;
-    type: "show" | "meal" | "transport" | "flight" | "custom";
-    title: string;
-    startTime: string;
-    endTime?: string;
-    showId?: Id<"shows">;
-    backupShowIds?: Id<"shows">[];
-    notes?: string;
-  };
-  onEdit: (event: React.MouseEvent) => void;
-  tripId: Id<"trips">;
-  tripDayId: Id<"tripDays">;
+  slot: TripSlotPropsType["slot"];
+  onEdit: TripSlotPropsType["onEdit"];
+  tripId: TripSlotPropsType["tripId"];
+  tripDayId: TripSlotPropsType["tripDayId"];
 }
 
 const typeColors = {
@@ -48,7 +40,7 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
 
   const displayBackupShows =
     backupShows && slot.backupShowIds
-      ? backupShows.filter((s: Doc<"shows">) => slot.backupShowIds?.includes(s._id))
+      ? backupShows.filter((s: Show) => slot.backupShowIds?.includes(s._id))
       : [];
 
   const timeDisplay = slot.endTime
@@ -141,7 +133,7 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
           {slot.type === "show" && displayBackupShows.length > 0 && (
             <div className="mt-0.5">
               <p className="text-[9px] text-gray-600 dark:text-gray-400">
-                Backup: {displayBackupShows.map((s: Doc<"shows">) => s.title).join(", ")}
+                Backup: {displayBackupShows.map((s: Show) => s.title).join(", ")}
               </p>
             </div>
           )}

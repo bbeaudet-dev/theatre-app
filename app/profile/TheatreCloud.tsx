@@ -4,10 +4,9 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
+import { RankingItem, PositionedShow } from "@/lib/types";
 import { 
-  type PositionedShow, 
   createTheatreCloudLayout, 
   getObjectPosition 
 } from './TheatreCloudAnimation';
@@ -101,7 +100,6 @@ export default function TheatreCloud() {
   }
 
   // Filter shows based on selected district
-  type RankingItem = { rank?: number; show: Doc<"shows"> | null };
   const filteredRankings = useMemo(() => {
     if (!rankings) return [];
     return rankings.filter((ranking: RankingItem) => {

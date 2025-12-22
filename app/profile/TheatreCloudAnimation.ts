@@ -1,13 +1,10 @@
 // Theatre Cloud Animation utilities
 // Adapted from personal-portfolio project
 
-export interface PositionedShow {
-  show: any; // Will be our ranking/show structure
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
+import { PositionedShow } from "@/lib/types";
+
+// Re-export for convenience
+export type { PositionedShow };
 
 // Calculate base size for shows (1-38 scale) with dynamic scaling based on show count
 // Now returns width, height will be calculated as 1.5x width for playbill aspect ratio
