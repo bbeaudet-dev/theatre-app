@@ -15,7 +15,7 @@ interface ShowCardProps {
     openingDate?: number;
     previewDate?: number;
     closingDate?: number;
-    isOpenRun: boolean;
+    isOpenRun?: boolean;
     isInPreviews?: boolean;
   };
   viewMode: "grid" | "list";
