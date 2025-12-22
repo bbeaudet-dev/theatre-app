@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import ShowCard from "./ShowCard";
 
 export default function BrowsePanel() {
@@ -141,7 +142,7 @@ export default function BrowsePanel() {
               : "space-y-4"
           }
         >
-          {shows.map((show) => (
+          {shows.map((show: Doc<"shows">) => (
             <ShowCard key={show._id} show={show} viewMode={viewMode} />
           ))}
         </div>
