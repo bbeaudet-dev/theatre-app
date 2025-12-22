@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/lib/convex/provider";
 import Navigation from "./components/Navigation";
+import Footer from "./components/Footer";
 import FloatingChat from "./components/FloatingChat";
 
 const geistSans = Geist({
@@ -31,8 +32,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ConvexClientProvider>
-          <Navigation />
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <Navigation />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
           <FloatingChat />
         </ConvexClientProvider>
       </body>

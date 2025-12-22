@@ -26,7 +26,7 @@ function generateToken(): string {
 // Helper to get user from session token
 async function getUserFromToken(ctx: any, token: string | null) {
   if (!token) return null;
-  
+
   const session = await ctx.db
     .query("sessions")
     .withIndex("by_token", (q: any) => q.eq("token", token))
@@ -138,7 +138,7 @@ export const signIn = mutation({
 export const signOut = mutation({
   args: {
     token: v.string(),
-  },
+    },
   handler: async (ctx, args) => {
     const session = await ctx.db
       .query("sessions")
@@ -151,7 +151,7 @@ export const signOut = mutation({
     
     return { success: true };
   },
-});
+  });
 
 // Get current user ID from session token
 export const getCurrentUser = query({

@@ -31,21 +31,21 @@ export default function SignUpPage() {
     setLoading(true);
 
     const result = await signUp(email, password);
-    
+
     if (result.success) {
       router.push("/");
-    } else {
+      } else {
       setError(result.error || "Failed to create account");
     }
     
-    setLoading(false);
+      setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+          <h2 className="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">

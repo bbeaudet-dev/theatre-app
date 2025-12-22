@@ -5,31 +5,22 @@ import { Id } from "@/convex/_generated/dataModel";
 import TripListTab from "./TripPlanningPanel/TripListTab";
 import FindTab from "./TripPlanningPanel/FindTab";
 import UserListsTab from "./TripPlanningPanel/UserListsTab";
+import RecsTab from "./TripPlanningPanel/RecsTab";
 
 interface TripPlanningPanelProps {
-  tripId: Id<"trips">;
+  tripId: Id<"trips"> | null;
 }
 
-type Tab = "trip-list" | "find" | "user-lists";
+type Tab = "find" | "recs" | "user-lists" | "trip-list";
 
 export default function TripPlanningPanel({ tripId }: TripPlanningPanelProps) {
-  const [activeTab, setActiveTab] = useState<Tab>("trip-list");
+  const [activeTab, setActiveTab] = useState<Tab>("find");
 
   return (
     <div className="w-1/3 border-l bg-gray-50 dark:bg-zinc-900 flex flex-col min-h-screen">
       {/* Tab Selector */}
       <div className="border-b bg-white dark:bg-zinc-800 p-2">
         <div className="flex flex-wrap gap-1">
-          <button
-            onClick={() => setActiveTab("trip-list")}
-            className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-              activeTab === "trip-list"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600"
-            }`}
-          >
-            Trip List
-          </button>
           <button
             onClick={() => setActiveTab("find")}
             className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
@@ -41,6 +32,16 @@ export default function TripPlanningPanel({ tripId }: TripPlanningPanelProps) {
             Find
           </button>
           <button
+            onClick={() => setActiveTab("recs")}
+            className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
+              activeTab === "recs"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600"
+            }`}
+          >
+            Recs
+          </button>
+          <button
             onClick={() => setActiveTab("user-lists")}
             className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
               activeTab === "user-lists"
@@ -50,14 +51,29 @@ export default function TripPlanningPanel({ tripId }: TripPlanningPanelProps) {
           >
             My Lists
           </button>
+          <button
+            onClick={() => setActiveTab("trip-list")}
+            disabled={!tripId}
+            className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
+              activeTab === "trip-list"
+                ? "bg-blue-600 text-white"
+                : !tripId
+                ? "bg-gray-50 dark:bg-zinc-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                : "bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600"
+            }`}
+          >
+            Trip List
+          </button>
         </div>
       </div>
 
       {/* Tab Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {activeTab === "trip-list" && <TripListTab tripId={tripId} />}
         {activeTab === "find" && <FindTab tripId={tripId} />}
+        {activeTab === "recs" && <RecsTab tripId={tripId} />}
         {activeTab === "user-lists" && <UserListsTab tripId={tripId} />}
+        {activeTab === "trip-list" && tripId && <TripListTab tripId={tripId} />}
+        {activeTab === "trip-list" && !tripId && <TripListTab tripId={null} />}
       </div>
     </div>
   );

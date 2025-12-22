@@ -158,7 +158,7 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
         </div>
         <button
           onClick={handleDelete}
-          className="text-red-600 hover:text-red-800 text-xs flex-shrink-0"
+          className="text-red-600 hover:text-red-800 text-xs shrink-0"
           title="Delete slot"
         >
           ×

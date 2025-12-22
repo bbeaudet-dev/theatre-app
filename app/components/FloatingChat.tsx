@@ -1,35 +1,63 @@
 "use client";
 
 import { useState } from "react";
+import { Id } from "@/convex/_generated/dataModel";
 import PreviewChatbot from "../preview/PreviewChatbot";
 
 export default function FloatingChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [draggedShowId, setDraggedShowId] = useState<Id<"shows"> | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Check if dragging a show (types include showId)
+    if (e.dataTransfer.types.includes("text/plain") || e.dataTransfer.types.includes("showId")) {
+      setDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+    const showId = e.dataTransfer.getData("showId") as Id<"shows">;
+    if (showId) {
+      setDraggedShowId(showId);
+      setIsOpen(true);
+      setIsMinimized(false);
+    }
+  };
 
   return (
     <>
-      {/* Floating Chat Button */}
-      <button
+      {/* Floating Chat Button / Drop Zone */}
+      <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center z-40"
-        aria-label="Open preview assistant"
+        className={`fixed bottom-6 right-6 ${dragOver ? "px-6 py-3 rounded-lg" : "px-4 py-2 rounded-full"} shadow-lg transition-all flex items-center justify-center z-40 cursor-pointer ${
+          dragOver
+            ? "bg-green-600 scale-105 ring-4 ring-green-300"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
+        aria-label="Drag show here for recommendation"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
-          />
-        </svg>
-      </button>
+        {dragOver ? (
+          <span className="text-white font-medium text-sm whitespace-nowrap">Drop for Recommendation</span>
+        ) : (
+          <span className="text-white font-medium text-xs whitespace-nowrap">Drag Show Here</span>
+        )}
+      </div>
 
       {/* Chat Window */}
       {isOpen && (
@@ -91,7 +119,7 @@ export default function FloatingChat() {
             </div>
             {!isMinimized && (
               <div className="flex-1 overflow-hidden min-h-0">
-                <PreviewChatbot />
+                <PreviewChatbot initialShowId={draggedShowId} onShowProcessed={() => setDraggedShowId(null)} />
               </div>
             )}
           </div>

@@ -3,14 +3,16 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import TheatreCloud from "./TheatreCloud";
-import RankingsManager from "./RankingsManager";
+import RankingsManager, { RankingsSearch } from "./RankingsManager";
 import ListsManager from "./ListsManager";
 import UserPreferences from "./UserPreferences";
 import NotifySettings from "../notify/NotifySettings";
+import { useSignOut } from "@/lib/auth-client";
 
 function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const signOut = useSignOut();
   const [activeTab, setActiveTab] = useState<
     "rankings" | "lists" | "preferences" | "notify"
   >("rankings");
@@ -31,19 +33,19 @@ function ProfileContent() {
     }
   };
 
-  return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">Profile & Rankings</h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
-        Record and rank all the shows you've seen. Create your theatre cloud
-        and manage your preferences.
-      </p>
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/browse");
+  };
 
-      <div className="border-b mb-6">
-        <nav className="flex gap-4">
+  return (
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <div className="flex-1 border-b overflow-x-auto">
+        <nav className="flex gap-2 sm:gap-4 min-w-max">
           <button
             onClick={() => handleTabChange("rankings")}
-            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 text-sm sm:text-base font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === "rankings"
                 ? "border-blue-600 text-blue-600"
                 : "border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
@@ -82,12 +84,22 @@ function ProfileContent() {
             Notifications
           </button>
         </nav>
+        </div>
+        <button
+          onClick={handleSignOut}
+          className="ml-4 px-3 py-2 rounded text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 whitespace-nowrap"
+        >
+          Sign Out
+        </button>
       </div>
 
       {activeTab === "rankings" && (
+        <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <RankingsManager />
+            <RankingsSearch />
+          </div>
           <TheatreCloud />
-          <RankingsManager />
         </div>
       )}
       {activeTab === "lists" && <ListsManager />}

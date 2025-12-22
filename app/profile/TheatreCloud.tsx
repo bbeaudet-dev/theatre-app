@@ -77,10 +77,10 @@ export default function TheatreCloud() {
                     <img
                       src={ranking.show.imageUrl}
                       alt={ranking.show.title}
-                      className="w-full aspect-[2/3] object-cover rounded border-2 border-gray-300 dark:border-gray-700"
+                      className="w-full aspect-2/3 object-cover rounded border-2 border-gray-300 dark:border-gray-700"
                     />
                   ) : (
-                    <div className="w-full aspect-[2/3] bg-gray-200 dark:bg-gray-700 rounded border-2 border-gray-300 dark:border-gray-700 flex items-center justify-center">
+                    <div className="w-full aspect-2/3 bg-gray-200 dark:bg-gray-700 rounded border-2 border-gray-300 dark:border-gray-700 flex items-center justify-center">
                       <span className="text-xs text-center p-2">
                         {ranking.show.title}
                       </span>
