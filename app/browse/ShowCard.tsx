@@ -1,27 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Id } from "@/convex/_generated/dataModel";
 import QuickActions from "./QuickActions";
+import { ShowCardProps, ViewMode } from "@/lib/types";
 
-interface ShowCardProps {
-  show: {
-    _id: Id<"shows">;
-    title: string;
-    theatre?: string;
-    district?: "broadway" | "off-broadway" | "touring" | "local";
-    description?: string;
-    imageUrl?: string;
-    openingDate?: number;
-    previewDate?: number;
-    closingDate?: number;
-    isOpenRun: boolean;
-    isInPreviews?: boolean;
-  };
-  viewMode: "grid" | "list";
-}
-
-export default function ShowCard({ show, viewMode }: ShowCardProps) {
+export default function ShowCard({ show, viewMode }: ShowCardProps & { viewMode: ViewMode }) {
   const [showActions, setShowActions] = useState(false);
 
   const formatDate = (timestamp?: number) => {

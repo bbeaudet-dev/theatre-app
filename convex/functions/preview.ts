@@ -1,7 +1,8 @@
 import { query, mutation, action } from "../_generated/server";
 import { api } from "../_generated/api";
 import { v } from "convex/values";
-import { generateRecommendationPrompt, formatUserRankings, formatElementRankings } from "../lib/ai/recommendations";
+import { Doc } from "../_generated/dataModel";
+import { generateRecommendationPrompt, formatUserRankings, formatElementRankings, formatThemeRankings } from "../lib/ai/recommendations";
 import { searchRedditForShow, formatRedditPostsForPrompt } from "../lib/reddit";
 
 // Helper to call OpenAI API
@@ -54,7 +55,7 @@ async function callAnthropic(prompt: string): Promise<string> {
     },
     body: JSON.stringify({
       model: "claude-3-5-sonnet-20241022",
-      max_tokens: 2048,
+      max_tokens: 4000, // Allow longer, more thoughtful responses
       messages: [
         {
           role: "user",
@@ -125,9 +126,10 @@ export const getRecommendation = action({
     }
 
     // Format data for prompt
+    type RankingItem = { rank?: number; show: Doc<"shows"> | null };
     const filteredRankings = (rankings || [])
-      .filter((r) => r.rank !== undefined && r.show !== null)
-      .map((r) => ({
+      .filter((r: RankingItem) => r.rank !== undefined && r.show !== null)
+      .map((r: RankingItem) => ({
         rank: r.rank!,
         show: {
           title: r.show!.title,
@@ -142,6 +144,10 @@ export const getRecommendation = action({
     const elementRankingsText = preferences?.rankedElements
       ? formatElementRankings(preferences.rankedElements as Array<{ element: string; rank: number }>)
       : "No preferences set";
+    
+    const themeRankingsText = preferences?.rankedThemes
+      ? formatThemeRankings(preferences.rankedThemes as Array<{ theme: string; rank: number }>)
+      : undefined;
 
     const emotionalResponses = preferences?.emotionalResponses as Record<string, "neutral" | "positive" | "negative"> | undefined;
     const positiveEmotions = emotionalResponses
@@ -165,6 +171,7 @@ export const getRecommendation = action({
     const prompt = generateRecommendationPrompt({
       userRankings: userRankingsText || "No shows ranked yet",
       userElementRankings: elementRankingsText,
+      userThemeRankings: themeRankingsText,
       totalRankedShows: totalRankedShows,
       avgTicketPrice: preferences?.avgTicketPrice,
       audiencePreference: preferences?.audiencePreference,
@@ -218,13 +225,16 @@ export const getRecommendation = action({
       }
     }
 
-    return {
-      recommendation: parsedResponse.prediction || "uncertain",
+    // Note: Using inline type definition since Convex functions can't easily import from lib/
+    const response = {
+      prediction: (parsedResponse.prediction || "uncertain") as "yes" | "no" | "uncertain",
       reasoning: finalReasoning,
       questions: parsedResponse.questions || [],
       ratingOutOf10: parsedResponse.ratingOutOf10,
       projectedRanking: parsedResponse.projectedRanking,
     };
+    
+    return response;
   },
 });
 

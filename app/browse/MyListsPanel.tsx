@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
 import ListManager from "./ListManager";
 import ShowCard from "./ShowCard";
@@ -60,9 +61,9 @@ export default function MyListsPanel() {
         </div>
       ) : (
         <div className="space-y-6">
-          {lists.map((list) => {
+          {lists.map((list: Doc<"userLists">) => {
             const listShows =
-              allShows?.filter((show) => list.showIds.includes(show._id)) || [];
+              allShows?.filter((show: Doc<"shows">) => list.showIds.includes(show._id)) || [];
 
             return (
               <div
@@ -98,7 +99,7 @@ export default function MyListsPanel() {
                   </p>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {listShows.map((show) => (
+                    {listShows.map((show: Doc<"shows">) => (
                       <ShowCard key={show._id} show={show} viewMode="grid" />
                     ))}
                   </div>

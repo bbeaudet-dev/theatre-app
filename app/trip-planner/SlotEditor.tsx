@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { TripWithDays, DayWithSlots, TripDaySlot, Show } from "@/lib/types";
 import ShowSelector from "./ShowSelector";
 
 interface SlotEditorProps {
@@ -44,9 +45,10 @@ export default function SlotEditor({
 
   useEffect(() => {
     if (slotId && existingSlot) {
-      const slot = existingSlot.days
-        .flatMap((day) => day.slots)
-        .find((s) => s._id === slotId);
+      const tripWithDays = existingSlot as TripWithDays;
+      const slot = tripWithDays.days
+        .flatMap((day: DayWithSlots) => day.slots)
+        .find((s: TripDaySlot) => s._id === slotId);
 
       if (slot) {
         setType(slot.type);
@@ -152,7 +154,7 @@ export default function SlotEditor({
 
   const displayBackupShows =
     backupShows && backupShowIds.length > 0
-      ? backupShows.filter((s) => backupShowIds.includes(s._id))
+      ? backupShows.filter((s: Show) => backupShowIds.includes(s._id))
       : [];
 
   const style = position
@@ -263,7 +265,7 @@ export default function SlotEditor({
               <div>
                 <label className="block text-[10px] font-medium mb-0.5">Backups</label>
                 <div className="space-y-0.5">
-                  {displayBackupShows.map((show) => (
+                  {displayBackupShows.map((show: Show) => (
                     <div
                       key={show._id}
                       className="flex items-center justify-between px-1.5 py-0.5 text-xs border rounded dark:bg-zinc-800 dark:border-zinc-700"

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 
 interface ShowSelectorProps {
   onSelect: (showId: Id<"shows">) => void;
@@ -84,7 +84,7 @@ export default function ShowSelector({ onSelect, onClose }: ShowSelectorProps) {
               No shows found
             </p>
           ) : (
-            showsToDisplay.map((show) => (
+            showsToDisplay.map((show: Doc<"shows">) => (
               <div
                 key={show._id}
                 onClick={() => onSelect(show._id)}

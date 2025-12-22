@@ -37,13 +37,13 @@ export default defineSchema({
     ),
     showtimes: v.optional(
       v.object({
-        monday: v.union(v.string(), v.null()),
-        tuesday: v.union(v.string(), v.null()),
-        wednesday: v.union(v.string(), v.null()),
-        thursday: v.union(v.string(), v.null()),
-        friday: v.union(v.string(), v.null()),
-        saturday: v.union(v.string(), v.null()),
-        sunday: v.union(v.string(), v.null()),
+        monday: v.union(v.array(v.string()), v.null()),
+        tuesday: v.union(v.array(v.string()), v.null()),
+        wednesday: v.union(v.array(v.string()), v.null()),
+        thursday: v.union(v.array(v.string()), v.null()),
+        friday: v.union(v.array(v.string()), v.null()),
+        saturday: v.union(v.array(v.string()), v.null()),
+        sunday: v.union(v.array(v.string()), v.null()),
       })
     ),
     openingDate: v.optional(v.number()), // Unix timestamp
@@ -157,6 +157,15 @@ export default defineSchema({
       v.array(
         v.object({
           element: v.string(),
+          rank: v.number(),
+        })
+      )
+    ),
+    // Force-ranked themes
+    rankedThemes: v.optional(
+      v.array(
+        v.object({
+          theme: v.string(),
           rank: v.number(),
         })
       )

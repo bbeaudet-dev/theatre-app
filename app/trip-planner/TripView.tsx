@@ -3,6 +3,7 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { DayWithSlots } from "@/lib/types";
 import TripDay from "./TripDay";
 import TripPlanningPanel from "./TripPlanningPanel";
 
@@ -76,7 +77,7 @@ export default function TripView({ tripId, onBack }: TripViewProps) {
         </div>
 
         <div className="space-y-6">
-          {trip.days.map((day) => (
+          {trip.days.map((day: DayWithSlots) => (
             <TripDay key={day._id} day={day} tripId={tripId} />
           ))}
         </div>

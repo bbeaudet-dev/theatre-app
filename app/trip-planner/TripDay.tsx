@@ -66,8 +66,7 @@ export default function TripDay({ day, tripId }: TripDayProps) {
     <div className="bg-white dark:bg-zinc-900 border rounded-lg p-3 text-xs">
       <div className="flex justify-between items-center mb-2">
         <div>
-          <h3 className="text-sm font-semibold">{dayOfWeek}</h3>
-          <p className="text-[10px] text-gray-600 dark:text-gray-400">{dateString}</p>
+          <h3 className="text-sm font-semibold">{dayOfWeek} <span className="text-[10px] text-gray-600 dark:text-gray-400 font-normal">{dateString}</span></h3>
         </div>
         <button
           onClick={handleAddSlot}

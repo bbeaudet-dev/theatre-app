@@ -15,14 +15,17 @@ export async function searchRedditForShow(showTitle: string): Promise<{
 }> {
   try {
     // Search Reddit for the show title
-    // Using Reddit's JSON API - add keywords like "review", "thoughts", "opinion" to find reviews
+    // Using Reddit's JSON API - try simpler searches first, then more specific ones
     const searchTerms = [
-      `${showTitle} review`,
-      `${showTitle} thoughts`,
-      `${showTitle} opinion`,
-      `${showTitle} r/broadway`,
-      `${showTitle} r/musicals`,
+      showTitle, // Basic title search
+      `${showTitle} musical`,
+      `${showTitle} broadway`,
+      `site:reddit.com/r/broadway ${showTitle}`,
+      `site:reddit.com/r/musicals ${showTitle}`,
     ];
+    
+    // Also try direct subreddit searches
+    const subreddits = ["broadway", "musicals", "Theatre"];
 
     const allPosts: Array<{
       title: string;
@@ -38,11 +41,11 @@ export async function searchRedditForShow(showTitle: string): Promise<{
     for (const term of searchTerms) {
       try {
         const encodedTerm = encodeURIComponent(term);
-        const url = `https://www.reddit.com/search.json?q=${encodedTerm}&sort=relevance&limit=5&type=link`;
+        const url = `https://www.reddit.com/search.json?q=${encodedTerm}&sort=relevance&limit=10&type=link&t=all`;
         
         const response = await fetch(url, {
           headers: {
-            "User-Agent": "TheatreApp/1.0 (by /u/theatreapp)",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
           },
         });
 
@@ -57,17 +60,18 @@ export async function searchRedditForShow(showTitle: string): Promise<{
           const posts = data.data.children
             .map((child: any) => child.data)
             .filter((post: any) => {
-              // Filter out low-quality posts (very low scores or removed/deleted)
+              // Filter out low-quality posts (removed/deleted, but allow low scores)
               return (
-                post.score > 0 &&
                 !post.removed_by_category &&
                 post.selftext !== "[removed]" &&
-                post.selftext !== "[deleted]"
+                post.selftext !== "[deleted]" &&
+                post.title &&
+                post.title.toLowerCase().includes(showTitle.toLowerCase())
               );
             })
             .map((post: any) => ({
               title: post.title,
-              score: post.score,
+              score: post.score || 0,
               url: post.url,
               subreddit: post.subreddit,
               selftext: post.selftext?.substring(0, 500), // Limit text length
@@ -79,6 +83,53 @@ export async function searchRedditForShow(showTitle: string): Promise<{
         }
       } catch (error) {
         console.error(`Error searching Reddit for "${term}":`, error);
+        continue;
+      }
+    }
+    
+    // Also try searching specific subreddits directly
+    for (const subreddit of subreddits) {
+      try {
+        const encodedTerm = encodeURIComponent(showTitle);
+        const url = `https://www.reddit.com/r/${subreddit}/search.json?q=${encodedTerm}&restrict_sr=1&sort=relevance&limit=5&t=all`;
+        
+        const response = await fetch(url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          },
+        });
+
+        if (!response.ok) {
+          continue;
+        }
+
+        const data = await response.json();
+        
+        if (data.data && data.data.children) {
+          const posts = data.data.children
+            .map((child: any) => child.data)
+            .filter((post: any) => {
+              return (
+                !post.removed_by_category &&
+                post.selftext !== "[removed]" &&
+                post.selftext !== "[deleted]" &&
+                post.title
+              );
+            })
+            .map((post: any) => ({
+              title: post.title,
+              score: post.score || 0,
+              url: post.url,
+              subreddit: post.subreddit,
+              selftext: post.selftext?.substring(0, 500),
+              permalink: `https://reddit.com${post.permalink}`,
+              created_utc: post.created_utc,
+            }));
+
+          allPosts.push(...posts);
+        }
+      } catch (error) {
+        // Silently continue if subreddit search fails
         continue;
       }
     }

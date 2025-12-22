@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
 import ShowCard from "./ShowCard";
 
@@ -29,7 +29,7 @@ export default function ListManager({ listId, onClose }: ListManagerProps) {
     api.functions.profile.removeShowFromList
   );
 
-  const currentList = existingList?.find((l) => l._id === listId);
+  const currentList = existingList?.find((l: Doc<"userLists">) => l._id === listId);
   const [selectedShowIds, setSelectedShowIds] = useState<Id<"shows">[]>([]);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function ListManager({ listId, onClose }: ListManagerProps) {
   };
 
   const selectedShows =
-    allShows?.filter((show) => selectedShowIds.includes(show._id)) || [];
+    allShows?.filter((show: Doc<"shows">) => selectedShowIds.includes(show._id)) || [];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -139,7 +139,7 @@ export default function ListManager({ listId, onClose }: ListManagerProps) {
               </p>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {selectedShows.map((show) => (
+                {selectedShows.map((show: Doc<"shows">) => (
                   <div key={show._id} className="relative">
                     <ShowCard show={show} viewMode="grid" />
                     <button
@@ -186,8 +186,8 @@ export default function ListManager({ listId, onClose }: ListManagerProps) {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {allShows
-                  ?.filter((show) => !selectedShowIds.includes(show._id))
-                  .map((show) => (
+                  ?.filter((show: Doc<"shows">) => !selectedShowIds.includes(show._id))
+                  .map((show: Doc<"shows">) => (
                     <div
                       key={show._id}
                       onClick={() => handleAddShow(show._id)}

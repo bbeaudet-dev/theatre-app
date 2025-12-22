@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import ShowCard from "./ShowCard";
 
 interface FindTabProps {
@@ -77,7 +77,7 @@ export default function FindTab({ tripId }: FindTabProps) {
             No shows found
           </p>
         ) : (
-          showsToDisplay.map((show) => (
+          showsToDisplay.map((show: Doc<"shows">) => (
             <ShowCard key={show._id} show={show} tripId={tripId} draggable />
           ))
         )}

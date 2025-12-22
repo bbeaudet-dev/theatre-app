@@ -55,7 +55,7 @@ export default function FloatingChat() {
         {dragOver ? (
           <span className="text-white font-medium text-sm whitespace-nowrap">Drop for Recommendation</span>
         ) : (
-          <span className="text-white font-medium text-xs whitespace-nowrap">Drag Show Here</span>
+          <span className="text-white font-medium text-sm whitespace-nowrap">Would I enjoy [drop show here]?</span>
         )}
       </div>
 

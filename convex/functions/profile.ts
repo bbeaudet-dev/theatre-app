@@ -473,6 +473,14 @@ export const updateCurrentUserPreferences = mutation({
         })
       )
     ),
+    rankedThemes: v.optional(
+      v.array(
+        v.object({
+          theme: v.string(),
+          rank: v.number(),
+        })
+      )
+    ),
     avgTicketPrice: v.optional(v.number()),
     audiencePreference: v.optional(v.string()),
     seatingPreference: v.optional(v.string()),
