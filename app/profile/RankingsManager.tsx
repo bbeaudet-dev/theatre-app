@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser, getAuthToken } from "@/lib/auth-client";
 
 // District badge component
@@ -16,7 +16,7 @@ function ShowDistrictBadges({ userShowId }: { userShowId: Id<"userShows"> }) {
   if (!visits || visits.length === 0) return null;
 
   // Get unique districts
-  const districts = Array.from(new Set(visits.map((v) => v.district)));
+  const districts = Array.from(new Set(visits.map((v: Doc<"userShowVisits">) => v.district).filter((d) => d != null && d !== undefined))) as string[];
 
   const getDistrictColor = (district: string) => {
     switch (district) {
@@ -83,7 +83,7 @@ function ShowDetailsPanel({
             <p className="text-gray-600 dark:text-gray-400">No visits recorded yet</p>
           ) : (
             <div className="space-y-1">
-              {visits.map((visit, idx) => (
+              {visits.map((visit: Doc<"userShowVisits">, idx: number) => (
                 <div key={visit._id} className="text-xs">
                   <span className="font-medium">
                     {new Date(visit.visitDate).toLocaleDateString()}
@@ -156,13 +156,17 @@ export default function RankingsManager() {
       return;
     }
 
-    const sourceRanking = rankings.find((r) => r._id === sourceRankingId);
-    const targetRanking = rankings.find((r) => r._id === targetRankingId);
-
+    type RankingItem = { rank?: number; show: Doc<"shows"> | null; _id: Id<"userShows">; showId: Id<"shows"> };
+    const sourceRanking = rankings.find((r: RankingItem) => r._id === sourceRankingId);
+    const targetRanking = rankings.find((r: RankingItem) => r._id === targetRankingId);
+    
     if (!sourceRanking || !targetRanking || !sourceRanking.rank || !targetRanking.rank) {
       setDraggedRankingId(null);
       return;
     }
+    
+    // Define RankingItem for use in the component
+    type RankingItemType = { rank?: number; show: Doc<"shows"> | null; _id: Id<"userShows">; showId: Id<"shows"> };
 
     try {
       await updateRanking({
@@ -211,21 +215,23 @@ export default function RankingsManager() {
     );
   }
 
+  type RankingItemType = { rank?: number; show: Doc<"shows"> | null; _id: Id<"userShows">; showId: Id<"shows"> };
+
   return (
-    <div>
+      <div>
       <h3 className="text-sm font-semibold mb-2">Ranked Shows</h3>
-      {rankings.length === 0 ? (
+        {rankings.length === 0 ? (
         <p className="text-xs text-gray-600 dark:text-gray-400">
           You haven't ranked any shows yet. Search and add shows to your rankings.
-        </p>
-      ) : (
+          </p>
+        ) : (
         <div>
-          {rankings.map((ranking) => {
+          {rankings.map((ranking: RankingItemType) => {
             if (!ranking.show) return null;
             const isDragging = draggedRankingId === ranking._id;
             const isDragOver = dragOverRankingId === ranking._id;
             const isExpanded = expandedShowId === ranking._id;
-            return (
+              return (
               <div key={ranking._id}>
                 <div
                   draggable
@@ -245,7 +251,7 @@ export default function RankingsManager() {
                     <p className="text-sm font-medium truncate">{ranking.show.title}</p>
                     <ShowDistrictBadges userShowId={ranking._id} />
                   </div>
-                  <button
+                    <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setExpandedShowId(isExpanded ? null : ranking._id);
@@ -254,27 +260,27 @@ export default function RankingsManager() {
                     title={isExpanded ? "Hide details" : "Show details"}
                   >
                     {isExpanded ? "−" : "+"}
-                  </button>
-                  <button
+                    </button>
+                    <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRemoveFromRankings(ranking.showId);
                     }}
                     className="px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
-                    title="Remove"
-                  >
-                    ×
-                  </button>
-                </div>
+                      title="Remove"
+                    >
+                      ×
+                    </button>
+                  </div>
                 {isExpanded && (
                   <ShowDetailsPanel userShowId={ranking._id} show={ranking.show} />
                 )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
   );
 }
 
@@ -354,7 +360,7 @@ export function RankingsSearch() {
         />
         {searchQuery && availableShows.length > 0 && (
           <div className="absolute z-10 w-full mt-1 bg-white dark:bg-zinc-800 border rounded-md shadow-lg max-h-60 overflow-y-auto">
-            {availableShows.map((show, index) => (
+            {availableShows.map((show: Doc<"shows">, index: number) => (
               <button
                 key={show._id}
                 onClick={() => handleAddToRankings(show._id)}
