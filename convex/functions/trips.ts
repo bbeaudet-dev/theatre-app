@@ -1,6 +1,96 @@
 import { query, mutation } from "../_generated/server";
 import { v } from "convex/values";
 
+// Create a new trip without days (for new flow)
+export const createTripWithoutDays = mutation({
+  args: {
+    userId: v.id("users"),
+    title: v.string(),
+    description: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    
+    // Create the trip with default dates (can be updated later)
+    const defaultStartDate = new Date();
+    defaultStartDate.setHours(0, 0, 0, 0);
+    const defaultEndDate = new Date(defaultStartDate);
+    defaultEndDate.setDate(defaultEndDate.getDate() + 1);
+    
+    const tripId = await ctx.db.insert("trips", {
+      userId: args.userId,
+      title: args.title,
+      description: args.description,
+      startDate: defaultStartDate.getTime(),
+      endDate: defaultEndDate.getTime(),
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return tripId;
+  },
+});
+
+// Generate days for a trip (deletes existing days and creates new ones)
+export const generateTripDays = mutation({
+  args: {
+    tripId: v.id("trips"),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    const trip = await ctx.db.get(args.tripId);
+    if (!trip) {
+      throw new Error("Trip not found");
+    }
+
+    // Delete all existing days and their slots
+    const existingDays = await ctx.db
+      .query("tripDays")
+      .withIndex("by_trip", (q) => q.eq("tripId", args.tripId))
+      .collect();
+
+    for (const day of existingDays) {
+      const slots = await ctx.db
+        .query("tripDaySlots")
+        .withIndex("by_trip_day", (q) => q.eq("tripDayId", day._id))
+        .collect();
+
+      for (const slot of slots) {
+        await ctx.db.delete(slot._id);
+      }
+      await ctx.db.delete(day._id);
+    }
+
+    // Generate new days based on trip dates
+    const start = new Date(trip.startDate);
+    const end = new Date(trip.endDate);
+    const days: string[] = [];
+    
+    const currentDate = new Date(start);
+    currentDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(end);
+    endDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= endDate) {
+      days.push(new Date(currentDate).getTime().toString());
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Create trip days (but no slots initially - user will add them)
+    const tripDayIds = [];
+    for (const dayTimestamp of days) {
+      const dayId = await ctx.db.insert("tripDays", {
+        tripId: args.tripId,
+        date: parseInt(dayTimestamp),
+        createdAt: now,
+      });
+      tripDayIds.push(dayId);
+    }
+
+    return { success: true, daysGenerated: tripDayIds.length };
+  },
+});
+
 // Create a new trip with initial days
 export const createTrip = mutation({
   args: {

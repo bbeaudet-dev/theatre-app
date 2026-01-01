@@ -4,6 +4,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { ShowCardProps } from "@/lib/types";
+import { DAY_LABELS, DAYS_OF_WEEK } from "@/lib/constants";
 
 // Convert 24-hour time to 12-hour format
 function formatTime(time: string): string {
@@ -74,14 +75,16 @@ export default function ShowCard({ show, tripId, draggable = false }: ShowCardPr
     }
   };
 
-  const dayAbbrevs = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const showtimes = show.showtimes || {};
 
   const getShowtimesForDay = (day: string): string[] => {
-    const time = showtimes[day as keyof typeof showtimes];
+    const time = showtimes?.[day as keyof typeof showtimes];
     if (!time) return [];
-    const times = time as string[];
-    return times.filter(Boolean);
+    if (Array.isArray(time)) {
+      const times = time as string[];
+      return times.filter((t) => Boolean(t));
+    }
+    return [];
   };
 
   return (
@@ -110,14 +113,14 @@ export default function ShowCard({ show, tripId, draggable = false }: ShowCardPr
         {/* Day/Time Grid on right */}
         <div className="shrink-0">
           <div className="flex mb-0.5">
-            {dayAbbrevs.map((day) => (
+            {DAY_LABELS.map((day) => (
               <div key={day} className="text-[9px] text-center font-medium text-gray-600 dark:text-gray-400 w-5">
                 {day}
               </div>
             ))}
           </div>
           <div className="flex">
-            {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map((day) => {
+            {DAYS_OF_WEEK.map((day) => {
               const times = getShowtimesForDay(day);
               const numTimes = times.length;
               return (

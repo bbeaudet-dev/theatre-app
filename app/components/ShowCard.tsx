@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import QuickActions from "./QuickActions";
+import QuickActions from "../browse/QuickActions";
 import { ShowCardProps, ViewMode } from "@/lib/types";
 import DetailedShowCard from "@/app/components/DetailedShowCard";
 

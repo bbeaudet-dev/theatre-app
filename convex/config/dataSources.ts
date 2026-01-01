@@ -25,19 +25,19 @@ export const DATA_SOURCES: DataSource[] = [
   {
     name: "playbill-broadway",
     url: "https://playbill.com/shows/broadway",
-    enabled: false,
+    enabled: true,
     type: "current",
   },
   {
     name: "playbill-offbroadway",
     url: "https://playbill.com/shows/offbroadway",
-    enabled: false,
+    enabled: true,
     type: "current",
   },
   {
     name: "playbill-upcoming-broadway",
     url: "https://playbill.com/article/schedule-of-upcoming-and-announced-broadway-shows",
-    enabled: false,
+    enabled: true,
     type: "upcoming",
   },
   // Broadway.com - Secondary source for validation
@@ -76,37 +76,37 @@ export const DATA_SOURCES: DataSource[] = [
   {
     name: "wikipedia-category-page1",
     url: "https://en.wikipedia.org/wiki/Category:Broadway_musicals",
-    enabled: false,
+    enabled: true,
     type: "historical",
   },
   {
     name: "wikipedia-category-page2",
     url: "https://en.wikipedia.org/w/index.php?title=Category:Broadway_musicals&pagefrom=Century+Revue%2C+The%0AThe+Century+Revue#mw-pages",
-    enabled: false,
+    enabled: true,
     type: "historical",
   },
   {
     name: "wikipedia-category-page3",
     url: "https://en.wikipedia.org/w/index.php?title=Category:Broadway_musicals&pagefrom=Grey+Gardens+%28musical%29#mw-pages",
-    enabled: false,
+    enabled: true,
     type: "historical",
   },
   {
     name: "wikipedia-category-page4",
     url: "https://en.wikipedia.org/w/index.php?title=Category:Broadway_musicals&pagefrom=Love+Song+operetta%2C+The%0AThe+Love+Song+%28operetta%29#mw-pages",
-    enabled: false,
+    enabled: true,
     type: "historical",
   },
   {
     name: "wikipedia-category-page5",
     url: "https://en.wikipedia.org/w/index.php?title=Category:Broadway_musicals&pagefrom=Raggedy+Ann+%28musical%29#mw-pages",
-    enabled: false,
+    enabled: true,
     type: "historical",
   },
   {
     name: "wikipedia-category-page6",
     url: "https://en.wikipedia.org/w/index.php?title=Category:Broadway_musicals&pagefrom=Top+Speed+%28musical%29#mw-pages",
-    enabled: false,
+    enabled: true,
     type: "historical",
   },
   // BroadwayWorld.com - Comprehensive database with years 1732-2025
@@ -119,17 +119,53 @@ export const DATA_SOURCES: DataSource[] = [
   // URL format: https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=YYYY
 
     {
-        name: "broadwayworld-2019",
+        name: "broadwayworld-2025",
         url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
         enabled: true, 
         type: "historical",
     },
     {
-        name: "broadwayworld-2018",
+        name: "broadwayworld-2024",
         url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
         enabled: true, 
         type: "historical",
     },
+    {
+        name: "broadwayworld-2023",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2022",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2021",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2020",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2019",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        enabled: true, 
+        type: "historical",
+  },
+    {
+        name: "broadwayworld-2018",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        enabled: true, 
+        type: "historical",
+  },
     {
         name: "broadwayworld-2017",
         url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
@@ -153,7 +189,7 @@ export const DATA_SOURCES: DataSource[] = [
         url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
         enabled: true, 
         type: "historical",
-    }
+    },
 ];
 
 /**

@@ -7,12 +7,13 @@ import RankingsManager, { RankingsSearch } from "./RankingsManager";
 import ListsManager from "./ListsManager";
 import UserPreferences from "./UserPreferences";
 import NotifySettings from "../notify/NotifySettings";
-import { useSignOut } from "@/lib/auth-client";
+import { useSignOut, useCurrentUser } from "@/lib/auth-client";
 
 function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const signOut = useSignOut();
+  const currentUser = useCurrentUser();
   const [activeTab, setActiveTab] = useState<
     "rankings" | "lists" | "preferences" | "notify"
   >("rankings");
@@ -40,6 +41,11 @@ function ProfileContent() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      {currentUser && currentUser.name && (
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold">{currentUser.name}'s Profile</h1>
+        </div>
+      )}
       <div className="flex justify-between items-center mb-4 sm:mb-6">
         <div className="flex-1 border-b overflow-x-auto">
         <nav className="flex gap-2 sm:gap-4 min-w-max">
