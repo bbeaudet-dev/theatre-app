@@ -13,6 +13,22 @@ interface TripViewProps {
   onBack: () => void;
 }
 
+// Helper to format date as YYYY-MM-DD in local timezone
+const formatDateLocal = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+// Helper to parse YYYY-MM-DD date string to timestamp at midnight local time
+const parseDateLocal = (dateString: string): number => {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.getTime();
+};
+
 export default function TripView({ tripId, onBack }: TripViewProps) {
   const trip = useQuery(api.functions.trips.getTrip, { tripId });
   const deleteTrip = useMutation(api.functions.trips.deleteTrip);
@@ -27,18 +43,16 @@ export default function TripView({ tripId, onBack }: TripViewProps) {
   useEffect(() => {
     if (trip) {
       setTitle(trip.title);
-      const start = new Date(trip.startDate);
-      const end = new Date(trip.endDate);
-      setStartDate(start.toISOString().split("T")[0]);
-      setEndDate(end.toISOString().split("T")[0]);
+      setStartDate(formatDateLocal(trip.startDate));
+      setEndDate(formatDateLocal(trip.endDate));
     }
   }, [trip]);
 
   // Auto-generate days when dates change
   useEffect(() => {
     if (trip && startDate && endDate) {
-      const start = new Date(startDate + "T00:00:00").getTime();
-      const end = new Date(endDate + "T00:00:00").getTime();
+      const start = parseDateLocal(startDate);
+      const end = parseDateLocal(endDate);
       
       // Validate dates
       if (isNaN(start) || isNaN(end) || end < start) {

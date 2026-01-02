@@ -2,7 +2,7 @@ import { query, mutation, action } from "../_generated/server";
 import { api } from "../_generated/api";
 import { v } from "convex/values";
 import { Doc } from "../_generated/dataModel";
-import { generateRecommendationPrompt, formatUserRankings, formatElementRankings, formatThemeRankings } from "../lib/ai/recommendations";
+import { generateRecommendationPrompt, generateConciseRecommendationPrompt, formatUserRankings, formatElementRankings, formatThemeRankings } from "../lib/ai/recommendations";
 import { searchRedditForShow, formatRedditPostsForPrompt } from "../lib/reddit";
 
 // Helper to call OpenAI API
@@ -167,8 +167,8 @@ export const getRecommendation = action({
     const redditContext = formatRedditPostsForPrompt(redditResults.posts);
     console.log(`Found ${redditResults.posts.length} Reddit posts about ${show.title}`);
 
-    // Generate prompt
-    const prompt = generateRecommendationPrompt({
+    // Generate concise prompt 
+    const prompt = generateConciseRecommendationPrompt({
       userRankings: userRankingsText || "No shows ranked yet",
       userElementRankings: elementRankingsText,
       userThemeRankings: themeRankingsText,
@@ -201,28 +201,36 @@ export const getRecommendation = action({
       if (jsonMatch) {
         parsedResponse = JSON.parse(jsonMatch[0]);
       } else {
-        parsedResponse = { reasoning: aiResponse };
+        throw new Error("No JSON found in response");
       }
     } catch (error) {
-      // If parsing fails, use raw response
+      // If parsing fails, use raw response as fallback
       parsedResponse = { reasoning: aiResponse };
     }
 
-    // Format the response with rating and projected ranking summary
-    let finalReasoning = parsedResponse.reasoning || parsedResponse.recommendation || aiResponse;
+    // Format concise response with bullet points
+    let finalReasoning = "";
     
-    // Add summary at the end with rating and projected ranking
-    if (parsedResponse.ratingOutOf10 !== undefined || parsedResponse.projectedRanking !== undefined) {
-      const summaryParts = [];
-      if (parsedResponse.ratingOutOf10 !== undefined) {
-        summaryParts.push(`Rating: ${parsedResponse.ratingOutOf10}/10`);
-      }
-      if (parsedResponse.projectedRanking !== undefined && rankings && rankings.length > 0) {
-        summaryParts.push(`Projected Ranking: #${parsedResponse.projectedRanking} of ${rankings.length}`);
-      }
-      if (summaryParts.length > 0) {
-        finalReasoning += `\n\n**${summaryParts.join(" | ")}**`;
-      }
+    // Add prediction and rating header
+    const predictionText = parsedResponse.prediction === "likely" ? "✓ Likely you'll enjoy" :
+                          parsedResponse.prediction === "unlikely" ? "✗ Unlikely you'll enjoy" :
+                          "? Uncertain";
+    if (parsedResponse.ratingOutOf10 !== undefined) {
+      finalReasoning = `${predictionText} (${parsedResponse.ratingOutOf10}/10)\n\n`;
+    } else {
+      finalReasoning = `${predictionText}\n\n`;
+    }
+    
+    // Add bullet points
+    if (parsedResponse.bulletPoints && parsedResponse.bulletPoints.length > 0) {
+      finalReasoning += parsedResponse.bulletPoints.map((point: string) => `• ${point}`).join("\n");
+    } else {
+      finalReasoning += parsedResponse.reasoning || aiResponse;
+    }
+    
+    // Add projected ranking if available
+    if (parsedResponse.projectedRanking !== undefined && filteredRankings && filteredRankings.length > 0) {
+      finalReasoning += `\n\nProjected ranking: #${parsedResponse.projectedRanking} of ${filteredRankings.length}`;
     }
 
     // Note: Using inline type definition since Convex functions can't easily import from lib/

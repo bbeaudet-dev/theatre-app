@@ -97,13 +97,23 @@ export default function TripSlot({ slot, onEdit, tripId, tripDayId }: TripSlotPr
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm("Are you sure you want to delete this slot?")) {
-      try {
-        await deleteSlot({ slotId: slot._id });
-      } catch (error) {
-        console.error("Error deleting slot:", error);
-        alert("Failed to delete slot");
-      }
+    
+    // Only ask for confirmation if slot has both a show AND backup shows
+    const hasShowAndBackups = 
+      slot.showId !== undefined && 
+      slot.backupShowIds !== undefined && 
+      slot.backupShowIds.length > 0;
+    
+    // Only ask for confirmation if slot has both show and backup(s)
+    if (hasShowAndBackups && !confirm("Are you sure you want to delete this slot?")) {
+      return;
+    }
+    
+    try {
+      await deleteSlot({ slotId: slot._id });
+    } catch (error) {
+      console.error("Error deleting slot:", error);
+      alert("Failed to delete slot");
     }
   };
 

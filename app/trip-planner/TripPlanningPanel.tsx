@@ -5,13 +5,12 @@ import { Id } from "@/convex/_generated/dataModel";
 import TripListTab from "./TripPlanningPanel/TripListTab";
 import FindTab from "./TripPlanningPanel/FindTab";
 import UserListsTab from "./TripPlanningPanel/UserListsTab";
-import RecsTab from "./TripPlanningPanel/RecsTab";
 
 interface TripPlanningPanelProps {
   tripId: Id<"trips"> | null;
 }
 
-type Tab = "find" | "recs" | "user-lists" | "trip-list";
+type Tab = "find" | "user-lists" | "trip-list";
 
 export default function TripPlanningPanel({ tripId }: TripPlanningPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>("find");
@@ -30,16 +29,6 @@ export default function TripPlanningPanel({ tripId }: TripPlanningPanelProps) {
             }`}
           >
             Find
-          </button>
-          <button
-            onClick={() => setActiveTab("recs")}
-            className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-              activeTab === "recs"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600"
-            }`}
-          >
-            Recs
           </button>
           <button
             onClick={() => setActiveTab("user-lists")}
@@ -70,7 +59,6 @@ export default function TripPlanningPanel({ tripId }: TripPlanningPanelProps) {
       {/* Tab Content */}
       <div className="flex-1 overflow-y-auto p-4">
         {activeTab === "find" && <FindTab tripId={tripId} />}
-        {activeTab === "recs" && <RecsTab tripId={tripId} />}
         {activeTab === "user-lists" && <UserListsTab tripId={tripId} />}
         {activeTab === "trip-list" && tripId && <TripListTab tripId={tripId} />}
         {activeTab === "trip-list" && !tripId && <TripListTab tripId={null} />}

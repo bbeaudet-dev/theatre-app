@@ -172,3 +172,55 @@ export function formatThemeRankings(rankedThemes: Array<{
     .join("\n");
 }
 
+/**
+ * Generate a concise recommendation prompt with bullet points
+ * This is a shorter, more concise version for quick recommendations
+ */
+export function generateConciseRecommendationPrompt(params: RecommendationPromptParams) {
+  const {
+    userRankings,
+    userElementRankings,
+    userThemeRankings,
+    totalRankedShows,
+    avgTicketPrice = 100,
+    audiencePreference = "any",
+    seatingPreference = "any",
+    emotionalResponses = [],
+    showTitle,
+    showDistrict,
+    showTheatre,
+    showDescription,
+    showGenreThemes,
+    redditContext,
+  } = params;
+
+  return `You are a theatre recommendation assistant. Based on my preferences, provide a concise recommendation for: ${showTitle}
+
+MY PROFILE:
+• Top shows: ${userRankings.split('\n').slice(0, 5).join(', ')}
+• Top elements: ${userElementRankings.split('\n').slice(0, 3).join(', ')}
+• Top themes: ${userThemeRankings ? userThemeRankings.split('\n').slice(0, 3).join(', ') : 'None'}
+• Preferences: $${avgTicketPrice} avg, ${audiencePreference} audience, ${seatingPreference} seating
+
+SHOW: ${showTitle}
+${showDistrict ? `• District: ${showDistrict}` : ''}
+${showTheatre ? `• Theatre: ${showTheatre}` : ''}
+${showDescription ? `• ${showDescription.substring(0, 200)}${showDescription.length > 200 ? '...' : ''}` : ''}
+
+Analyze alignment with my preferences. Return JSON:
+{
+  "prediction": "likely" | "uncertain" | "unlikely",
+  "ratingOutOf10": number,
+  "projectedRanking": number,
+  "bulletPoints": [
+    "Concise phrase 1",
+    "Concise phrase 2",
+    ...
+  ],
+  "keyMatches": ["element/theme 1", "element/theme 2"],
+  "keyMismatches": ["element/theme 1", "element/theme 2"]
+}
+
+Keep bullet points to 3-5 items max. Use short phrases, no full sentences. Focus on: alignment with top preferences, theme matches, element matches, potential concerns.`;
+}
+
