@@ -25,6 +25,7 @@ import type * as functions_sync_dataSync from "../functions/sync/dataSync.js";
 import type * as functions_sync_email from "../functions/sync/email.js";
 import type * as functions_sync_inspectSyncReport from "../functions/sync/inspectSyncReport.js";
 import type * as functions_trips from "../functions/trips.js";
+import type * as functions_uploadShows from "../functions/uploadShows.js";
 import type * as lib_ai_extraction from "../lib/ai/extraction.js";
 import type * as lib_ai_recommendations from "../lib/ai/recommendations.js";
 import type * as lib_reddit from "../lib/reddit.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   "functions/sync/email": typeof functions_sync_email;
   "functions/sync/inspectSyncReport": typeof functions_sync_inspectSyncReport;
   "functions/trips": typeof functions_trips;
+  "functions/uploadShows": typeof functions_uploadShows;
   "lib/ai/extraction": typeof lib_ai_extraction;
   "lib/ai/recommendations": typeof lib_ai_recommendations;
   "lib/reddit": typeof lib_reddit;

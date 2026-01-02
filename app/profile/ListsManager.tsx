@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
 import ListManager from "../browse/ListManager";
-import ShowCard from "../browse/ShowCard";
+import ShowCard from "@/app/components/ShowCard";
 
 export default function ListsManager() {
   const [showCreateForm, setShowCreateForm] = useState(false);

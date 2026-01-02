@@ -12,11 +12,6 @@ export default function BrowsePage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Browse Shows</h1>
-      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
-        Discover shows, search for specific productions, and manage your lists.
-      </p>
-
       <div className="border-b mb-4 sm:mb-6 overflow-x-auto">
         <nav className="flex gap-2 sm:gap-4 min-w-max">
           <button

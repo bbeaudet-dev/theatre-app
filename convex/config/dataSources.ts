@@ -119,41 +119,77 @@ export const DATA_SOURCES: DataSource[] = [
   // URL format: https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=YYYY
 
     {
-        name: "broadwayworld-2019",
+        name: "broadwayworld-2025",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2025",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2024",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2024",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2023",
         url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
         enabled: true, 
         type: "historical",
     },
+    {
+        name: "broadwayworld-2022",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2022",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2021",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2021",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2020",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2020",
+        enabled: true, 
+        type: "historical",
+    },
+    {
+        name: "broadwayworld-2019",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2019",
+        enabled: true, 
+        type: "historical",
+  },
     {
         name: "broadwayworld-2018",
-        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2018",
         enabled: true, 
         type: "historical",
-    },
+  },
     {
         name: "broadwayworld-2017",
-        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2017",
         enabled: true, 
         type: "historical",
     },
     {
         name: "broadwayworld-2016",
-        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2016",
         enabled: true, 
         type: "historical",
     },
     {
         name: "broadwayworld-2015",
-        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2015",
         enabled: true, 
         type: "historical",
     },
     {
         name: "broadwayworld-2014",
-        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2023",
+        url: "https://www.broadwayworld.com/browseshows.php?showtype=BR&open_yr=2014",
         enabled: true, 
         type: "historical",
-    }
+    },
 ];
 
 /**

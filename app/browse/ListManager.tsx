@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useCurrentUser } from "@/lib/auth-client";
-import ShowCard from "./ShowCard";
+import ShowCard from "@/app/components/ShowCard";
 
 interface ListManagerProps {
   listId: string | null;

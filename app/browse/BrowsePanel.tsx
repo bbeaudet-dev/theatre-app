@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
-import ShowCard from "./ShowCard";
+import ShowCard from "@/app/components/ShowCard";
 
 export default function BrowsePanel() {
   const [district, setDistrict] = useState<

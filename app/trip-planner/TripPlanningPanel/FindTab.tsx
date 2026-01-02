@@ -85,4 +85,3 @@ export default function FindTab({ tripId }: FindTabProps) {
     </div>
   );
 }
-
